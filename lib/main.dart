@@ -3,8 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:selfstorage/pages/discountPage.dart';
 import 'package:selfstorage/pages/homePage.dart';
+import 'package:selfstorage/pages/rootPage.dart';
 import 'package:selfstorage/pages/loginPage.dart';
+import 'package:selfstorage/pages/sitePage.dart';
+import 'package:selfstorage/pages/subscriptionPage.dart';
 
 Future<void> main() async {
 
@@ -35,24 +39,33 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return MaterialApp(
-      theme: ThemeData(fontFamily: 'louie' , focusColor: Color.fromRGBO(20, 53, 96,1)),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: 'louie' , focusColor: Color.fromRGBO(20, 53, 96,1  )),
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)  {
           if (snapshot.hasData) {
-            return homePage();
+            return rootPage();
           } else {
             return loginPage();
           }
         },
       ),
       routes: {
-        homePage.routeName: (ctx) => homePage(),
+        rootPage.routeName: (ctx) => rootPage(),
         loginPage.routeName: (ctx) => loginPage(),
+        homePage.routeName: (ctx) => homePage(),
+        sitePage.routeName: (ctx) => sitePage(),
+        subscriptionPage.routeName: (ctx) => subscriptionPage(),
+        discountPage.routeName: (ctx) => discountPage(),
 
 
 
       },
     );
+
+
   }
+
+
 }
