@@ -19,18 +19,6 @@ class rootPage extends StatefulWidget {
 }
 
 class _rootPageState extends State<rootPage> {
-  /*PageController _pageController = PageController();
-  SideMenuController _sideMenuController = SideMenuController();
-
-
-  @override
-  void initState() {
-    super.initState();
-    _sideMenuController.addListener((index) {
-      _pageController.jumpToPage(index);
-    });
-  }*/
-
   late PageController _pageController;
   late SideMenuController _sideMenuController;
 
@@ -117,6 +105,7 @@ class _rootPageState extends State<rootPage> {
                 selectedTitleTextStyle: TextStyle(color: Colors.orange , fontWeight: FontWeight.w600),
                 selectedIconColor: Colors.orange,
                 hoverColor: Colors.blue[100],
+                unselectedIconColor: Color.fromRGBO(20, 53, 96, 1)
 
 
                 //hoverColor: Colors.orange,
@@ -131,11 +120,12 @@ class _rootPageState extends State<rootPage> {
               child: PageView(
             controller: _pageController,
             children: [
+              discountPage(),
               homePage(),
               subscriptionPage(),
               sitePage(),
               contactPage(),
-              discountPage()
+
             ],
           ))
         ],

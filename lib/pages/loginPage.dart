@@ -27,161 +27,176 @@ class _loginPageState extends State<loginPage> {
   bool isLoadingRecovery = false ;
   bool forget = false ;
 
+
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     double spacer = 20;
     return Scaffold(
       backgroundColor:Color.fromRGBO(242, 247, 252, 1.0), // Color.fromRGBO(242, 247, 252, 1),
-      body: Animate(
-        effects: [FadeEffect(duration: Duration(milliseconds: 700))],
-        child: Center(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 50,
-              ),
-              Image.asset("assets/logo.png"),
-              SizedBox(
-                height: spacer,
-              ), //Namdhinggo
-              Text(
-                "Login to self storage",
-                style: TextStyle( fontSize:  32 , fontWeight: FontWeight.w400),
-              ),
-              SizedBox(
-                height: spacer,
-              ),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
           Container(
-            width: size.width * 0.4,
-            height: size.height * 0.4,
+            width: double.infinity,
+            height: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white ,
-              //color: Color.fromRGBO(232, 240, 254, 1.0), // Background color
-
-
+              image: DecorationImage(
+                  image: AssetImage("tstiBackGround.jpg"), fit: BoxFit.cover),
             ),
-            padding: EdgeInsets.all(16.0),
+          ),
+          Animate(
+            effects: [FadeEffect(duration: Duration(milliseconds: 900))],
             child: Center(
-              child:Form(
-                key: _formKey,
-                child:forget == false ?
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextFormField(
-                      controller: _emailController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Username',
-                        fillColor: Colors.white, // Text input background color
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16.0), // Spacer
-                    TextFormField(
-                      controller: _passwordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
-                      obscureText: true, // Password field with hidden text
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        fillColor: Colors.white, // Text input background color
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16.0), // Spacer
-                    this.isLoading ? Center(child: CircularProgressIndicator(color: Colors.orange,),):
-                    GestureDetector(
-                      onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          // If the form is valid, perform login logic here
-                          // For now, you can print a message
-                         await  _login();
-                        }
-                      },
-                      child: Container(
-                        width: 90,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color:Colors.orange, //Color.fromRGBO(33, 103, 199, 1) ,
-                          borderRadius: BorderRadius.circular(30) ,
-                        ),
-                        child: Center(child: Text("Login" , style: TextStyle(color: Colors.white),)),
-                      ),
-                    ),
-                    SizedBox(height: 16.0),
-                    TextButton(onPressed: (){
-                      forget = true ;
-                      setState(() {});
-                    }, child: Text("Forgot your password?"))
-
-                  ],
-                ):
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                 //  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      controller: _emailControllerRecovery,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email to recover your account';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'enter your email to recover your account',
-                        fillColor: Colors.white, // Text input background color
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 30.0), // Spacer
-                   this.isLoadingRecovery ? Center(child: CircularProgressIndicator( color: Colors.orange,),) :
-                   Button(
-                      onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          await _resetPassword();
-                        }
-                      },
-                     text: "Recover",
-
-                    ),
-                    Button(onTap: (){
-                      this.forget = false;
-                      setState(() {});
-                    },text: "Login in",)
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.2,
+                  ),
+                  Image.asset("assets/logo.png"),
+                  SizedBox(
+                    height: spacer,
+                  ), //Namdhinggo
+                  Text(
+                    "Login to self storage",
+                    style: TextStyle( fontSize:  32 , fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(
+                    height: spacer,
+                  ),
+              Container(
+                width: size.width * 0.4,
+                height: size.height * 0.4,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.white ,
+                  //color: Color.fromRGBO(232, 240, 254, 1.0), // Background color
 
 
-                  ],
                 ),
+                padding: EdgeInsets.all(16.0),
+                child: Center(
+                  child:Form(
+                    key: _formKey,
+                    child:forget == false ?
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextFormField(
+                          controller: _emailController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Username',
+                            fillColor: Colors.white, // Text input background color
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16.0), // Spacer
+                        TextFormField(
+                          controller: _passwordController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            return null;
+                          },
+                          obscureText: true, // Password field with hidden text
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                            fillColor: Colors.white, // Text input background color
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16.0), // Spacer
+                        this.isLoading ? Center(child: CircularProgressIndicator(color: Colors.orange,),):
+                        GestureDetector(
+                          onTap: () async {
+                            if (_formKey.currentState!.validate()) {
+                              // If the form is valid, perform login logic here
+                              // For now, you can print a message
+                             await  _login();
+                            }
+                          },
+                          child: Container(
+                            width: 90,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color:Colors.orange, //Color.fromRGBO(33, 103, 199, 1) ,
+                              borderRadius: BorderRadius.circular(30) ,
+                            ),
+                            child: Center(child: Text("Login" , style: TextStyle(color: Colors.white),)),
+                          ),
+                        ),
+                        SizedBox(height: 16.0),
+                        TextButton(onPressed: (){
+                          forget = true ;
+                          setState(() {});
+                        }, child: Text("Forgot your password?"))
+
+                      ],
+                    ):
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                     //  crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextFormField(
+                          controller: _emailControllerRecovery,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email to recover your account';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'enter your email to recover your account',
+                            fillColor: Colors.white, // Text input background color
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 30.0), // Spacer
+                       this.isLoadingRecovery ? Center(child: CircularProgressIndicator( color: Colors.orange,),) :
+                       Button(
+                          onTap: () async {
+                            if (_formKey.currentState!.validate()) {
+                              await _resetPassword();
+                            }
+                          },
+                         text: "Recover",
+
+                        ),
+                        Button(onTap: (){
+                          this.forget = false;
+                          setState(() {});
+                        },text: "Login in",)
+
+
+                      ],
+                    ),
+                  ),
+                ),
+
+                ),
+
+                ],
               ),
             ),
-
-            ),
-
-            ],
           ),
-        ),
+        ],
       ),
     );
 
