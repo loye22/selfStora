@@ -43,7 +43,7 @@ class _loginPageState extends State<loginPage> {
             height: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage("tstiBackGround.jpg"), fit: BoxFit.cover),
+                  image: AssetImage("assets/tstiBackGround.jpg"), fit: BoxFit.cover),
             ),
           ),
           Animate(
