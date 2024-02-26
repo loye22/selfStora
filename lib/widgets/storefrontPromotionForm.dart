@@ -11,8 +11,9 @@ import 'package:selfstorage/widgets/dialog.dart';
 
 class storefrontPromotionForm extends StatefulWidget {
   final VoidCallback CancelFunction;
+  final VoidCallback reInitFunciotn;
 
-  const storefrontPromotionForm({super.key, required this.CancelFunction});
+  const storefrontPromotionForm({super.key, required this.CancelFunction, required this.reInitFunciotn});
 
   @override
   _storefrontPromotionFormState createState() =>
@@ -117,7 +118,8 @@ class _storefrontPromotionFormState extends State<storefrontPromotionForm> {
               SizedBox(
                 height: 10,
               ),
-              this.isLoading ? Center(child: CircularProgressIndicator(color: Colors.orange,),) : Row(
+              this.isLoading ? Center(child: CircularProgressIndicator(color: Colors.orange,),) :
+              Row(
                 children: [
                   Button2(
                       onTap:addStoreFrontDiscount,
@@ -201,6 +203,7 @@ class _storefrontPromotionFormState extends State<storefrontPromotionForm> {
 
       this.isLoading = false;
       setState(() {});
+      widget.reInitFunciotn();
       print("Data added to Firestore successfully!");
       MyDialog.showAlert(context, "Ok", "Data added to the Datebase successfully!");
       widget.CancelFunction();

@@ -15,8 +15,9 @@ import 'package:selfstorage/widgets/dialog.dart';
 
 class customerCouponCode extends StatefulWidget {
   final VoidCallback CancelFunction;
+  final VoidCallback reInitFunciotn;
 
-  const customerCouponCode({super.key, required this.CancelFunction});
+  const customerCouponCode({super.key, required this.CancelFunction, required this.reInitFunciotn});
 
   @override
   _customerCouponCodeState createState() => _customerCouponCodeState();
@@ -315,6 +316,7 @@ class _customerCouponCodeState extends State<customerCouponCode> {
       MyDialog.showAlert(
           context, "Ok", "Data added to the Datebase successfully!");
       widget.CancelFunction();
+      widget.reInitFunciotn();
     } catch (e) {
       this.isLoading = false;
       setState(() {});

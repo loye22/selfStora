@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:selfstorage/widgets/dialog.dart';
+
+import '../widgets/confirmationDialog.dart';
 
 class staticVar {
 
@@ -39,5 +42,52 @@ class staticVar {
 
   static Color buttonColor = Color.fromRGBO(20, 53, 96, 1) ;
 
+static void showOverlay({
+    required BuildContext ctx,
+    required VoidCallback onEdit,
+    required VoidCallback onDelete,
+  }) {
+    showModalBottomSheet(
+      context: ctx,
+      builder: (BuildContext context) {
+        return Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.edit),
+                title: Text('Edit (SOON)'),
+                onTap: onEdit,
+              ),
+              ListTile(
+                leading: Icon(Icons.delete),
+                title: Text('Delete'),
+                onTap: onDelete,
+              ),
+            ],
+          ),
+        );
+      },
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16.0),
+          topRight: Radius.circular(16.0),
+        ),
+      ),
+    );
+  }
+
+
+
+
+
 
 }
+
+
+
+
+
+
+
+
