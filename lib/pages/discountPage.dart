@@ -107,154 +107,156 @@ class _discountPageState extends State<discountPage> {
           ),
         ),
       )
-          : Animate(
-        effects: [FadeEffect(duration: Duration(milliseconds: 900))],
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                         const Text(
-                            "Discount",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 24),
-                          ),
-                         const Text(
-                            "Storefront promo offers and customer-facing coupon codes",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 15,
-                              color: Color.fromRGBO(114, 128, 150, 1),
+          : SingleChildScrollView(
+            child: Animate(
+                    effects: [FadeEffect(duration: Duration(milliseconds: 900))],
+                    child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                           const Text(
+                              "Discount",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 24),
                             ),
-                          )
-                        ],
+                           const Text(
+                              "Storefront promo offers and customer-facing coupon codes",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 15,
+                                color: Color.fromRGBO(114, 128, 150, 1),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Button2(
-                    onTap: () {
-                      this.createNewDiscounMode = true;
-                      setState(() {});
-                    },
-                    text: "Create new discount",
-                    color: Color.fromRGBO(33, 103, 199, 1),
-                  )
-                ],
-              ),
-              Animate(
-                effects: [
-                  FadeEffect(duration: Duration(milliseconds: 900))
-                ],
-                child: Container(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * .8,
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .height * .8,
-                  decoration: BoxDecoration(
-                    //    border: Border.all(color: Colors.black.withOpacity(.33)),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white),
-                  child: Card(
-                    elevation: 1,
-                    child: Center(
-                      child: DataTable2(
-                        columnSpacing: 5,
-                        columns: [
-                          staticVar.Dc("NAME"),
-                          staticVar.Dc("DISCOUNT"),
-                          staticVar.Dc("TYPE"),
-                          staticVar.Dc("Created by"),
-                          staticVar.Dc("Created at"),
-                          staticVar.Dc("Options"),
-                        ],
-                        rows: this.tableData.map((e) {
-                          // print(e.toString());
-                          bool isItFixed = e["isItFixed"] ?? null;
-                          String discount = isItFixed
-                              ? e["amountOff"].toString() + " RON"
-                              : e["percentOff"].toString() + " %";
-
-                          bool? storeFrontDiscount =
-                          e["storeFrontDiscount"];
-                          String dicontType =
-                          storeFrontDiscount != null &&
-                              storeFrontDiscount
-                              ? "Promotion"
-                              : "Code";
-
-                          String code =  e["code"] ?? "x";
-
-                          return DataRow(
-                            onLongPress: () {},
-                            cells: [
-                              DataCell(Center(
-                                child:
-                                Text(e["couponName"] ?? "NotFound"),
-                              )),
-                              DataCell(Center(
-                                child: Text(discount  +": " + e["durationType"]  ?? "NotFound"),
-                              )),
-                              DataCell(Center(
-                                child: Text(
-                                    textAlign:TextAlign.center ,
-                                    dicontType +"\n"+ code    ?? "NotFound"),
-                              )),
-                              DataCell(Center(
-                                child: Text(e["createdBy"] ?? "NotFound"),
-                              )),
-                              DataCell(Center(
-                                child: Text(DateFormat('d MMM')
-                                    .format(e["createdAt"]) ??
-                                    "NotFound"),
-                              )),
-                              DataCell(Center(
-                                child: TextButton(
-                                  child: Icon(Icons.more_vert),
-                                  onPressed: () {
-                                    staticVar.showOverlay(
-                                        ctx: context,
-                                        onDelete: () =>
-                                            confirmationDialog
-                                                .showElegantPopup(
-                                                context: context,
-                                                message: "Are you sure you want to delete this record?",
-                                                onYes: () async {
-                                                  Navigator.of(context)
-                                                      .pop();
-                                                  await deleteDiscount(e["dID"]);
-                                                  },
-                                                onNo: () =>
-                                                    Navigator.of(context)
-                                                        .pop()),
-                                        onEdit: () {});
-                                  },
-                                ),
-                              )),
-                            ],
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
+                    Button2(
+                      onTap: () {
+                        this.createNewDiscounMode = true;
+                        setState(() {});
+                      },
+                      text: "Create new discount",
+                      color: Color.fromRGBO(33, 103, 199, 1),
+                    )
+                  ],
                 ),
-              )
-            ],
+                Animate(
+                  effects: [
+                    FadeEffect(duration: Duration(milliseconds: 900))
+                  ],
+                  child: Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * .8,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * .8,
+                    decoration: BoxDecoration(
+                      //    border: Border.all(color: Colors.black.withOpacity(.33)),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: Card(
+                      elevation: 1,
+                      child: Center(
+                        child: DataTable2(
+                          columnSpacing: 5,
+                          columns: [
+                            staticVar.Dc("NAME"),
+                            staticVar.Dc("DISCOUNT"),
+                            staticVar.Dc("TYPE"),
+                            staticVar.Dc("Created by"),
+                            staticVar.Dc("Created at"),
+                            staticVar.Dc("Options"),
+                          ],
+                          rows: this.tableData.map((e) {
+                            // print(e.toString());
+                            bool isItFixed = e["isItFixed"] ?? null;
+                            String discount = isItFixed
+                                ? e["amountOff"].toString() + " RON"
+                                : e["percentOff"].toString() + " %";
+            
+                            bool? storeFrontDiscount =
+                            e["storeFrontDiscount"];
+                            String dicontType =
+                            storeFrontDiscount != null &&
+                                storeFrontDiscount
+                                ? "Promotion"
+                                : "Code";
+            
+                            String code =  e["code"] ?? "x";
+            
+                            return DataRow(
+                              onLongPress: () {},
+                              cells: [
+                                DataCell(Center(
+                                  child:
+                                  Text(e["couponName"] ?? "NotFound"),
+                                )),
+                                DataCell(Center(
+                                  child: Text(discount  +": " + e["durationType"]  ?? "NotFound"),
+                                )),
+                                DataCell(Center(
+                                  child: Text(
+                                      textAlign:TextAlign.center ,
+                                      dicontType +"\n"+ code    ?? "NotFound"),
+                                )),
+                                DataCell(Center(
+                                  child: Text(e["createdBy"] ?? "NotFound"),
+                                )),
+                                DataCell(Center(
+                                  child: Text(DateFormat('d MMM')
+                                      .format(e["createdAt"]) ??
+                                      "NotFound"),
+                                )),
+                                DataCell(Center(
+                                  child: TextButton(
+                                    child: Icon(Icons.more_vert),
+                                    onPressed: () {
+                                      staticVar.showOverlay(
+                                          ctx: context,
+                                          onDelete: () =>
+                                              confirmationDialog
+                                                  .showElegantPopup(
+                                                  context: context,
+                                                  message: "Are you sure you want to delete this record?",
+                                                  onYes: () async {
+                                                    Navigator.of(context)
+                                                        .pop();
+                                                    await deleteDiscount(e["dID"]);
+                                                    },
+                                                  onNo: () =>
+                                                      Navigator.of(context)
+                                                          .pop()),
+                                          onEdit: () {});
+                                    },
+                                  ),
+                                )),
+                              ],
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+                    ),
+                  ),
           ),
-        ),
-      ),
     );
   }
 
@@ -299,21 +301,23 @@ class _discountPageState extends State<discountPage> {
 
       // Iterate through the documents in the collection
       for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+        // Explicitly cast data to Map<String, dynamic>
+        Map<String, dynamic>? data = documentSnapshot.data() as Map<String, dynamic>?;
+        String createdAt = "createdAt";
+
         // Extract data from the document
         Map<String, dynamic> discountData = {
-          "couponName": documentSnapshot["couponName"] ?? "404 Not found",
-          "discountType": documentSnapshot["discountType"] ?? "404 Not found",
-          "percentOff": documentSnapshot["percentOff"] ?? "404 Not found",
-          "amountOff": documentSnapshot["amountOff"] ?? "404 Not found",
-          "durationType": documentSnapshot["durationType"] ?? "404 Not found",
-          "isItFixed": documentSnapshot["isItFixed"] ?? false,
-          "createdAt": (documentSnapshot["createdAt"] as Timestamp).toDate() ??
-              "404 Not found",
-          "createdBy": documentSnapshot["createdBy"] ?? "404 Not found",
-          "storeFrontDiscount":
-          documentSnapshot["storeFrontDiscount"] ?? "404 Not found",
+          "couponName": data?["couponName"] ?? "404 Not found",
+          "discountType": data?["discountType"] ?? "404 Not found",
+          "percentOff": data?["percentOff"] ?? "404 Not found",
+          "amountOff": data?["amountOff"] ?? "404 Not found",
+          "durationType": data?["durationType"] ?? "404 Not found",
+          "isItFixed": data?["isItFixed"] ?? false,
+          "createdAt":data?[createdAt] == null ? DateTime.now() :  (data?[createdAt] as Timestamp)?.toDate() ?? "404 Not found",
+          "createdBy": data?["createdBy"] ?? "404 Not found",
+          "storeFrontDiscount": data?["storeFrontDiscount"] ?? false ,
           "dID": documentSnapshot.id,
-          "code" :documentSnapshot["code"] ?? ""
+          "code": data != null && data.containsKey('code') ? data['code'] : '',
         };
 
         // Add the discount data to the list
@@ -324,10 +328,12 @@ class _discountPageState extends State<discountPage> {
       print("Error fetching data from Firestore: $e");
     }
 
+  //  print(discounts);
     this.tableData = discounts;
     setState(() {});
     return discounts;
   }
+
 
   Widget buildRadioButton(String title, String explanation) {
     return Row(

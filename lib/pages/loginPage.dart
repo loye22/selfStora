@@ -80,72 +80,74 @@ class _loginPageState extends State<loginPage> {
                   child:Form(
                     key: _formKey,
                     child:forget == false ?
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextFormField(
-                          controller: _emailController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'Username',
-                            fillColor: Colors.white, // Text input background color
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+                    SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextFormField(
+                            controller: _emailController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Username',
+                              fillColor: Colors.white, // Text input background color
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 16.0), // Spacer
-                        TextFormField(
-                          controller: _passwordController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            return null;
-                          },
-                          obscureText: true, // Password field with hidden text
-                          decoration: InputDecoration(
-                            hintText: 'Password',
-                            fillColor: Colors.white, // Text input background color
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+                          SizedBox(height: 16.0), // Spacer
+                          TextFormField(
+                            controller: _passwordController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              return null;
+                            },
+                            obscureText: true, // Password field with hidden text
+                            decoration: InputDecoration(
+                              hintText: 'Password',
+                              fillColor: Colors.white, // Text input background color
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 16.0), // Spacer
-                        this.isLoading ? Center(child: CircularProgressIndicator(color: Colors.orange,),):
-                        GestureDetector(
-                          onTap: () async {
-                            if (_formKey.currentState!.validate()) {
-                              // If the form is valid, perform login logic here
-                              // For now, you can print a message
-                             await  _login();
-                            }
-                          },
-                          child: Container(
-                            width: 90,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color:Colors.orange, //Color.fromRGBO(33, 103, 199, 1) ,
-                              borderRadius: BorderRadius.circular(30) ,
+                          SizedBox(height: 16.0), // Spacer
+                          this.isLoading ? Center(child: CircularProgressIndicator(color: Colors.orange,),):
+                          GestureDetector(
+                            onTap: () async {
+                              if (_formKey.currentState!.validate()) {
+                                // If the form is valid, perform login logic here
+                                // For now, you can print a message
+                               await  _login();
+                              }
+                            },
+                            child: Container(
+                              width: 90,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color:Colors.orange, //Color.fromRGBO(33, 103, 199, 1) ,
+                                borderRadius: BorderRadius.circular(30) ,
+                              ),
+                              child: Center(child: Text("Login" , style: TextStyle(color: Colors.white),)),
                             ),
-                            child: Center(child: Text("Login" , style: TextStyle(color: Colors.white),)),
                           ),
-                        ),
-                        SizedBox(height: 16.0),
-                        TextButton(onPressed: (){
-                          forget = true ;
-                          setState(() {});
-                        }, child: Text("Forgot your password?"))
+                          SizedBox(height: 16.0),
+                          TextButton(onPressed: (){
+                            forget = true ;
+                            setState(() {});
+                          }, child: Text("Forgot your password?"))
 
-                      ],
+                        ],
+                      ),
                     ):
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,

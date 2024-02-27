@@ -9,6 +9,8 @@ class customTextFieldWidget extends StatelessWidget {
   final Function(String) onChanged;
   final String subLabel;
   final bool isItNumerical ;
+  final bool editMode;
+  final String initialValue;
 
   customTextFieldWidget({
     required this.label,
@@ -17,6 +19,9 @@ class customTextFieldWidget extends StatelessWidget {
     required this.onChanged,
     this.subLabel = "",
     this.isItNumerical = true,
+    this.editMode = false ,
+    this.initialValue =""
+
   });
 
   @override
@@ -44,10 +49,13 @@ class customTextFieldWidget extends StatelessWidget {
           Container(
             width: MediaQuery.of(context).size.width * 0.3,
             child: TextFormField(
+              initialValue: editMode ? initialValue : null,
               keyboardType: this.isItNumerical ? TextInputType.numberWithOptions(decimal: true) : null,
               inputFormatters: this.isItNumerical ? [FilteringTextInputFormatter.digitsOnly]  : null,
               onChanged: onChanged,
+              maxLength:this.isItNumerical ? 15 : null ,
               decoration: InputDecoration(
+                prefixText: label == "Phone Nr" ? "+" : null ,
                 hintText: hintText,
                 fillColor: Colors.white,
                 filled: true,

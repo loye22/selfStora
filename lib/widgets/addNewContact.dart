@@ -1,19 +1,20 @@
-
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/addressInputWidget.dart';
 import 'package:selfstorage/widgets/buttonStyle2.dart';
-
+import 'package:selfstorage/widgets/dialog.dart';
 import 'customTextFieldWidget.dart';
 
 class addNewContact extends StatefulWidget {
   final VoidCallback CancelFunction;
-  final VoidCallback addNewContactFuntion;
+  final VoidCallback reInitFunciotn;
 
-  const addNewContact({super.key, required this.CancelFunction, required this.addNewContactFuntion});
+  const addNewContact({super.key, required this.CancelFunction, required this.reInitFunciotn});
 
 
   @override
@@ -21,13 +22,18 @@ class addNewContact extends StatefulWidget {
 }
 
 class _addNewContactState extends State<addNewContact> {
-  final _formKey = GlobalKey<FormState>();
   bool isLoading = false ;
+  String email   = "";
+  String cEmail = "";
+  String name     = "" ;
+  String phoneNr = "";
+  String VAT     = "";
+  Map<String, String> address = {} ;
+  Map<String, String> marketingDetailsDate =  {};
+
 
   @override
   Widget build(BuildContext context) {
-
-
     return Card(
       elevation: 5,
       child: Container(
@@ -38,20 +44,20 @@ class _addNewContactState extends State<addNewContact> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                customTextFieldWidget(hintText: 'Email', label: "Email", onChanged: (s){}, subLabel:'' ,isItNumerical: false ,),
-                customTextFieldWidget(hintText: 'Confirm email', label: "Confirm email", onChanged: (s){}, subLabel:'' ,isItNumerical: false),
-                customTextFieldWidget(hintText: 'Name (optional)', label: "Name", onChanged: (s){}, subLabel:'' ,isItNumerical: false),
-                customTextFieldWidget(hintText: 'Phone number (optional)', label: "Phone Nr", onChanged: (s){}, subLabel:'' ,),
-                customTextFieldWidget(hintText: 'VAT number (optional)', label: "VAT number (optional)", onChanged: (s){}, subLabel:'' ,),
-                addressInputWidget(onAddressChanged: (s){},) ,
-                customerDetailsCard(onCustomerDetailsChanged: (s){},),
+                customTextFieldWidget(hintText: 'Email', label: "Email", onChanged: (s){this.email = s;}, subLabel:'' ,isItNumerical: false ,),
+                customTextFieldWidget(hintText: 'Confirm email', label: "Confirm email", onChanged: (s){this.cEmail = s ;}, subLabel:'' ,isItNumerical: false),
+                customTextFieldWidget(hintText: 'Name', label: "Name", onChanged: (s){this.name = s ; }, subLabel:'' ,isItNumerical: false),
+                customTextFieldWidget(hintText: 'Phone number (optional)', label: "Phone Nr", onChanged: (s){this.phoneNr = "+"+s ; }, subLabel:'' ,),
+                customTextFieldWidget(hintText: 'VAT number (optional)', label: "VAT number (optional)", onChanged: (s){this.VAT = s ;}, subLabel:'' ,),
+                addressInputWidget(onAddressChanged: (s){this.address = s ; },) ,
+                marketingDetails(marketingFetcherFunction: (s){this.marketingDetailsDate = s ;},),
                 SizedBox(height: 20,) ,
                 this.isLoading? Center(child: CircularProgressIndicator(color: Colors.orange,),) :
                 Row(
                   children: [
                     Button2(
-                        onTap:widget.addNewContactFuntion,
-                        text: "Create Discount",
+                        onTap:addNewContact,
+                        text: "Create Contact",
                         color: Colors.orangeAccent),
                     SizedBox(
                       width: 10,
@@ -60,17 +66,18 @@ class _addNewContactState extends State<addNewContact> {
                         onTap: widget.CancelFunction,
                         text: "Cancel",
                         color: Colors.red),
-                    /*Button2(onTap: () {
-                    print(FieldValue.serverTimestamp);
-                    return;
-                    print("couponName : "+this.couponName);
-                    print("discountType : "+this.discountType);
-                    print("percentOff : "+this.percentOff);
-                    print("amountOff : "+this.amountOff);
-                    print("durationType :  "+this.durationType);
-                    print(" is it fiexed   "+this.isItFixed.toString());
+                    Button2(onTap: () {
 
-                  }, text: "test", color: Colors.red)*/
+
+                      print(this.marketingDetailsDate.runtimeType );
+                    print("email : "+this.email);
+                    print("name : "+this.name);
+                    print("phone nr : "+this.phoneNr.trim().replaceAll(" ", ""));
+                    print("VAT  :  "+this.VAT.trim().replaceAll(" ", ""));
+                    print("adress "+this.address.toString());
+                    print("marketingDetailsDate : "+this.marketingDetailsDate.toString());
+
+                  }, text: "test", color: Colors.red)
                   ],
                 )
               ],
@@ -82,6 +89,71 @@ class _addNewContactState extends State<addNewContact> {
     );
   }
 
+  Future<void> addNewContact() async {
+    try {
+      final marketingDefualts = {
+        'customer_source': 'Not specified',
+        'customer_business_type': 'Not specified',
+        'customer_use_case': 'Not specified',
+        'customer_marketing_source': 'Not specified',
+      };
+
+      final bool emailValid =
+      RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+          .hasMatch(email.trim());
+      //MyDialog.showAlert(context, "ok",emailValid.toString());
+      this.isLoading = true ;
+      setState(() {});
+      // handel the nnull logic
+      if(!emailValid){
+        MyDialog.showAlert(context, "Ok", "Please make sure to enter a valid email address.");
+        return;
+      }
+      if(this.email.trim() != this.cEmail.trim() ){
+        MyDialog.showAlert(context, "Ok", "The entered emails do not match.");
+        return;
+      }
+      if(this.name.trim() =="" ){
+        MyDialog.showAlert(context, "Ok", "Please enter the contact name and try again.");
+        return;
+      }
+
+
+      // Access the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      // Get the current user's email
+      User? user = FirebaseAuth.instance.currentUser;
+      String userEmail = user?.email ?? "user@email.com";
+      // Add data to the "discount" collection
+      await firestore.collection("contacts").add({
+        "email": this.email.trim(),
+        "name": this.name.trim(),
+        "phoneNr": this.phoneNr.trim(),
+        "vat": this.VAT.trim(),
+        "address": this.address,
+        "marketingData": this.marketingDetailsDate == {} ? marketingDefualts : this.marketingDetailsDate,
+        "createdAt":DateTime.now() ,
+        "createdBy": userEmail,
+      });
+
+      this.isLoading = false;
+      setState(() {});
+      widget.reInitFunciotn();
+      print("Data added to Firestore successfully!");
+      MyDialog.showAlert(context, "Ok", "Data added to the Datebase successfully!");
+      widget.CancelFunction();
+    } catch (e) {
+      this.isLoading = false;
+      setState(() {});
+      print("Error adding data to Firestore: $e");
+      MyDialog.showAlert(context, "Ok", "Error adding data to Firestore: $e");
+    }
+    finally{
+      this.isLoading = false;
+      setState(() {});
+    }
+  }
+
 }
 
 
@@ -90,17 +162,17 @@ class _addNewContactState extends State<addNewContact> {
 // this is the other details widget
 // the reason its here and not in separate widget because i wont use it again
 
-class customerDetailsCard extends StatefulWidget {
-  final Function(Map<String, String>) onCustomerDetailsChanged;
+class marketingDetails extends StatefulWidget {
+  final Function(Map<String, String>) marketingFetcherFunction;
 
-  customerDetailsCard({required this.onCustomerDetailsChanged});
+  marketingDetails({required this.marketingFetcherFunction});
 
   @override
-  _customerDetailsCardState createState() => _customerDetailsCardState();
+  _marketingDetailsState createState() => _marketingDetailsState();
 }
 
-class _customerDetailsCardState extends State<customerDetailsCard> {
-  final Map<String, String> _customerDetails = {
+class _marketingDetailsState extends State<marketingDetails> {
+  final Map<String, String> _marketingData = {
     'customer_source': '',
     'customer_business_type': '',
     'customer_use_case': '',
@@ -113,7 +185,6 @@ class _customerDetailsCardState extends State<customerDetailsCard> {
       child: Container(
         padding: EdgeInsets.all(8.0),
         width: MediaQuery.of(context).size.width * 0.3,
-
         // padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,27 +278,31 @@ class _customerDetailsCardState extends State<customerDetailsCard> {
           SizedBox(height: 5),
           Container(
             width: double.infinity,
-            child: DropdownButtonFormField<String>(
-              dropdownColor: Colors.orange,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+            child: Theme(
+              data: Theme.of(context).copyWith( hoverColor: Colors.grey , focusColor: Colors.grey),
+              child: DropdownButtonFormField<String>(
+                style: TextStyle(color: Colors.black87),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
+                items: options.map((option) {
+                  return DropdownMenuItem<String>(
+                    value: option,
+                    child: Text(option),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _marketingData[id] = value!;
+                    widget.marketingFetcherFunction(_marketingData);
+                  });
+                },
               ),
-              items: options.map((option) {
-                return DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _customerDetails[id] = value!;
-                  widget.onCustomerDetailsChanged(_customerDetails);
-                });
-              },
             ),
           ),
         ],
@@ -271,33 +346,38 @@ class _customerDetailsCardState extends State<customerDetailsCard> {
           SizedBox(height: 5),
           Container(
             width: double.infinity,
-            child: DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                hoverColor:Colors.orange ,
-                filled: true,
-                fillColor: Colors.white,
-                focusColor: Colors.orange,
-
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+            child: Theme(
+              data: Theme.of(context).copyWith( hoverColor: Colors.grey , focusColor: Colors.grey),
+              child: DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  hoverColor: Colors.red,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
+                items: options.map((option) {
+                  return DropdownMenuItem<String>(
+                    value: option,
+                    child: Text(option),
+
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _marketingData[id] = value!;
+                    widget.marketingFetcherFunction(_marketingData);
+                  });
+                },
               ),
-              items: options.map((option) {
-                return DropdownMenuItem<String>(
-                  value: option,
-                  child: Text(option),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _customerDetails[id] = value!;
-                  widget.onCustomerDetailsChanged(_customerDetails);
-                });
-              },
             ),
           ),
         ],
       ),
     );
   }
+
+
+
 }
