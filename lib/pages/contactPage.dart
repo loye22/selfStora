@@ -27,7 +27,7 @@ class _contactPageState extends State<contactPage> {
   bool deleteLoading = false ;
   bool editFlag = false ;
   List<Map<String, dynamic>> tableData = [];
-  Map<String,dynamic> data = {};
+  Map<String,dynamic  > dataToBeEdited = {};
 
 
 
@@ -43,10 +43,13 @@ class _contactPageState extends State<contactPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body:
-          this.editFlag ? editContactWidget(CancelFunction: (){
-            this.editFlag = false ;
+          this.editFlag ?
+          editContactWidget(
+            CancelFunction: (){
+            this.editFlag = false;
+            this.fetchContactData();
             setState(() {});
-          }, data: data, ) :
+          }, data: dataToBeEdited, ) :
           (this.createNewLead  ? Animate(
             effects: [FadeEffect(duration: Duration(milliseconds: 700))],
             child: Container(
@@ -164,8 +167,11 @@ class _contactPageState extends State<contactPage> {
                                                           .pop()),
                                               onEdit: () {
                                                 this.editFlag = true ;
-                                                this.data = e ;
                                                 setState(() {});
+                                                this.dataToBeEdited = e;
+                                               // print("Heey from contact page  ********************************************");
+                                              //  print(e["address"].runtimeType);
+                                               // print(e["address"]);
                                                 Navigator.of(context)
                                                     .pop();
                                               });

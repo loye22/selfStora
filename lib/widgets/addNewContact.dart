@@ -8,6 +8,7 @@ import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/addressInputWidget.dart';
 import 'package:selfstorage/widgets/buttonStyle2.dart';
 import 'package:selfstorage/widgets/dialog.dart';
+import 'package:selfstorage/widgets/marketingDetails.dart';
 import 'customTextFieldWidget.dart';
 
 class addNewContact extends StatefulWidget {
@@ -28,7 +29,7 @@ class _addNewContactState extends State<addNewContact> {
   String name     = "" ;
   String phoneNr = "";
   String VAT     = "";
-  Map<String, String> address = {} ;
+  Map<String, dynamic> address = {} ;
   Map<String, String> marketingDetailsDate =  {};
 
 
@@ -50,7 +51,7 @@ class _addNewContactState extends State<addNewContact> {
                 customTextFieldWidget(hintText: 'Phone number (optional)', label: "Phone Nr", onChanged: (s){this.phoneNr = "+"+s ; }, subLabel:'' ,),
                 customTextFieldWidget(hintText: 'VAT number (optional)', label: "VAT number (optional)", onChanged: (s){this.VAT = s ;}, subLabel:'' ,),
                 addressInputWidget(onAddressChanged: (s){this.address = s ; },) ,
-                marketingDetails(marketingFetcherFunction: (s){this.marketingDetailsDate = s ;},),
+                marketingDetails( marketingFetcherFunction: (s){this.marketingDetailsDate = s ;},),
                 SizedBox(height: 20,) ,
                 this.isLoading? Center(child: CircularProgressIndicator(color: Colors.orange,),) :
                 Row(
@@ -66,7 +67,7 @@ class _addNewContactState extends State<addNewContact> {
                         onTap: widget.CancelFunction,
                         text: "Cancel",
                         color: Colors.red),
-                    Button2(onTap: () {
+                    /*Button2(onTap: () {
 
 
                       print(this.marketingDetailsDate.runtimeType );
@@ -77,7 +78,7 @@ class _addNewContactState extends State<addNewContact> {
                     print("adress "+this.address.toString());
                     print("marketingDetailsDate : "+this.marketingDetailsDate.toString());
 
-                  }, text: "test", color: Colors.red)
+                  }, text: "test", color: Colors.red)*/
                   ],
                 )
               ],
@@ -159,225 +160,3 @@ class _addNewContactState extends State<addNewContact> {
 
 
 
-// this is the other details widget
-// the reason its here and not in separate widget because i wont use it again
-
-class marketingDetails extends StatefulWidget {
-  final Function(Map<String, String>) marketingFetcherFunction;
-
-  marketingDetails({required this.marketingFetcherFunction});
-
-  @override
-  _marketingDetailsState createState() => _marketingDetailsState();
-}
-
-class _marketingDetailsState extends State<marketingDetails> {
-  final Map<String, String> _marketingData = {
-    'customer_source': '',
-    'customer_business_type': '',
-    'customer_use_case': '',
-    'customer_marketing_source': '',
-  };
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-        width: MediaQuery.of(context).size.width * 0.3,
-        // padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Other Details" , style: staticVar.subtitleStyle1,),
-            SizedBox(height: 10,),
-            buildDropDownField(
-              label: 'Customer source',
-              id: 'customer_source',
-              options: [
-                'Not specified',
-                'Pre-Opening interest',
-                'Incomplete booking',
-                'Unit type interest',
-                'Price reveal',
-                'Storefront booking',
-                'Storefront pop-up form',
-                'Phone call',
-                'Walk-in',
-                'Imported',
-                'Other',
-              ],
-            ),
-            buildDropDownField(
-              label: 'Customer type',
-              id: 'customer_business_type',
-              options: [
-                'Not specified',
-                'Home',
-                'Business',
-                'Student',
-                'Charity',
-                'Local Authority',
-              ],
-            ),
-            buildDropDownFieldWithDescription(
-              label: 'Use case',
-              id: 'customer_use_case',
-              options: [
-                'Not specified',
-                'Business needs',
-                'Moving home',
-                'More space/declutter',
-                'Refurb/renovation',
-                'Going abroad/travelling',
-                'Other',
-              ],
-              description:
-              'Why does the customer require storage.',
-            ),
-            buildDropDownFieldWithDescription(
-              label: 'Marketing source',
-              id: 'customer_marketing_source',
-              options: [
-                'Not specified',
-                'Used before',
-                'Recommendation',
-                'Received leaflet',
-                'Saw building/signs',
-                'Saw advert',
-                'Google search',
-                'Other online search',
-                'Social media',
-                'Email',
-                'Radio',
-                'Other',
-              ],
-              description:
-              'What channel did the customer find us through.',
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildDropDownField({
-    required String label,
-    required String id,
-    required List<String> options,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: staticVar.subtitleStyle1,
-          ),
-          SizedBox(height: 5),
-          Container(
-            width: double.infinity,
-            child: Theme(
-              data: Theme.of(context).copyWith( hoverColor: Colors.grey , focusColor: Colors.grey),
-              child: DropdownButtonFormField<String>(
-                style: TextStyle(color: Colors.black87),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                items: options.map((option) {
-                  return DropdownMenuItem<String>(
-                    value: option,
-                    child: Text(option),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _marketingData[id] = value!;
-                    widget.marketingFetcherFunction(_marketingData);
-                  });
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildDropDownFieldWithDescription({
-    required String label,
-    required String id,
-    required List<String> options,
-    required String description,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: staticVar.subtitleStyle1,
-                ),
-                SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 5),
-          Container(
-            width: double.infinity,
-            child: Theme(
-              data: Theme.of(context).copyWith( hoverColor: Colors.grey , focusColor: Colors.grey),
-              child: DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  hoverColor: Colors.red,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                items: options.map((option) {
-                  return DropdownMenuItem<String>(
-                    value: option,
-                    child: Text(option),
-
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _marketingData[id] = value!;
-                    widget.marketingFetcherFunction(_marketingData);
-                  });
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
-
-}

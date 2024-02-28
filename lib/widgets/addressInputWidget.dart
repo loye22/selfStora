@@ -1,11 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:selfstorage/model/staticVar.dart';
 
 class addressInputWidget extends StatefulWidget {
-  final Function(Map<String, String>) onAddressChanged;
+  final Function(Map<String, dynamic>) onAddressChanged;
   final editMOde ;
-  final Map<String, String> initialValue;
+  final Map<String, dynamic> initialValue;
 
 
    addressInputWidget({required this.onAddressChanged, this.editMOde =false ,  this.initialValue = const  {}  });
@@ -15,15 +17,14 @@ class addressInputWidget extends StatefulWidget {
 }
 
 class _addressInputWidgetState extends State<addressInputWidget> {
-   Map<String, String> _addressData = {
+   Map<String, dynamic> _addressData = {
     'address1': '',
     'address2': '',
     'city': '',
     'country': '',
     'postcode': '',
   };
-
-  @override
+   @override
   void initState() {
     super.initState();
     // Initialize _addressData with initialData when in edit mode
@@ -38,12 +39,18 @@ class _addressInputWidgetState extends State<addressInputWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // print("Heey from adressInputWidget ********************************************");
+    // print(widget.initialValue.runtimeType);
+    // print(widget.initialValue["address2"]);
+    // print(widget.editMOde);
+    // print("_addressData :     ");
+    // print(_addressData);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CustomTextField(
           edit: widget.editMOde, // Pass edit mode to CustomTextField
-          initialValue: _addressData['address1'], // Pass initial value for edit mode
+        initialValue: _addressData['address1'],//??['address1'].toString(), // Pass initial value for edit mode
           isItNumerical: false,
           label: 'Address optional',
           hintText: 'Enter Address 1',
