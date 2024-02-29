@@ -3,6 +3,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:selfstorage/widgets/dialog.dart';
 
 import '../model/staticVar.dart';
 
@@ -22,7 +23,7 @@ class marketingDetails extends StatefulWidget {
 
 class _marketingDetailsState extends State<marketingDetails> {
 
-  final Map<String, String> _marketingData = {
+   Map<String, String> _marketingData = {
     'customer_source': '',
     'customer_business_type': '',
     'customer_use_case': '',
@@ -41,11 +42,19 @@ class _marketingDetailsState extends State<marketingDetails> {
         'customer_marketing_source': 'Not specified',
       };
     }
+    else {
+      _marketingData = {
+        'customer_source':            widget.initData['customer_source'] == "" ? 'Not specified' : widget.initData['customer_source']  ,
+        'customer_business_type':     widget.initData['customer_business_type'] == "" ? 'Not specified' : widget.initData['customer_business_type']  ,
+        'customer_use_case':          widget.initData['customer_use_case'] == "" ? 'Not specified' : widget.initData['customer_use_case']  ,
+        'customer_marketing_source':  widget.initData['customer_marketing_source'] == "" ? 'Not specified' : widget.initData['customer_marketing_source']  ,
+      };
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.initData);
+   // print(widget.initData);
     return Card(
       child: Container(
         padding: EdgeInsets.all(8.0),
@@ -62,11 +71,11 @@ class _marketingDetailsState extends State<marketingDetails> {
               height: 10,
             ),
             buildDropDownField(
-              initData : widget.editMode ?  widget.initData['customer_source'] : 'Not specified' ,
+              initData : widget.editMode ?  widget.initData['customer_source'].toString() : 'Not specified' ,
               label: 'Customer source',
               id: 'customer_source',
               options: [
-                '',
+               // '',
                 'Not specified',
                 'Pre-Opening interest',
                 'Incomplete booking',
@@ -81,11 +90,11 @@ class _marketingDetailsState extends State<marketingDetails> {
               ],
             ),
             buildDropDownField(
-              initData : widget.editMode ?  widget.initData['customer_business_type'] : 'Not specified' ,
+              initData : widget.editMode ?  widget.initData['customer_business_type'].toString() : 'Not specified' ,
               label: 'Customer type',
               id: 'customer_business_type',
               options: [
-                '',
+                //'',
                 'Not specified',
                 'Home',
                 'Business',
@@ -95,11 +104,11 @@ class _marketingDetailsState extends State<marketingDetails> {
               ],
             ),
             buildDropDownFieldWithDescription(
-              initData : widget.editMode ?  widget.initData['customer_use_case'] : 'Not specified' ,
+              initData : widget.editMode ?  widget.initData['customer_use_case'].toString() : 'Not specified' ,
               label: 'Use case',
               id: 'customer_use_case',
               options: [
-                '',
+               // '',
                 'Not specified',
                 'Business needs',
                 'Moving home',
@@ -112,11 +121,11 @@ class _marketingDetailsState extends State<marketingDetails> {
             ),
             buildDropDownFieldWithDescription(
 
-              initData : widget.editMode ?  widget.initData['customer_marketing_source'] : 'Not specified' ,
+              initData : widget.editMode ?  widget.initData['customer_marketing_source'].toString() : 'Not specified' ,
               label: 'Marketing source',
               id: 'customer_marketing_source',
               options: [
-                '',
+                //'',
                 'Not specified',
                 'Used before',
                 'Recommendation',

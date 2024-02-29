@@ -143,7 +143,7 @@ class _editContactWidgetState extends State<editContactWidget> {
                                   onTap: widget.CancelFunction,
                                   text: "Cancel",
                                   color: Colors.red),
-                              Button2(
+                              /*Button2(
                                   onTap: () {
 
                                     print("debug");
@@ -158,7 +158,7 @@ class _editContactWidgetState extends State<editContactWidget> {
                                     print("editedVAT  " + this.editedVAT);
                                   },
                                   text: "Edit test",
-                                  color: Colors.red)
+                                  color: Colors.red)*/
                             ],
                           )
                         ],
