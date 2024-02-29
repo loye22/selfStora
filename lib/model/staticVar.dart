@@ -56,7 +56,7 @@ static void showOverlay({
             children: [
               ListTile(
                 leading: Icon(Icons.edit),
-                title: Text('Edit (SOON)'),
+                title: Text('Edit'),
                 onTap: onEdit,
               ),
               ListTile(

@@ -50,7 +50,8 @@ class _contactPageState extends State<contactPage> {
             this.fetchContactData();
             setState(() {});
           }, data: dataToBeEdited, ) :
-          (this.createNewLead  ? Animate(
+          (this.createNewLead  ?
+          Animate(
             effects: [FadeEffect(duration: Duration(milliseconds: 700))],
             child: Container(
               padding: const EdgeInsets.all(8.0),

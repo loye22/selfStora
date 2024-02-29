@@ -240,7 +240,9 @@ class _discountPageState extends State<discountPage> {
                                                   onNo: () =>
                                                       Navigator.of(context)
                                                           .pop()),
-                                          onEdit: () {});
+                                          onEdit: () {
+                                            MyDialog.showAlert(context, "Ok", "Comming soon");
+                                          });
                                     },
                                   ),
                                 )),
