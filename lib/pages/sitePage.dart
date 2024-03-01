@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:selfstorage/model/staticVar.dart';
+import 'package:selfstorage/widgets/button.dart';
+import 'package:selfstorage/widgets/buttonStyle2.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 import 'package:selfstorage/widgets/siteUnitButton.dart';
 import 'package:selfstorage/widgets/tableWidgetForUniteTypeMode.dart';
@@ -28,31 +31,26 @@ class sitePage extends StatefulWidget {
 }
 
 class _sitePageState extends State<sitePage> {
-  bool unitTypeMode= false ;
-  bool unitMode= false ;
-  bool mapMode = false;
+  bool unitTypeMode = false;
+  bool unitMode = false;
+
   @override
   Widget build(BuildContext context) {
-    Widget content;
-
-    if (unitTypeMode) {
-      // handel the unitTypeMode
-     return tableWidgetForUniteTypeMode(onEdit: (){}, onDelete: (){}, onClick:(){} , tableData: {},);
-    }
-
-    else if (unitMode) {
-      // handel the Unit mode
-      return Text("unitMode ");
-    }
-    else if (mapMode) {
-      // handel the Unit mode
-      return Text("Map mode ");
-    }
-
-     else {
-       // defult site screen (defalt mode)
-      return Scaffold(
-        body:  Animate(
+    // defult site screen (defalt mode)
+    return Scaffold(
+      body: Animate(
+        effects: [FadeEffect(duration: Duration(milliseconds: 700))],
+        child: this.unitTypeMode ?
+        tableWidgetForUniteTypeMode(
+          tableData: {},
+          onClick: () {},
+          onDelete: () {},
+          onEdit: () {},
+          onCancel: () {
+            unitTypeMode = false;
+            setState(() {});
+          },) :
+        Animate(
           effects: [FadeEffect(duration: Duration(milliseconds: 700))],
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -72,12 +70,12 @@ class _sitePageState extends State<sitePage> {
                         //MyDialog.showAlert(context, "Ok", "Unit Types");
                       } ,icon: Icons.inbox,),
                       sitePageButton( title: 'Units', subtitle: '29% occupancy', callback: (){
-                       this.unitMode = true ;
-                       setState(() {});
+                        this.unitMode = true ;
+                        setState(() {});
                       } ,icon: Icons.home,),
                       sitePageButton( title: 'Map', subtitle: '', callback: (){
-                        this.mapMode = true ;
-                        setState(() {});
+                        //this.mapMode = true ;
+                       // setState(() {});
                       } ,icon: Icons.map, isExpanded: true,),
 
 
@@ -97,8 +95,9 @@ class _sitePageState extends State<sitePage> {
             ),
           ),
         ),
-      );
-    }
-
+      ),
+    );
   }
+
 }
+
