@@ -12,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:selfstorage/widgets/confirmationDialog.dart';
 import 'package:selfstorage/widgets/decorator.dart';
 import 'package:selfstorage/widgets/dialog.dart';
+import 'package:selfstorage/widgets/dropDownwithDesc.dart';
+import 'package:selfstorage/widgets/editWidgetForUniteType.dart';
 import '../model/staticVar.dart';
 import 'buttonStyle2.dart';
 import 'package:path/path.dart' as path;
@@ -24,20 +26,13 @@ import 'package:intl/intl.dart';
  * */
 class tableWidgetForUniteTypeMode extends StatefulWidget {
   final dynamic tableData;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
-  final VoidCallback onClick;
   final VoidCallback onCancel;
-  final VoidCallback reInitFunciotn;
 
-  const tableWidgetForUniteTypeMode(
-      {super.key,
-      required this.tableData,
-      required this.onEdit,
-      required this.onDelete,
-      required this.onClick,
-      required this.onCancel,
-      required this.reInitFunciotn});
+  const tableWidgetForUniteTypeMode({
+    super.key,
+    required this.tableData,
+    required this.onCancel,
+  });
 
   @override
   State<tableWidgetForUniteTypeMode> createState() =>
@@ -47,6 +42,9 @@ class tableWidgetForUniteTypeMode extends StatefulWidget {
 class _tableWidgetForUniteTypeModeState
     extends State<tableWidgetForUniteTypeMode> {
   bool addNewUnitTypeMode = false;
+  bool editNewUnitTypeMode = false;
+
+  bool displayNewUnitTypeMode = false;
 
   // Controllers for retrieving data
   final TextEditingController unitWidthController = TextEditingController();
@@ -65,6 +63,10 @@ class _tableWidgetForUniteTypeModeState
   dynamic _imgFile = null; // new
   XFile? xfile = null; // new
   List<Map<String, dynamic>> dataListInit = [];
+  bool includePromotion = false;
+  String storeFrontStatus = "bookable"; // hidden / bookable / collection leads
+  Map<String,dynamic> inilDataForEditUniteType = {} ;
+
 
   @override
   void initState() {
@@ -76,166 +78,249 @@ class _tableWidgetForUniteTypeModeState
   @override
   Widget build(BuildContext context) {
     return
-        // hande the add new unit type
-        this.addNewUnitTypeMode
-            ? Animate(
-                effects: [FadeEffect(duration: Duration(milliseconds: 900))],
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      decorator(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Create a new Poligrafiei unit type',
-                              style: staticVar.subtitleStyle1,
-                            ),
-                            SizedBox(height: 16.0),
-                            // Define its size
-                            buildTextField('Unit width', 'Width in meters',
-                                unitWidthController),
-                            buildTextField('Unit length', 'Length in meters',
-                                unitLengthController),
-                            buildTextField('Unit height', 'Height in meters',
-                                unitHeightController),
+       // hadel the ubite display
+        this.displayNewUnitTypeMode
+            ? Container(
+                child: Center(
+                child: Text("Displat mode MODE "),
+              ))
+        // handel the unit edit featcher
+            : (this.editNewUnitTypeMode
+                ? editWidgetForUniteType(initData:this.inilDataForEditUniteType, onCancel: (){ this.editNewUnitTypeMode = false ; setState(() {});},)
+                : (this.addNewUnitTypeMode
+                    ? Animate(
+                        effects: [
+                            FadeEffect(duration: Duration(milliseconds: 900))
                           ],
-                        ),
-                      ),
-                      decorator(
-                          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Describe for customers
-                          buildTextFieldWithDescription(
-                            'Name this unit type',
-                            'This name will appear in your Storefront (eg: 12 SQ M)',
-                            unitNameController,
-                          ),
-                          buildTextFieldWithDescription(
-                            'Describe its size',
-                            'Help your customers understand its size (eg: Size of a double garage)',
-                            sizeDescriptionController,
-                          ),
-                          buildSellingPoints(),
-                        ],
-                      )),
-
-                      SizedBox(height: 8.0),
-                      // Image of this unit type
-                      decorator(child: buildImageUpload()),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      decorator(
-                        child: Container(
+                        child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Enter prices',
-                                style: staticVar.subtitleStyle1,
+                              decorator(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Create a new Poligrafiei unit type',
+                                      style: staticVar.subtitleStyle1,
+                                    ),
+                                    SizedBox(height: 16.0),
+                                    // Define its size
+                                    buildTextField('Unit width',
+                                        'Width in meters', unitWidthController),
+                                    buildTextField(
+                                        'Unit length',
+                                        'Length in meters',
+                                        unitLengthController),
+                                    buildTextField(
+                                        'Unit height',
+                                        'Height in meters',
+                                        unitHeightController),
+                                  ],
+                                ),
                               ),
-                              SizedBox(height: 4.0),
-                              Text(
-                                '(including tax)',
-                                style: staticVar.subtitleStyle2,
-                              ),
-                              SizedBox(height: 12.0),
-                              Text(
-                                'Enter a price for each billing period. The Storefront billing period is highlighted. The price displayed on the Storefront is automatically calculated from the billing period price.',
-                                style: staticVar.subtitleStyle2,
-                              ),
-                              SizedBox(height: 16.0),
-                              Row(
+                              decorator(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Column(
+                                  // Describe for customers
+                                  buildTextFieldWithDescription(
+                                    'Name this unit type',
+                                    'This name will appear in your Storefront (eg: 12 SQ M)',
+                                    unitNameController,
+                                  ),
+                                  buildTextFieldWithDescription(
+                                    'Describe its size',
+                                    'Help your customers understand its size (eg: Size of a double garage)',
+                                    sizeDescriptionController,
+                                  ),
+                                  buildSellingPoints(),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .3,
+                                    child: dropDownwithDesc(
+                                      label: "Current Storefront status",
+                                      onValueChanged: (s) {
+                                        this.storeFrontStatus = s.toString();
+                                      },
+                                      id: "id",
+                                      options: [
+                                        "bookable",
+                                        "collecting lead",
+                                        "hidden"
+                                      ],
+                                      description:
+                                          "Decide if this unit type is available to book on the Storefront, collecting leads or hidden",
+                                    ),
+                                  )
+                                ],
+                              )),
+
+                              SizedBox(height: 8.0),
+                              // Image of this unit type
+                              decorator(child: buildImageUpload()),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              decorator(
+                                child: Container(
+                                  child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Every month',
+                                        'Enter prices',
                                         style: staticVar.subtitleStyle1,
                                       ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
+                                      SizedBox(height: 4.0),
                                       Text(
-                                        'RON',
-                                        style: staticVar.subtitleStyle1,
+                                        '(including tax)',
+                                        style: staticVar.subtitleStyle2,
                                       ),
-                                      SizedBox(width: 8.0),
-                                      Tooltip(
-                                        message:
-                                            '€ ${this.calculateExVATPrice(double.tryParse(this.priceController.text) ?? 0.0)}ex VAT ' ??
-                                                "151",
-                                        child: Container(
-                                          width: 100.0,
-                                          child: TextFormField(
-                                            onChanged: (c) {
-                                              setState(() {});
-                                            },
-                                            controller: priceController,
-                                            inputFormatters: [
-                                              LengthLimitingTextInputFormatter(
-                                                  6),
-                                              FilteringTextInputFormatter.allow(
-                                                  RegExp(r"[0-9.]")),
-                                              //FilteringTextInputFormatter.allow(RegExp(r'\d')),
+                                      SizedBox(height: 12.0),
+                                      Text(
+                                        'Enter a price for each billing period. The Storefront billing period is highlighted. The price displayed on the Storefront is automatically calculated from the billing period price.',
+                                        style: staticVar.subtitleStyle2,
+                                      ),
+                                      SizedBox(height: 16.0),
+                                      Row(
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Every month',
+                                                style: staticVar.subtitleStyle1,
+                                              ),
                                             ],
-                                            decoration: InputDecoration(
-                                                border: OutlineInputBorder(),
-                                                fillColor: Colors.white,
-                                                focusColor: Colors.white,
-                                                filled: true),
                                           ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'RON',
+                                                style: staticVar.subtitleStyle1,
+                                              ),
+                                              SizedBox(width: 8.0),
+                                              Tooltip(
+                                                message:
+                                                    '€ ${this.calculateExVATPrice(double.tryParse(this.priceController.text) ?? 0.0)}ex VAT ' ??
+                                                        "151",
+                                                child: Container(
+                                                  width: 100.0,
+                                                  child: TextFormField(
+                                                    onChanged: (c) {
+                                                      setState(() {});
+                                                    },
+                                                    controller: priceController,
+                                                    inputFormatters: [
+                                                      LengthLimitingTextInputFormatter(
+                                                          6),
+                                                      FilteringTextInputFormatter
+                                                          .allow(RegExp(
+                                                              r"[0-9.]")),
+                                                      //FilteringTextInputFormatter.allow(RegExp(r'\d')),
+                                                    ],
+                                                    decoration: InputDecoration(
+                                                        border:
+                                                            OutlineInputBorder(),
+                                                        fillColor: Colors.white,
+                                                        focusColor:
+                                                            Colors.white,
+                                                        filled: true),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Text(
+                                        'Billed on Storefront',
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                      SizedBox(height: 4.0),
+                                      Text(
+                                        'Displayed as every month (€ ${this.priceController.text})',
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Storefront promotion',
+                                            style: staticVar.subtitleStyle1,
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            'Decide if it should include a Storefront promo. You can create these in Discounts.',
+                                            style: staticVar.subtitleStyle2,
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Switch(
+                                                value: includePromotion,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    includePromotion = value;
+                                                  });
+                                                },
+                                                activeColor: Colors.green,
+                                              ),
+                                              Text(
+                                                includePromotion
+                                                    ? 'Promotion'
+                                                    : 'No storefront promotion',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: includePromotion
+                                                      ? Colors.green
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      )
                                     ],
                                   ),
-                                ],
-                              ),
-                              SizedBox(height: 8.0),
-                              Text(
-                                'Billed on Storefront',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 4.0),
-                              Text(
-                                'Displayed as every month (€ ${this.priceController.text})',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      this.isLoading
-                          ? Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.orange,
-                              ),
-                            )
-                          : Row(
-                              children: [
-                                Button2(
-                                    onTap: addNewunitType,
-                                    text: "Create new type",
-                                    color: Colors.orangeAccent),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Button2(
-                                    onTap: () {},
-                                    text: "Cancel",
-                                    color: Colors.red),
-                                /* Button2(
+                              this.isLoading
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.orange,
+                                      ),
+                                    )
+                                  : Row(
+                                      children: [
+                                        Button2(
+                                            onTap: addNewunitType,
+                                            text: "Create new type",
+                                            color: Colors.orangeAccent),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Button2(
+                                            onTap: widget.onCancel,
+                                            text: "Cancel",
+                                            color: Colors.red),
+                                        /*Button2(
                                     onTap: () {
                                       print("unitWidthController : " +
                                           unitWidthController.text);
@@ -257,141 +342,207 @@ class _tableWidgetForUniteTypeModeState
                                           this.unitNameController.toString());
                                       print(
                                           "_image : " + this._image.toString());
+                                     print(
+                                          "includePromotion : " + this.includePromotion.toString());
+                                     print(
+                                          "storeFrontStatus : " + this.storeFrontStatus.toString());
                                     },
                                     text: "test",
                                     color: Colors.red)*/
-                              ],
-                            )
-                    ],
-                  ),
-                ))
-            : Animate(
-                effects: [FadeEffect(duration: Duration(milliseconds: 900))],
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(16.0),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.arrow_back),
-                              onPressed: widget.onCancel,
-                            ),
-                            SizedBox(width: 16.0),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Unit types',
-                                  style: staticVar.subtitleStyle1,
-                                ),
-                              ],
-                            ),
-                            Spacer(),
-                            SizedBox(width: 10.0),
-                            Button2(
-                              onTap: () {
-                                this.addNewUnitTypeMode = true;
-                                setState(() {});
-                              },
-                              text: "+ Unit Type",
-                              color: staticVar.c1,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(18.0),
-                        width: MediaQuery.of(context).size.width * .8,
-                        height: MediaQuery.of(context).size.height * .8,
-                        decoration: BoxDecoration(
-                            //    border: Border.all(color: Colors.black.withOpacity(.33)),
-                            color: Colors.white),
-                        child: Card(
-                          elevation: 1,
-                          child: Center(
-                            child: DataTable2(
-                                columnSpacing: 5,
-
-                                columns: [
-                                  staticVar.Dc("NAME"),
-                                  staticVar.Dc("AVAILABLE"),
-                                  staticVar.Dc("STATUS"),
-                                  staticVar.Dc("PROMOTION"),
-                                  staticVar.Dc("CREATED"),
-                                  staticVar.Dc("OPTIONS"),
-                                ],
-                                rows: this.dataListInit.map((e) {
-                                  return DataRow(
-                                    onLongPress: (){},
-                                      cells: [
-                                    DataCell(
-                                      Row(
-                                        children: [
-                                          e["image"] == null ? Image.asset("assets/notFound.png") :Container(
-                                            padding: EdgeInsets.all(10),
-                                            width:
-                                                50, // Set your desired width
-                                            height:
-                                                50, // Set your desired height
-                                            child: Image.network(
-                                              e["image"],
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  e["unitName"]  == null ? "404NOtfound" :e["unitName"] ,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ),
-
-                                              Expanded(
-                                                child: Text(
-                                                  "€61,88 every month",
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                      ],
+                                    )
+                            ],
+                          ),
+                        ))
+                    : Animate(
+                        effects: [
+                          FadeEffect(duration: Duration(milliseconds: 900))
+                        ],
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(16.0),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.arrow_back),
+                                      onPressed: widget.onCancel,
                                     ),
-                                    DataCell(
-                                      Center(child: Text("2/2")),
-                                    ),
-                                    DataCell(
-                                      Center(child: Text("Hidden")),
-                                    ),
-                                    DataCell(
-                                      Center(child: Text("Promotie")),
-                                    ),
-                                    DataCell(
-                                      Center(child :   Text(DateFormat('d MMM')
-                                      .format(e["createdAt"]))),
-                                    ),
-                                        DataCell(
-                                          Center(child: Container()),
+                                    SizedBox(width: 16.0),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Unit types',
+                                          style: staticVar.subtitleStyle1,
                                         ),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    SizedBox(width: 10.0),
+                                    Button2(
+                                      onTap: () {
+                                        this.addNewUnitTypeMode = true;
+                                        setState(() {});
+                                      },
+                                      text: "+ Unit Type",
+                                      color: staticVar.c1,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: staticVar.golobalWidth(context),
+                                height: staticVar.golobalHigth(context),
+                                decoration: BoxDecoration(
+                                    //    border: Border.all(color: Colors.black.withOpacity(.33)),
+                                    color: Colors.white),
+                                child: Card(
+                                  elevation: 1,
+                                  child: Center(
+                                    child: DataTable2(
+                                        columns: [
+                                          staticVar.Dc2("NAME"),
+                                          staticVar.Dc("AVAILABLE"),
+                                          staticVar.Dc("STATUS"),
+                                          staticVar.Dc("PROMOTION"),
+                                          staticVar.Dc("CREATED"),
+                                          staticVar.Dc("OPTIONS"),
+                                        ],
+                                        rows: this.dataListInit.map((e) {
+                                          return DataRow2(
+                                            onTap: (){
+                                              this.displayNewUnitTypeMode = true ;
+                                              setState(() {});
+                                            },
 
-                                  ]);
-                                }).toList()
+                                              cells: [
+                                                DataCell(
+                                                  Row(
+                                                    children: [
+                                                      e["image"] == null
+                                                          ? Image.asset(
+                                                              "assets/notFound.png")
+                                                          : Container(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(10),
+                                                              width: 100,
+                                                              height: 100,
+                                                              child:
+                                                                  Image.network(
+                                                                e["image"],
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                            ),
+                                                      SizedBox(width: 10),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              e["unitName"] ==
+                                                                      null
+                                                                  ? "404NOtfound"
+                                                                  : e["unitName"],
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 16,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            child: Text(
+                                                              "€61,88 every month",
+                                                              // Use your desired text style here
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Center(child: Text("2/2")),
+                                                ),
+                                                DataCell(
+                                                  Center(
+                                                      child: Text(
+                                                    e["storeFrontStatus"] ??
+                                                        "404NotFound",
+                                                    textAlign: TextAlign.center,
+                                                  )),
+                                                ),
+                                                DataCell(
+                                                  e["includePromotion"] == null
+                                                      ? Text("404NotFound")
+                                                      : Center(
+                                                          child: Text(
+                                                          e["includePromotion"]
+                                                              ? "Promotie"
+                                                              : "No sotrefront promotie",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        )),
+                                                ),
+                                                DataCell(
+                                                  Center(
+                                                      child: Text(DateFormat(
+                                                              'd MMM')
+                                                          .format(
+                                                              e["createdAt"]))),
+                                                ),
+                                                DataCell(Center(
+                                                  child: TextButton(
+                                                    child:
+                                                        Icon(Icons.more_vert),
+                                                    onPressed: () {
+                                                      staticVar.showOverlay(
+                                                          ctx: context,
+                                                          onDelete: () => confirmationDialog
+                                                              .showElegantPopup(
+                                                                  context:
+                                                                      context,
+                                                                  message:
+                                                                      "Are you sure you want to delete this record?",
+                                                                  onYes:
+                                                                      () async {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                    await deleteUnitType(
+                                                                        e["dID"]);
+                                                                  },
+                                                                  onNo: () =>
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop()),
+                                                          onEdit: () {
+                                                            this.editNewUnitTypeMode = true ;
+                                                            this.inilDataForEditUniteType = e ;
+                                                            //MyDialog.showAlert(context, "e", e.toString());
+                                                            Navigator.of(
+                                                                context)
+                                                                .pop();
+                                                            setState(() {});
+                                                          });
+                                                    },
+                                                  ),
+                                                )),
+                                              ]);
+                                        }).toList()
 
-                                /*this.widget.tableData.map((e){
-                      return  DataRow(
-                          onLongPress: (){},
-                          cells: [
+                                        /*this.widget.tableData.map((e){
+                                                  return  DataRow(
+                                                      onLongPress: (){},
+                                                      cells: [
                             DataCell(Center(child: Text(e["name"] ?? "NotFound"))),
                             DataCell(Center(child: Text(e["name"] ?? "NotFound"))),
                             DataCell(Center(child: Text(e["email"] ?? "NotFound"))),
@@ -407,16 +558,39 @@ class _tableWidgetForUniteTypeModeState
                               ),
                             )),
 
-                          ]);
-                    }).toList(),*/
+                                                      ]);
+                                                }).toList(),*/
+                                        ),
+                                  ),
                                 ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
+                      )));
+  }
+
+  Future<bool> deleteUnitType(String documentId) async {
+    try {
+      CollectionReference discountCollection =
+          FirebaseFirestore.instance.collection('unitsType');
+
+      // Delete the document with the specified ID
+      await discountCollection.doc(documentId).delete();
+      fetchUnitesTypeData();
+      setState(() {});
+
+      // Return true to indicate successful deletion
+      //widget.reInitFunciotn() ;
+      MyDialog.showAlert(context, "Ok", "Record has been successfully deleted");
+      return true;
+    } catch (e) {
+      // Print any error that occurs during the deletion process
+      print("Error deleting document: $e");
+      MyDialog.showAlert(context, "Ok", "Error deleting document: $e");
+      // Return false to indicate that the deletion was not successful
+      return false;
+    }
   }
 
   // this funciton will help us to calclate  the price before the VAT
@@ -535,10 +709,10 @@ class _tableWidgetForUniteTypeModeState
         "createdAt": DateTime.now(),
         "createdBy": userEmail,
         "image": downloadUrl,
-        "price" : this.priceController.text.trim() ,
-
+        "price": this.priceController.text.trim(),
+        "storeFrontStatus": this.storeFrontStatus,
+        "includePromotion": this.includePromotion
       });
-      widget.reInitFunciotn();
       print("the Data added successfully!");
       widget.onCancel();
       MyDialog.showAlert(context, "Ok", "the Data added successfully!");
@@ -604,12 +778,17 @@ class _tableWidgetForUniteTypeModeState
           'createdAt': data['createdAt'].toDate(),
           'createdBy': data['createdBy'],
           'image': data['image'],
+          'storeFrontStatus': data['storeFrontStatus'],
+          'includePromotion': data['includePromotion'],
+          'dID': documentSnapshot.id,
+          'price' : data['price']
         });
       }
     } catch (e) {
       print('Error retrieving data: $e');
     }
     this.dataListInit = dataList;
+    print(this.dataListInit);
     setState(() {});
     return dataList;
   }
@@ -621,13 +800,7 @@ class _tableWidgetForUniteTypeModeState
     this._imgFile = uint8list;
     setState(() {});
     return;
-    final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
-    });
+
   }
 
   // from here and on all of these are helper widgets

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/addressInputWidget.dart';
 import 'package:selfstorage/widgets/buttonStyle2.dart';
 import 'package:selfstorage/widgets/customTextFieldWidget.dart';
@@ -38,8 +39,8 @@ class _addNewContactState extends State<addNewContact> {
       elevation: 5,
       child: Container(
         padding: const EdgeInsets.all(16.0),
-        width:  MediaQuery.of(context).size.width * 0.8,
-          height:MediaQuery.of(context).size.height * 0.8,
+        width:  staticVar.golobalWidth(context),
+          height:staticVar.golobalHigth(context),
           child:SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

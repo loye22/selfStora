@@ -15,12 +15,7 @@ import '../widgets/info.dart';
 * here we the site page witch give us 3 fetacher add unit type , add unit , and display the data as map
 * the naviagaion between these 3 will be according to mode we are in.
 *
-*
-*
-*
-*
-*
-* */
+*/
 
 class sitePage extends StatefulWidget {
   static const routeName = '/sitePage';
@@ -44,10 +39,6 @@ class _sitePageState extends State<sitePage> {
         child: this.unitTypeMode ?
         tableWidgetForUniteTypeMode(
           tableData: {},
-          reInitFunciotn: (){},
-          onClick: () {},
-          onDelete: () {},
-          onEdit: () {},
           onCancel: () {
             unitTypeMode = false;
             setState(() {});

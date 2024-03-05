@@ -70,8 +70,8 @@ class _editContactWidgetState extends State<editContactWidget> {
                 elevation: 5,
                 child: Container(
                     padding: const EdgeInsets.all(16.0),
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: MediaQuery.of(context).size.height * 0.8,
+                    width: staticVar.golobalWidth(context),
+                    height: staticVar.golobalWidth(context),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

@@ -105,9 +105,8 @@ class _rootPageState extends State<rootPage> {
                 selectedTitleTextStyle: TextStyle(color: Colors.orange , fontWeight: FontWeight.w600),
                 selectedIconColor: Colors.orange,
                 hoverColor: Colors.blue[100],
-                unselectedIconColor: Color.fromRGBO(20, 53, 96, 1)
-
-
+                unselectedIconColor: Color.fromRGBO(20, 53, 96, 1),
+                openSideMenuWidth: 200
                 //hoverColor: Colors.orange,
                //   selectedColor: Colors.orange  ,
                   ),

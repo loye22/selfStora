@@ -152,7 +152,7 @@ class _marketingDetailsState extends State<marketingDetails> {
     required String id,
     required List<String> options, // New parameter to indicate edit mode
     String initData = ""
-  }) {
+  })  {
 
     // print("debug more ");
     // print("id ---- >" + id.toString());

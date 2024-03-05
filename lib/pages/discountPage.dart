@@ -156,14 +156,8 @@ class _discountPageState extends State<discountPage> {
                     FadeEffect(duration: Duration(milliseconds: 900))
                   ],
                   child: Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * .8,
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * .8,
+                    width: staticVar.golobalWidth(context),
+                    height: staticVar.golobalHigth(context),
                     decoration: BoxDecoration(
                       //    border: Border.all(color: Colors.black.withOpacity(.33)),
                         borderRadius: BorderRadius.circular(10),
