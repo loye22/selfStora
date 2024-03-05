@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/button.dart';
 import 'package:selfstorage/widgets/buttonStyle2.dart';
+import 'package:selfstorage/widgets/decorator.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 import 'package:selfstorage/widgets/siteUnitButton.dart';
 import 'package:selfstorage/widgets/tableWidgetForUniteTypeMode.dart';
@@ -31,7 +32,7 @@ class sitePage extends StatefulWidget {
 }
 
 class _sitePageState extends State<sitePage> {
-  bool unitTypeMode = false;
+  bool unitTypeMode = !false;
   bool unitMode = false;
 
   @override
@@ -43,6 +44,7 @@ class _sitePageState extends State<sitePage> {
         child: this.unitTypeMode ?
         tableWidgetForUniteTypeMode(
           tableData: {},
+          reInitFunciotn: (){},
           onClick: () {},
           onDelete: () {},
           onEdit: () {},

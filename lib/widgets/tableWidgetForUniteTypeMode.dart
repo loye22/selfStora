@@ -1,34 +1,43 @@
 import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:selfstorage/widgets/button.dart';
+import 'package:selfstorage/widgets/confirmationDialog.dart';
 import 'package:selfstorage/widgets/decorator.dart';
-
+import 'package:selfstorage/widgets/dialog.dart';
 import '../model/staticVar.dart';
 import 'buttonStyle2.dart';
+import 'package:path/path.dart' as path;
+import 'package:intl/intl.dart';
 
+/**
+ * this widget is is gonna display the unites and handel the folowing events, add new unit type , and new units ,edits and delete
+ * for add new unit type there us falag to handel this even, and the same applay for add new units .
+ *
+ * */
 class tableWidgetForUniteTypeMode extends StatefulWidget {
   final dynamic tableData;
-
   final VoidCallback onEdit;
-
   final VoidCallback onDelete;
-
   final VoidCallback onClick;
-
   final VoidCallback onCancel;
+  final VoidCallback reInitFunciotn;
 
-  const tableWidgetForUniteTypeMode({super.key,
-    required this.tableData,
-    required this.onEdit,
-    required this.onDelete,
-    required this.onClick,
-    required this.onCancel});
+  const tableWidgetForUniteTypeMode(
+      {super.key,
+      required this.tableData,
+      required this.onEdit,
+      required this.onDelete,
+      required this.onClick,
+      required this.onCancel,
+      required this.reInitFunciotn});
 
   @override
   State<tableWidgetForUniteTypeMode> createState() =>
@@ -37,223 +46,349 @@ class tableWidgetForUniteTypeMode extends StatefulWidget {
 
 class _tableWidgetForUniteTypeModeState
     extends State<tableWidgetForUniteTypeMode> {
-  bool addNewUnitTypeMode = !false;
+  bool addNewUnitTypeMode = false;
 
   // Controllers for retrieving data
   final TextEditingController unitWidthController = TextEditingController();
   final TextEditingController unitLengthController = TextEditingController();
   final TextEditingController unitHeightController = TextEditingController();
   final TextEditingController unitNameController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
   final TextEditingController sizeDescriptionController =
-  TextEditingController();
+      TextEditingController();
   final List<TextEditingController> sellingPointsControllers = List.generate(
     4,
-        (index) => TextEditingController(),
+    (index) => TextEditingController(),
   );
   File? _image;
+  bool isLoading = false;
+  dynamic _imgFile = null; // new
+  XFile? xfile = null; // new
+  List<Map<String, dynamic>> dataListInit = [];
 
-  Future getImage() async {
-    final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
-    });
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchUnitesTypeData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return this.addNewUnitTypeMode
-        ? Animate(
-        effects: [FadeEffect(duration: Duration(milliseconds: 900))],
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              decorator(
-                widget: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Create a new Poligrafiei unit type',
-                      style:staticVar.subtitleStyle1,
-                    ),
-                    SizedBox(height: 16.0),
-                    // Define its size
-                    buildTextField('Unit width', 'Width in meters',
-                        unitWidthController),
-                    buildTextField('Unit length', 'Length in meters',
-                        unitLengthController),
-                    buildTextField('Unit height', 'Height in meters',
-                        unitHeightController),
-                  ],
-                ),
-              ),
-              decorator(widget: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [ // Describe for customers
-                buildTextFieldWithDescription(
-                  'Name this unit type',
-                  'This name will appear in your Storefront (eg: 12 SQ M)',
-                  unitNameController,
-                ),
-                buildTextFieldWithDescription(
-                  'Describe its size',
-                  'Help your customers understand its size (eg: Size of a double garage)',
-                  sizeDescriptionController,
-                ),
-                buildSellingPoints(),
-              ],)),
-
-              SizedBox(height: 16.0),
-              // Image of this unit type
-              buildImageUpload(),
-              SizedBox(
-                height: 16,
-              ),
-              decorator(
-                widget: Container(
+    return
+        // hande the add new unit type
+        this.addNewUnitTypeMode
+            ? Animate(
+                effects: [FadeEffect(duration: Duration(milliseconds: 900))],
+                child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Enter prices',
-                        style:staticVar.subtitleStyle1,
+                      decorator(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Create a new Poligrafiei unit type',
+                              style: staticVar.subtitleStyle1,
+                            ),
+                            SizedBox(height: 16.0),
+                            // Define its size
+                            buildTextField('Unit width', 'Width in meters',
+                                unitWidthController),
+                            buildTextField('Unit length', 'Length in meters',
+                                unitLengthController),
+                            buildTextField('Unit height', 'Height in meters',
+                                unitHeightController),
+                          ],
+                        ),
                       ),
-                      SizedBox(height: 4.0),
-                      Text(
-                        '(including tax)',
-                        style: staticVar.subtitleStyle2,
-                      ),
-                      SizedBox(height: 12.0),
-                      Text(
-                        'Enter a price for each billing period. The Storefront billing period is highlighted. The price displayed on the Storefront is automatically calculated from the billing period price.',
-                        style:staticVar.subtitleStyle2,
-                      ),
-                      SizedBox(height: 16.0),
-                      Row(
+                      decorator(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
+                          // Describe for customers
+                          buildTextFieldWithDescription(
+                            'Name this unit type',
+                            'This name will appear in your Storefront (eg: 12 SQ M)',
+                            unitNameController,
+                          ),
+                          buildTextFieldWithDescription(
+                            'Describe its size',
+                            'Help your customers understand its size (eg: Size of a double garage)',
+                            sizeDescriptionController,
+                          ),
+                          buildSellingPoints(),
+                        ],
+                      )),
+
+                      SizedBox(height: 8.0),
+                      // Image of this unit type
+                      decorator(child: buildImageUpload()),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      decorator(
+                        child: Container(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Every month',
-                                style:staticVar.subtitleStyle1,
+                                'Enter prices',
+                                style: staticVar.subtitleStyle1,
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
+                              SizedBox(height: 4.0),
                               Text(
-                                'RON',
-                                style:staticVar.subtitleStyle1,
+                                '(including tax)',
+                                style: staticVar.subtitleStyle2,
                               ),
-                              SizedBox(width: 8.0),
-                              Tooltip(
-                                message: '€0,00 ex VAT',
-                                child: Container(
-                                  width: 100.0,
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      fillColor: Colors.white,
-                                      focusColor:  Colors.white,
-                                      filled: true
-                                    ),
+                              SizedBox(height: 12.0),
+                              Text(
+                                'Enter a price for each billing period. The Storefront billing period is highlighted. The price displayed on the Storefront is automatically calculated from the billing period price.',
+                                style: staticVar.subtitleStyle2,
+                              ),
+                              SizedBox(height: 16.0),
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Every month',
+                                        style: staticVar.subtitleStyle1,
+                                      ),
+                                    ],
                                   ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'RON',
+                                        style: staticVar.subtitleStyle1,
+                                      ),
+                                      SizedBox(width: 8.0),
+                                      Tooltip(
+                                        message:
+                                            '€ ${this.calculateExVATPrice(double.tryParse(this.priceController.text) ?? 0.0)}ex VAT ' ??
+                                                "151",
+                                        child: Container(
+                                          width: 100.0,
+                                          child: TextFormField(
+                                            onChanged: (c) {
+                                              setState(() {});
+                                            },
+                                            controller: priceController,
+                                            inputFormatters: [
+                                              LengthLimitingTextInputFormatter(
+                                                  6),
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r"[0-9.]")),
+                                              //FilteringTextInputFormatter.allow(RegExp(r'\d')),
+                                            ],
+                                            decoration: InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                fillColor: Colors.white,
+                                                focusColor: Colors.white,
+                                                filled: true),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8.0),
+                              Text(
+                                'Billed on Storefront',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 4.0),
+                              Text(
+                                'Displayed as every month (€ ${this.priceController.text})',
+                                style: TextStyle(
+                                  color: Colors.green,
                                 ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        'Billed on Storefront',
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 4.0),
-                      Text(
-                        'Displayed as every month (€0,00)',
-                        style: TextStyle(
-                          color: Colors.green,
-                        ),
-                      ),
-
+                      this.isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.orange,
+                              ),
+                            )
+                          : Row(
+                              children: [
+                                Button2(
+                                    onTap: addNewunitType,
+                                    text: "Create new type",
+                                    color: Colors.orangeAccent),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Button2(
+                                    onTap: () {},
+                                    text: "Cancel",
+                                    color: Colors.red),
+                                /* Button2(
+                                    onTap: () {
+                                      print("unitWidthController : " +
+                                          unitWidthController.text);
+                                      print("unitLengthController : " +
+                                          unitLengthController.text);
+                                      print("unitHeightController   : " +
+                                          unitHeightController.text);
+                                      print("sizeDescriptionController  :  " +
+                                          sizeDescriptionController.text);
+                                      print("sellingPointsControllers " +
+                                          this
+                                              .sellingPointsControllers
+                                              .map((e) => e.text + "\n")
+                                              .toList()
+                                              .toString());
+                                      print("priceController " +
+                                          this.priceController.toString());
+                                      print("unitNameController " +
+                                          this.unitNameController.toString());
+                                      print(
+                                          "_image : " + this._image.toString());
+                                    },
+                                    text: "test",
+                                    color: Colors.red)*/
+                              ],
+                            )
                     ],
                   ),
-                ),
-              )
-            ],
-          ),
-        ))
-        : Animate(
-      effects: [FadeEffect(duration: Duration(milliseconds: 900))],
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: widget.onCancel,
-                  ),
-                  SizedBox(width: 16.0),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                ))
+            : Animate(
+                effects: [FadeEffect(duration: Duration(milliseconds: 900))],
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      Text(
-                        'Unit types',
-                        style:staticVar.subtitleStyle1,
+                      Container(
+                        padding: EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              onPressed: widget.onCancel,
+                            ),
+                            SizedBox(width: 16.0),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Unit types',
+                                  style: staticVar.subtitleStyle1,
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            SizedBox(width: 10.0),
+                            Button2(
+                              onTap: () {
+                                this.addNewUnitTypeMode = true;
+                                setState(() {});
+                              },
+                              text: "+ Unit Type",
+                              color: staticVar.c1,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                  Spacer(),
-                  SizedBox(width: 10.0),
-                  Button2(
-                    onTap: () {
-                      this.addNewUnitTypeMode = true;
-                      setState(() {});
-                    },
-                    text: "+ Unit Type",
-                    color: staticVar.c1,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(18.0),
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * .8,
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * .8,
-              decoration: BoxDecoration(
-                //    border: Border.all(color: Colors.black.withOpacity(.33)),
-                  color: Colors.white),
-              child: Card(
-                elevation: 1,
-                child: Center(
-                  child: DataTable2(columnSpacing: 5, columns: [
-                    staticVar.Dc("NAME"),
-                    staticVar.Dc("AVAILABLE"),
-                    staticVar.Dc("STATUS"),
-                    staticVar.Dc("PROMOTION"),
-                    staticVar.Dc("CREATED"),
-                    staticVar.Dc("OPTIONS"),
-                  ], rows: []
+                      Container(
+                        padding: EdgeInsets.all(18.0),
+                        width: MediaQuery.of(context).size.width * .8,
+                        height: MediaQuery.of(context).size.height * .8,
+                        decoration: BoxDecoration(
+                            //    border: Border.all(color: Colors.black.withOpacity(.33)),
+                            color: Colors.white),
+                        child: Card(
+                          elevation: 1,
+                          child: Center(
+                            child: DataTable2(
+                                columnSpacing: 5,
 
-                    /*this.widget.tableData.map((e){
+                                columns: [
+                                  staticVar.Dc("NAME"),
+                                  staticVar.Dc("AVAILABLE"),
+                                  staticVar.Dc("STATUS"),
+                                  staticVar.Dc("PROMOTION"),
+                                  staticVar.Dc("CREATED"),
+                                  staticVar.Dc("OPTIONS"),
+                                ],
+                                rows: this.dataListInit.map((e) {
+                                  return DataRow(
+                                    onLongPress: (){},
+                                      cells: [
+                                    DataCell(
+                                      Row(
+                                        children: [
+                                          e["image"] == null ? Image.asset("assets/notFound.png") :Container(
+                                            padding: EdgeInsets.all(10),
+                                            width:
+                                                50, // Set your desired width
+                                            height:
+                                                50, // Set your desired height
+                                            child: Image.network(
+                                              e["image"],
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  e["unitName"]  == null ? "404NOtfound" :e["unitName"] ,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+
+                                              Expanded(
+                                                child: Text(
+                                                  "€61,88 every month",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    DataCell(
+                                      Center(child: Text("2/2")),
+                                    ),
+                                    DataCell(
+                                      Center(child: Text("Hidden")),
+                                    ),
+                                    DataCell(
+                                      Center(child: Text("Promotie")),
+                                    ),
+                                    DataCell(
+                                      Center(child :   Text(DateFormat('d MMM')
+                                      .format(e["createdAt"]))),
+                                    ),
+                                        DataCell(
+                                          Center(child: Container()),
+                                        ),
+
+                                  ]);
+                                }).toList()
+
+                                /*this.widget.tableData.map((e){
                       return  DataRow(
                           onLongPress: (){},
                           cells: [
@@ -274,25 +409,239 @@ class _tableWidgetForUniteTypeModeState
 
                           ]);
                     }).toList(),*/
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+              );
   }
 
-  Widget buildTextField(String label, String placeholder,
-      TextEditingController controller) {
+  // this funciton will help us to calclate  the price before the VAT
+  String calculateExVATPrice(double totalPrice) {
+    double vatRate = 0.19;
+
+    // Calculate the Ex-VAT Price
+    double exVATPrice = totalPrice / (1 + vatRate);
+    return exVATPrice.toStringAsFixed(2);
+  }
+
+  // this funtoin will add new type in the database
+  Future<void> addNewunitType() async {
+    try {
+      this.isLoading = true;
+      setState(() {});
+      // handel the nnull logic
+      if (unitWidthController.text.trim().isEmpty) {
+        MyDialog.showAlert(
+            context, "Ok", "Please enter unit width and try again.");
+        return;
+      }
+      if (unitLengthController.text.trim().isEmpty) {
+        MyDialog.showAlert(
+            context, "Ok", "Please enter unit length and try again.");
+        return;
+      }
+      if (unitHeightController.text.trim().isEmpty) {
+        MyDialog.showAlert(
+            context, "Ok", "Please enter unit height and try again.");
+        return;
+      }
+      if (unitNameController.text.trim().isEmpty) {
+        MyDialog.showAlert(
+            context, "Ok", "Please enter unit name and try again.");
+        return;
+      }
+      if (priceController.text.trim().isEmpty) {
+        MyDialog.showAlert(
+            context, "Ok", "Please enter unit price and try again.");
+        return;
+      }
+      if (sizeDescriptionController.text.trim().isEmpty) {
+        MyDialog.showAlert(
+            context, "Ok", "Please enter size descritption and try again.");
+        return;
+      }
+
+      // NO selling point handler
+      if (sellingPoints(
+          this.sellingPointsControllers.map((e) => e.text).toList())) {
+        this.isLoading = false;
+        setState(() {});
+        // this if to hande the if the user want to proceed with out selling points
+        bool breakss = false;
+        await confirmationDialog.showElegantPopupFutureVersion(
+            context: context,
+            message:
+                "You've left all selling points empty. Are you sure you don't want to add any? It is recommended to include at least one selling point.",
+            onYes: () {
+              this.isLoading = true;
+              setState(() {});
+            },
+            onNo: () {
+              breakss = true;
+            });
+        if (breakss) {
+          this.isLoading = false;
+          setState(() {});
+          return;
+        }
+      }
+
+      if (this.xfile == null) {
+        MyDialog.showAlert(
+            context, "Ok", "Please add an image for this unite type");
+        return;
+      }
+
+      bool isExist =
+          await isUnitNameExists(this.unitNameController.text.trim());
+
+      if (isExist) {
+        MyDialog.showAlert(context, "Ok",
+            "The unit type you used \" ${this.unitNameController.text.trim()} \" already exists.");
+        return;
+      }
+
+      // THIS BLOCK IS TO HANDEL UPLOADING THE UNIT PHOTO
+      final FirebaseStorage _storage = FirebaseStorage.instanceFor(
+          bucket: "gs://selfstorage-de099.appspot.com");
+      Uint8List? uint8list = await this.xfile!.readAsBytes();
+      String fileName = DateTime.timestamp().toString() +
+          path.extension(this.xfile!.name).toString();
+      Reference firebaseStorageRef =
+          _storage.ref().child('employees/$fileName');
+      UploadTask uploadTask = firebaseStorageRef.putData(uint8list!);
+      TaskSnapshot snapshot = await uploadTask;
+      String downloadUrl = await snapshot.ref.getDownloadURL();
+      ////////////////////////////////////////////////////////////////////////////////
+
+      // Access the Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      // Get the current user's email
+      User? user = FirebaseAuth.instance.currentUser;
+      String userEmail = user?.email ?? "user@email.com";
+      // Add data to the "discount" collection
+      await firestore.collection("unitsType").add({
+        "unitWidth": this.unitWidthController.text.trim(),
+        "unitHeight": this.unitHeightController.text.trim(),
+        "unitLength": this.unitLengthController.text.trim(),
+        "unitName": this.unitNameController.text.trim(),
+        "sizeDescription": this.sizeDescriptionController.text.trim(),
+        "sellingPoints":
+            this.sellingPointsControllers.map((e) => e.text.trim()).toList(),
+        "createdAt": DateTime.now(),
+        "createdBy": userEmail,
+        "image": downloadUrl,
+        "price" : this.priceController.text.trim() ,
+
+      });
+      widget.reInitFunciotn();
+      print("the Data added successfully!");
+      widget.onCancel();
+      MyDialog.showAlert(context, "Ok", "the Data added successfully!");
+    } catch (e) {
+      print("Error adding data to Firestore: $e");
+      MyDialog.showAlert(context, "Ok", "Error adding data to Firestore: $e");
+    } finally {
+      this.isLoading = false;
+      setState(() {});
+    }
+  }
+
+  // to check if this type is exist or not
+  // the type name should be uniqe
+  Future<bool> isUnitNameExists(String unitName) async {
+    try {
+      // Replace 'yourCollectionPath' with the actual path to your "unitsType" collection
+      CollectionReference unitsTypeCollection =
+          FirebaseFirestore.instance.collection("unitsType");
+
+      // Query the collection for documents with the given unitName
+      QuerySnapshot querySnapshot = await unitsTypeCollection
+          .where('unitName', isEqualTo: unitName)
+          .get();
+
+      // Check if any documents with the given unitName exist
+      return querySnapshot.docs.isNotEmpty;
+    } catch (error) {
+      // Handle errors, e.g., print or log the error
+      print('Error checking unit name existence: $error');
+      return false;
+    }
+  }
+
+  // this funciton to check if all selling point are empty or not
+  // will return in case no sleeing poin are added
+  bool sellingPoints(List<String> strings) {
+    String res = "";
+    for (String str in strings) {
+      res += str.trim();
+    }
+    return res.isEmpty;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchUnitesTypeData() async {
+    List<Map<String, dynamic>> dataList = [];
+    try {
+      final CollectionReference unitsTypeCollection =
+          FirebaseFirestore.instance.collection('unitsType');
+      QuerySnapshot querySnapshot = await unitsTypeCollection.get();
+      for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+
+        // Add the data to the list
+        dataList.add({
+          'unitWidth': data['unitWidth'],
+          'unitHeight': data['unitHeight'],
+          'unitLength': data['unitLength'],
+          'unitName': data['unitName'],
+          'sizeDescription': data['sizeDescription'],
+          'sellingPoints': List<String>.from(data['sellingPoints']),
+          'createdAt': data['createdAt'].toDate(),
+          'createdBy': data['createdBy'],
+          'image': data['image'],
+        });
+      }
+    } catch (e) {
+      print('Error retrieving data: $e');
+    }
+    this.dataListInit = dataList;
+    setState(() {});
+    return dataList;
+  }
+
+  Future getImage() async {
+    final ImagePicker _picker = ImagePicker();
+    this.xfile = await _picker.pickImage(source: ImageSource.gallery);
+    Uint8List? uint8list = await this.xfile!.readAsBytes();
+    this._imgFile = uint8list;
+    setState(() {});
+    return;
+    final imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
+
+  // from here and on all of these are helper widgets
+  Widget buildTextField(
+      String label, String placeholder, TextEditingController controller) {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width * .3,
+      width: MediaQuery.of(context).size.width * .3,
       padding: EdgeInsets.only(bottom: 16.0),
       child: TextFormField(
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(6),
+          FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+          //WhitelistingTextInputFormatter.digitsOnly,
+        ],
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
@@ -307,29 +656,27 @@ class _tableWidgetForUniteTypeModeState
     );
   }
 
-  Widget buildTextFieldWithDescription(String label, String description,
-      TextEditingController controller) {
+  Widget buildTextFieldWithDescription(
+      String label, String description, TextEditingController controller) {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width * .3,
+      width: MediaQuery.of(context).size.width * .3,
       padding: EdgeInsets.only(bottom: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             label,
-            style:staticVar.subtitleStyle1,
+            style: staticVar.subtitleStyle1,
           ),
           SizedBox(height: 8.0),
           Text(
             description,
-            style:staticVar.subtitleStyle2,
+            style: staticVar.subtitleStyle2,
           ),
           SizedBox(height: 8.0),
           TextFormField(
-            maxLines: null, // Allow unlimited lines
+            maxLines: null,
+            // Allow unlimited lines
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.newline,
             controller: controller,
@@ -348,10 +695,7 @@ class _tableWidgetForUniteTypeModeState
 
   Widget buildSellingPoints() {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width * .3,
+      width: MediaQuery.of(context).size.width * .3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -364,6 +708,10 @@ class _tableWidgetForUniteTypeModeState
             Padding(
               padding: EdgeInsets.only(bottom: 8.0),
               child: TextFormField(
+                maxLines: null,
+                // Allow unlimited lines
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
                 controller: sellingPointsControllers[i - 1],
                 decoration: InputDecoration(
                   labelText: 'Point $i',
@@ -381,47 +729,47 @@ class _tableWidgetForUniteTypeModeState
   }
 
   Widget buildImageUpload() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            //mainAxisSize: MainAxisSize.min,
-            children: [
-              _image != null
-                  ? Image.network(
+    return Row(
+      //mainAxisSize: MainAxisSize.min,
+      children: [
+        CircleAvatar(
+          radius: 90,
+          backgroundImage: this._imgFile == null
+              ? AssetImage("assets/defualt.jpg")
+              : Image.memory(this._imgFile).image,
+        ),
+        /* _image != null
+            ? Image.network(
                 _image!.path,
                 height: 200,
                 width: 200,
                 fit: BoxFit.cover,
               )
-                  : Image.asset(
+            : Image.asset(
                 'assets/defualt.jpg', // Replace with your default image path
                 height: 200,
                 width: 200,
                 fit: BoxFit.cover,
               ),
-              SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("* Upload photo for your unit type",style: staticVar.subtitleStyle2,),
-                    Text("* For best results at least 240px square",style: staticVar.subtitleStyle2),
-                    Button2(onTap: getImage, text: 'Browse' , IconData:  Icons.upload,),
-                  ],
-                ),
-              )
-
-            ],
-          ),
-        ),
-      ),
+        */
+        SizedBox(height: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "* Upload photo for your unit type",
+              style: staticVar.subtitleStyle2,
+            ),
+            Text("* For best results at least 240px square",
+                style: staticVar.subtitleStyle2),
+            Button2(
+              onTap: getImage,
+              text: 'Browse',
+              IconData: Icons.upload,
+            ),
+          ],
+        )
+      ],
     );
   }
-
-
 }

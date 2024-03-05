@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/addressInputWidget.dart';
 import 'package:selfstorage/widgets/buttonStyle2.dart';
+import 'package:selfstorage/widgets/customTextFieldWidget.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 import 'package:selfstorage/widgets/marketingDetails.dart';
-import 'customTextFieldWidget.dart';
+
 
 class addNewContact extends StatefulWidget {
   final VoidCallback CancelFunction;

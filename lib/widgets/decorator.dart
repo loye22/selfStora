@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class decorator extends StatelessWidget {
-  final Widget widget;
+  final Widget child;
 
-  const decorator({super.key, required this.widget});
+  const decorator({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class decorator extends StatelessWidget {
         margin: EdgeInsets.all(8.0),
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          child: widget,
+          child: child,
         ),
       ),
     );
