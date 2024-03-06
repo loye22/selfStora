@@ -6,6 +6,7 @@ import 'package:selfstorage/widgets/button.dart';
 import 'package:selfstorage/widgets/buttonStyle2.dart';
 import 'package:selfstorage/widgets/decorator.dart';
 import 'package:selfstorage/widgets/dialog.dart';
+import 'package:selfstorage/widgets/genrateUnitsWidget.dart';
 import 'package:selfstorage/widgets/siteUnitButton.dart';
 import 'package:selfstorage/widgets/tableWidgetForUniteTypeMode.dart';
 
@@ -27,7 +28,7 @@ class sitePage extends StatefulWidget {
 }
 
 class _sitePageState extends State<sitePage> {
-  bool unitTypeMode = !false;
+  bool unitTypeMode = false;
   bool unitMode = false;
 
   @override
@@ -36,61 +37,81 @@ class _sitePageState extends State<sitePage> {
     return Scaffold(
       body: Animate(
         effects: [FadeEffect(duration: Duration(milliseconds: 700))],
-        child: this.unitTypeMode ?
-        tableWidgetForUniteTypeMode(
-          tableData: {},
-          onCancel: () {
-            unitTypeMode = false;
-            setState(() {});
-          },) :
-        Animate(
-          effects: [FadeEffect(duration: Duration(milliseconds: 700))],
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(height:MediaQuery.of(context).size.height * .005 ,),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-
-                    children: [
-                      sitePageButton( title: 'Unit Types', subtitle: '29 types', callback: (){
-                        this.unitTypeMode = true ;
-                        setState(() {});
-                        //MyDialog.showAlert(context, "Ok", "Unit Types");
-                      } ,icon: Icons.inbox,),
-                      sitePageButton( title: 'Units', subtitle: '29% occupancy', callback: (){
-                        this.unitMode = true ;
-                        setState(() {});
-                      } ,icon: Icons.home,),
-                      sitePageButton( title: 'Map', subtitle: '', callback: (){
-                        //this.mapMode = true ;
-                       // setState(() {});
-                      } ,icon: Icons.map, isExpanded: true,),
-
-
+        child: this.unitMode
+            ? Container(
+                child:unitWidget(),
+              )
+            : (this.unitTypeMode
+                ? tableWidgetForUniteTypeMode(
+                    tableData: {},
+                    onCancel: () {
+                      unitTypeMode = false;
+                      setState(() {});
+                    },
+                  )
+                : Animate(
+                    effects: [
+                      FadeEffect(duration: Duration(milliseconds: 700))
                     ],
-                  ),
-                  InformationCard(
-                    accessType: 'Padlock',
-                    visibility: 'Live',
-                    paymentMethods: 'Credit / Debit Card',
-                    billingPeriod: 'Every month',
-                    priceDisplay: 'Monthly',
-                    unitTypes: 'VAT (19.0%)',
-                    insurance: 'None',
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .005,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                sitePageButton(
+                                  title: 'Unit Types',
+                                  subtitle: '29 types',
+                                  callback: () {
+                                    this.unitTypeMode = true;
+                                    setState(() {});
+                                    //MyDialog.showAlert(context, "Ok", "Unit Types");
+                                  },
+                                  icon: Icons.inbox,
+                                ),
+                                sitePageButton(
+                                  title: 'Units',
+                                  subtitle: '29% occupancy',
+                                  callback: () {
+                                    this.unitMode = true;
+                                    setState(() {});
+                                  },
+                                  icon: Icons.home,
+                                ),
+                                sitePageButton(
+                                  title: 'Map',
+                                  subtitle: '',
+                                  callback: () {
+                                    //this.mapMode = true ;
+                                    // setState(() {});
+                                  },
+                                  icon: Icons.map,
+                                  isExpanded: true,
+                                ),
+                              ],
+                            ),
+                            InformationCard(
+                              accessType: 'Padlock',
+                              visibility: 'Live',
+                              paymentMethods: 'Credit / Debit Card',
+                              billingPeriod: 'Every month',
+                              priceDisplay: 'Monthly',
+                              unitTypes: 'VAT (19.0%)',
+                              insurance: 'None',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )),
       ),
     );
   }
-
 }
-

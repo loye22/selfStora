@@ -14,6 +14,7 @@ import 'package:selfstorage/widgets/decorator.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 import 'package:selfstorage/widgets/dropDownwithDesc.dart';
 import 'package:selfstorage/widgets/editWidgetForUniteType.dart';
+import 'package:selfstorage/widgets/uniteTypeDisplayWIdget.dart';
 import '../model/staticVar.dart';
 import 'buttonStyle2.dart';
 import 'package:path/path.dart' as path;
@@ -43,7 +44,6 @@ class _tableWidgetForUniteTypeModeState
     extends State<tableWidgetForUniteTypeMode> {
   bool addNewUnitTypeMode = false;
   bool editNewUnitTypeMode = false;
-
   bool displayNewUnitTypeMode = false;
 
   // Controllers for retrieving data
@@ -82,11 +82,17 @@ class _tableWidgetForUniteTypeModeState
         this.displayNewUnitTypeMode
             ? Container(
                 child: Center(
-                child: Text("Displat mode MODE "),
+                child: uniteTypeDisplayWIdget(
+                  unitTypeTitle: "2 metri pătrați",
+                  occupancyPercentage: "50%",
+                  occupancyAvailableText: "1/2 units available",
+                  storefrontPrice: "€61,88",
+                  pricePeriodText: "Every month",
+                )
               ))
         // handel the unit edit featcher
             : (this.editNewUnitTypeMode
-                ? editWidgetForUniteType(initData:this.inilDataForEditUniteType, onCancel: (){ this.editNewUnitTypeMode = false ; setState(() {});},)
+                ? editWidgetForUniteType(initData:this.inilDataForEditUniteType, onCancel: (){ this.editNewUnitTypeMode = false ; fetchUnitesTypeData(); setState(() {});},)
                 : (this.addNewUnitTypeMode
                     ? Animate(
                         effects: [
@@ -460,7 +466,7 @@ class _tableWidgetForUniteTypeModeState
                                                           ),
                                                           Expanded(
                                                             child: Text(
-                                                              "€61,88 every month",
+                                                              "€${e["priceHistory"]?[e["priceHistory"].length - 1]?["price"]?? "0.0"} every month"
                                                               // Use your desired text style here
                                                             ),
                                                           ),
@@ -706,10 +712,10 @@ class _tableWidgetForUniteTypeModeState
         "sizeDescription": this.sizeDescriptionController.text.trim(),
         "sellingPoints":
             this.sellingPointsControllers.map((e) => e.text.trim()).toList(),
-        "createdAt": DateTime.now(),
+        "createdAt": [DateTime.now()],
         "createdBy": userEmail,
         "image": downloadUrl,
-        "price": this.priceController.text.trim(),
+        "priceHistory": [{"price" : this.priceController.text.trim() , "date" : DateTime.now() , "createdBy" : userEmail}],
         "storeFrontStatus": this.storeFrontStatus,
         "includePromotion": this.includePromotion
       });
@@ -775,13 +781,13 @@ class _tableWidgetForUniteTypeModeState
           'unitName': data['unitName'],
           'sizeDescription': data['sizeDescription'],
           'sellingPoints': List<String>.from(data['sellingPoints']),
-          'createdAt': data['createdAt'].toDate(),
+          'createdAt': data['createdAt']?.first?.toDate() ?? DateTime.now() ,
           'createdBy': data['createdBy'],
           'image': data['image'],
           'storeFrontStatus': data['storeFrontStatus'],
           'includePromotion': data['includePromotion'],
           'dID': documentSnapshot.id,
-          'price' : data['price']
+          'priceHistory' : data['priceHistory']
         });
       }
     } catch (e) {

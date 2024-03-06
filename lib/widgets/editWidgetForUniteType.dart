@@ -55,13 +55,20 @@ class _editWidgetForUniteTypeState extends State<editWidgetForUniteType> {
      unitLengthController.text = widget.initData["unitLength"]?? "0.0" ;
      unitHeightController.text =widget.initData["unitHeight"]?? "0.0";
      unitNameController.text = widget.initData["unitName"]?? "0.0" ;
-     priceController.text = widget.initData["price"]?? "0.0" ;
      sizeDescriptionController.text = widget.initData["sizeDescription"]?? "0.0" ;
      List<String> recevedSellingpoins = widget.initData["sellingPoints"];
      sellingPointsControllers.asMap().forEach((index, e)=> e.text = recevedSellingpoins[index].toString() );
-     this.storeFrontStatus = widget.initData["storeFrontStatus"] ;
-     this.includePromotion = widget.initData["includePromotion"];
+     this.storeFrontStatus = widget.initData["storeFrontStatus"] ?? storeFrontStatus ;
+     this.includePromotion = widget.initData["includePromotion"] ?? "";
       url = widget.initData["image"];
+      try{
+        priceController.text = widget.initData["priceHistory"]?[ widget.initData["priceHistory"].length - 1]?["price"]?? "0.0" ;
+      }
+      catch(e){
+        print("Exaption ${e.toString()}");
+        priceController.text = "0.0";
+
+      }
 
      super.initState();
 
@@ -408,32 +415,33 @@ class _editWidgetForUniteTypeState extends State<editWidgetForUniteType> {
          }
        }
 
-       if (this.xfile == null) {
-         MyDialog.showAlert(
-             context, "Ok", "Please add an image for this unite type");
-         return;
-       }
-
-       bool isExist =
+       /*bool isExist =
        await isUnitNameExists(this.unitNameController.text.trim());
 
        if (isExist) {
          MyDialog.showAlert(context, "Ok",
              "The unit type you used \" ${this.unitNameController.text.trim()} \" already exists.");
          return;
-       }
+       }*/
 
        // THIS BLOCK IS TO HANDEL UPLOADING THE UNIT PHOTO
-       final FirebaseStorage _storage = FirebaseStorage.instanceFor(
-           bucket: "gs://selfstorage-de099.appspot.com");
-       Uint8List? uint8list = await this.xfile!.readAsBytes();
-       String fileName = DateTime.timestamp().toString() +
-           path.extension(this.xfile!.name).toString();
-       Reference firebaseStorageRef =
-       _storage.ref().child('employees/$fileName');
-       UploadTask uploadTask = firebaseStorageRef.putData(uint8list!);
-       TaskSnapshot snapshot = await uploadTask;
-       String downloadUrl = await snapshot.ref.getDownloadURL();
+       // in case the user upload new photo go and update the data
+       String  downloadUrl = "";
+       if(this.xfile != null){
+         final FirebaseStorage _storage = FirebaseStorage.instanceFor(
+             bucket: "gs://selfstorage-de099.appspot.com");
+         Uint8List? uint8list = await this.xfile!.readAsBytes();
+         String fileName = DateTime.timestamp().toString() +
+             path.extension(this.xfile!.name).toString();
+         Reference firebaseStorageRef =
+         _storage.ref().child('employees/$fileName');
+         UploadTask uploadTask = firebaseStorageRef.putData(uint8list!);
+         TaskSnapshot snapshot = await uploadTask;
+         String url = await snapshot.ref.getDownloadURL();
+         downloadUrl = url;
+       }
+
+
        ////////////////////////////////////////////////////////////////////////////////
 
        // updates the record
@@ -450,10 +458,16 @@ class _editWidgetForUniteTypeState extends State<editWidgetForUniteType> {
          "unitName": this.unitNameController.text.trim(),
          "sizeDescription": this.sizeDescriptionController.text.trim(),
          "sellingPoints": this.sellingPointsControllers.map((e) => e.text.trim()).toList(),
-         "createdAt": DateTime.now(),
+         "createdAt": FieldValue.arrayUnion([DateTime.now().subtract(Duration(days: 5))]) ,
          "createdBy": userEmail,
-         "image": downloadUrl,
-         "price": this.priceController.text.trim(),
+         "image": downloadUrl == "" ?widget.initData["image"] : downloadUrl,
+         "priceHistory":FieldValue.arrayUnion([
+           {
+             "price": this.priceController.text.trim(),
+             "date": DateTime.now(),
+             "createdBy": userEmail,
+           },
+         ]) ,
          "storeFrontStatus": this.storeFrontStatus,
          "includePromotion": this.includePromotion
        };
@@ -462,9 +476,10 @@ class _editWidgetForUniteTypeState extends State<editWidgetForUniteType> {
 
        //////////////////////////
 
-       MyDialog.showAlert(context , "Ok" , "the Data added successfully!");
+
        widget.onCancel();
-       MyDialog.showAlert(context, "Ok", "the Data added successfully!");
+       MyDialog.showAlert(context , "Ok" , "The record updated successfully!");
+
      } catch (e) {
        print("Error adding data to Firestore: $e");
        MyDialog.showAlert(context, "Ok", "Error adding data to Firestore: $e");
