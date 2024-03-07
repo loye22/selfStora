@@ -129,7 +129,7 @@ class _editContactWidgetState extends State<editContactWidget> {
                           SizedBox(
                             height: 20,
                           ),
-                         this.isLoading ? Center(child: CircularProgressIndicator(color: Colors.orange,),) :
+                         this.isLoading ? staticVar.loading(size: MediaQuery.of(context).size.width * .05) :
                          Row(
                             children: [
                               Button2(

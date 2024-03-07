@@ -118,7 +118,7 @@ class _storefrontPromotionFormState extends State<storefrontPromotionForm> {
               SizedBox(
                 height: 10,
               ),
-              this.isLoading ? Center(child: CircularProgressIndicator(color: Colors.orange,),) :
+              this.isLoading ? staticVar.loading(size: MediaQuery.of(context).size.width * .05) :
               Row(
                 children: [
                   Button2(

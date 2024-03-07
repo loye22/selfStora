@@ -39,7 +39,10 @@ class _sitePageState extends State<sitePage> {
         effects: [FadeEffect(duration: Duration(milliseconds: 700))],
         child: this.unitMode
             ? Container(
-                child:unitWidget(),
+                child:unitWidget(onCancel: (){
+                  this.unitMode = false ;
+                  setState(() {});
+                },),
               )
             : (this.unitTypeMode
                 ? tableWidgetForUniteTypeMode(

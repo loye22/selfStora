@@ -53,7 +53,7 @@ class _addNewContactState extends State<addNewContact> {
                 addressInputWidget(onAddressChanged: (s){this.address = s ; },) ,
                 marketingDetails( marketingFetcherFunction: (s){this.marketingDetailsDate = s ;},),
                 SizedBox(height: 20,) ,
-                this.isLoading? Center(child: CircularProgressIndicator(color: Colors.orange,),) :
+                this.isLoading? staticVar.loading(size: MediaQuery.of(context).size.width * .05) :
                 Row(
                   children: [
                     Button2(

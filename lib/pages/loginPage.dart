@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -121,7 +122,7 @@ class _loginPageState extends State<loginPage> {
                             ),
                           ),
                           SizedBox(height: 16.0), // Spacer
-                          this.isLoading ? Center(child: CircularProgressIndicator(color: Colors.orange,),):
+                          this.isLoading ? staticVar.loading(size: MediaQuery.of(context).size.width * .05):
                           GestureDetector(
                             onTap: () async {
                               if (_formKey.currentState!.validate()) {
@@ -171,7 +172,7 @@ class _loginPageState extends State<loginPage> {
                           ),
                         ),
                         SizedBox(height: 30.0), // Spacer
-                       this.isLoadingRecovery ? Center(child: CircularProgressIndicator( color: Colors.orange,),) :
+                       this.isLoadingRecovery ? staticVar.loading(size: MediaQuery.of(context).size.width * .1) :
                        Button(
                           onTap: () async {
                             if (_formKey.currentState!.validate()) {

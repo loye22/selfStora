@@ -299,11 +299,7 @@ class _editWidgetForUniteTypeState extends State<editWidgetForUniteType> {
                 ),
               ),
               this.isLoading
-                  ? Center(
-                child: CircularProgressIndicator(
-                  color: Colors.blue,
-                ),
-              )
+                  ? staticVar.loading(size: MediaQuery.of(context).size.width * .05)
                   : Row(
                 children: [
                   Button2(

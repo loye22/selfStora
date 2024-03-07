@@ -308,11 +308,7 @@ class _tableWidgetForUniteTypeModeState
                                 ),
                               ),
                               this.isLoading
-                                  ? Center(
-                                      child: CircularProgressIndicator(
-                                        color: Colors.orange,
-                                      ),
-                                    )
+                                  ? staticVar.loading(size: MediaQuery.of(context).size.width * .05)
                                   : Row(
                                       children: [
                                         Button2(

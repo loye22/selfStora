@@ -1,6 +1,7 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 
 import '../widgets/confirmationDialog.dart';
@@ -105,6 +106,9 @@ static void showOverlay({
 
   static Color c1 = Color.fromRGBO(33, 103, 199, 1) ;
 
+
+
+  static Widget loading ({ double size = 100 , Color colors = Colors.orange })=> Center(child: LoadingAnimationWidget.staggeredDotsWave(color:colors , size: size,),);
 
 
 
