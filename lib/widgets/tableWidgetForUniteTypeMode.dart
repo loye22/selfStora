@@ -66,6 +66,7 @@ class _tableWidgetForUniteTypeModeState
   bool includePromotion = false;
   String storeFrontStatus = "bookable"; // hidden / bookable / collection leads
   Map<String,dynamic> inilDataForEditUniteType = {} ;
+  bool tableLoadin = false ;
 
 
   @override
@@ -395,15 +396,16 @@ class _tableWidgetForUniteTypeModeState
                                   ],
                                 ),
                               ),
+
                               Container(
                                 width: staticVar.golobalWidth(context),
                                 height: staticVar.golobalHigth(context),
                                 decoration: BoxDecoration(
                                     //    border: Border.all(color: Colors.black.withOpacity(.33)),
                                     color: Colors.white),
-                                child: Card(
+                                child:this.tableLoadin ? Center(child: staticVar.loading(),) :  Card(
                                   elevation: 1,
-                                  child: Center(
+                                  child:Center(
                                     child: DataTable2(
                                         columns: [
                                           staticVar.Dc2("NAME"),
@@ -762,6 +764,8 @@ class _tableWidgetForUniteTypeModeState
   Future<List<Map<String, dynamic>>> fetchUnitesTypeData() async {
     List<Map<String, dynamic>> dataList = [];
     try {
+      tableLoadin = true ;
+      setState(() {});
       final CollectionReference unitsTypeCollection =
           FirebaseFirestore.instance.collection('unitsType');
       QuerySnapshot querySnapshot = await unitsTypeCollection.get();
@@ -791,6 +795,8 @@ class _tableWidgetForUniteTypeModeState
     }
     this.dataListInit = dataList;
     print(this.dataListInit);
+    await Future.delayed(Duration(seconds: 1));
+    this.tableLoadin = false;
     setState(() {});
     return dataList;
   }

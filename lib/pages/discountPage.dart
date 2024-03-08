@@ -26,6 +26,7 @@ class _discountPageState extends State<discountPage> {
   bool createNewDiscounMode = false;
   bool storeFronPromotion = false;
   bool deleteLoading = false;
+  bool isLoading = false ;
 
   String selectedOption = "Customer Coupon Code";
   List<Map<String, dynamic>> tableData = [];
@@ -162,7 +163,8 @@ class _discountPageState extends State<discountPage> {
                       //    border: Border.all(color: Colors.black.withOpacity(.33)),
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.white),
-                    child: Card(
+                    child:this.isLoading ? Center(child: staticVar.loading(),)
+                        :Card(
                       elevation: 1,
                       child: Center(
                         child: DataTable2(
@@ -288,6 +290,8 @@ class _discountPageState extends State<discountPage> {
     List<Map<String, dynamic>> discounts = [];
 
     try {
+      this.isLoading = true ;
+      setState(() {});
       // Access the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -326,6 +330,8 @@ class _discountPageState extends State<discountPage> {
 
   //  print(discounts);
     this.tableData = discounts;
+    await Future.delayed(Duration(seconds: 1));
+    this.isLoading = false ;
     setState(() {});
     return discounts;
   }

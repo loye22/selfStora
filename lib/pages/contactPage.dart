@@ -28,6 +28,7 @@ class _contactPageState extends State<contactPage> {
   bool editFlag = false ;
   List<Map<String, dynamic>> tableData = [];
   Map<String,dynamic  > dataToBeEdited = {};
+  bool isLoading = false ;
 
 
 
@@ -124,7 +125,7 @@ class _contactPageState extends State<contactPage> {
                         //    border: Border.all(color: Colors.black.withOpacity(.33)),
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.white),
-                      child: Card(
+                      child:this.isLoading ? Center(child: staticVar.loading(),) : Card(
                         elevation: 1,
                         child: Center(
                           child: DataTable2(
@@ -199,6 +200,8 @@ class _contactPageState extends State<contactPage> {
     List<Map<String, dynamic>> contactData = [];
 
     try {
+      this.isLoading = true ;
+      setState(() {});
       // Access the Firestore instance
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -237,7 +240,8 @@ class _contactPageState extends State<contactPage> {
     }
 
     //  print(discounts);
-
+    await Future.delayed(Duration(seconds: 1));
+    this.isLoading = false ;
     setState(() {});
     return contactData;
   }

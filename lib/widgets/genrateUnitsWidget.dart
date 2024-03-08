@@ -115,6 +115,11 @@ class _unitWidgetState extends State<unitWidget> {
                                     bool c1 = anyEmptyOrNullValuesChecker();
                                     bool c2 = anyDuplicats();
                                     bool c3 = dropDownMenuNullValuesChecker();
+                                    bool c4 = this.textControllers.isEmpty ;
+                                    // check if given any of txt field  values already exist in the 'units' collection
+                                    // if there is any retun them
+
+
 
                                     if (c1 == false) {
                                       MyDialog.showAlert(context, "Ok",
@@ -131,8 +136,15 @@ class _unitWidgetState extends State<unitWidget> {
                                           "Oops! You forgot to assign a unit type for some of the generated units. Please assign the type for each unit from the dropdown menu and try again.");
                                       return;
                                     }
+
+                                    if (c4) {
+                                      MyDialog.showAlert(context, "Ok",
+                                          "Please add number of units you wish to add.");
+                                      return;
+                                    }
+
+
                                     await addUnitsToDB();
-                                    widget.onCancel();
                                     //retrieveData();
                                   },
                                   text: "Generate unite",
@@ -197,12 +209,53 @@ class _unitWidgetState extends State<unitWidget> {
     );
   }
 
+
+  Future<List<String>> checkExistingUnitIds(List<String> unitIds) async {
+    List<String> existingUnitIds = [];
+    try {
+      // Reference to the 'units' collection
+      CollectionReference unitsCollection = FirebaseFirestore.instance.collection('units');
+
+      // Query to check if the 'unitIdByUserTxtField' values exist in the collection
+      QuerySnapshot querySnapshot = await unitsCollection
+          .where('unitIdByUserTxtField', whereIn: unitIds)
+          .get();
+
+      // Check for existing values
+      querySnapshot.docs.forEach((DocumentSnapshot document) {
+        Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+
+        if (data != null) {
+          existingUnitIds.add(data['unitIdByUserTxtField']);
+        }
+      });
+
+      return existingUnitIds;
+    } catch (e) {
+      print('Error checking existing unit IDs: $e');
+      return existingUnitIds;
+    }
+  }
+
+
+
+
+  // this fucniton will add list of ubits to the databae
   Future<void> addUnitsToDB() async {
 
     try {
       //List<dynamic> s = [] ;
       this.isLoading = true;
       setState(() {});
+
+      // check if there new units ids are not exsisting in the fireabse
+      List<String> exsistingUnits = await  checkExistingUnitIds(this.textControllers.map((e) => e.text.trim()).toList());
+      if(!exsistingUnits.isEmpty){
+        MyDialog.showAlert(context, "Ok",
+            "Some of these units that you entered are already in the database. Unit IDs must be unique, so please edit the following unit IDs and try again.\n\n${exsistingUnits.join("\n")}");
+        return;
+      }
+
       final CollectionReference unitsCollection =
           FirebaseFirestore.instance.collection('units');
       // Get the current user's email
@@ -231,6 +284,7 @@ class _unitWidgetState extends State<unitWidget> {
         //s.add(unitData);
         // Add the document to Firestore collection
         await unitsCollection.add(unitData);
+        widget.onCancel();
 
       }
      // print(s.toString());
