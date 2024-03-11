@@ -122,7 +122,6 @@ class _rootPageState extends State<rootPage> {
               sitePage(),
               homePage(),
               subscriptionPage(),
-
               contactPage(),
               discountPage(),
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:selfstorage/pages/discountPage.dart';
 import 'package:selfstorage/pages/homePage.dart';
+import 'package:selfstorage/pages/mapScreen.dart';
 import 'package:selfstorage/pages/rootPage.dart';
 import 'package:selfstorage/pages/loginPage.dart';
 import 'package:selfstorage/pages/sitePage.dart';
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)  {
           if (snapshot.hasData) {
-            return rootPage();
+            return mapPage();
           } else {
             return loginPage();
           }

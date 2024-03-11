@@ -15,7 +15,6 @@ import '../widgets/editContactWidget.dart';
 
 class contactPage extends StatefulWidget {
   static const routeName = '/contactPage';
-
   const contactPage({super.key});
 
   @override
@@ -29,7 +28,6 @@ class _contactPageState extends State<contactPage> {
   List<Map<String, dynamic>> tableData = [];
   Map<String,dynamic  > dataToBeEdited = {};
   bool isLoading = false ;
-
 
 
   @override
