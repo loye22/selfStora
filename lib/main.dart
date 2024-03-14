@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)  {
           if (snapshot.hasData) {
-            return mapPage();
+            return rootPage();
           } else {
             return loginPage();
           }
@@ -59,6 +59,7 @@ class MyApp extends StatelessWidget {
         sitePage.routeName: (ctx) => sitePage(),
         subscriptionPage.routeName: (ctx) => subscriptionPage(),
         discountPage.routeName: (ctx) => discountPage(),
+        mapPage.routeName: (ctx) => mapPage(),
 
 
 
