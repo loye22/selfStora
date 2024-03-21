@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:selfstorage/model/staticVar.dart';
-import 'package:selfstorage/pages/rootPage.dart';
-import 'package:selfstorage/widgets/buttonStyle2.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 
 import '../widgets/button.dart';
@@ -165,9 +163,9 @@ import '../widgets/button.dart';
   }
   */
 
-
 class mapPage extends StatefulWidget {
   static const routeName = '/dismapPagecountPage';
+
   const mapPage({super.key});
 
   @override
@@ -192,63 +190,142 @@ class _mapPageState extends State<mapPage> {
   Size s15 = Size(90, 61);
   List<Map<String, dynamic>> unitsData = [];
 
-
-@override
+  @override
   void initState() {
     // TODO: implement initState
-  fetchUnits();
+    fetchUnits();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Row(
+        appBar: AppBar(
+          title: Row(
+            children: [
+              //djust the spacing as needed
+              Text(
+                'Poligrafiei',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        body: Stack(
           children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back_rounded),
-              onPressed: () {
-                // Handle your button press here
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                color: Colors.white,
+                elevation: 2,
+                child: Container(
+                  height: staticVar.golobalHigth(context) * .5,
+                  width: staticVar.golobalWidth(context) * .2,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: 90,
+                              height: 90,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20.0),
+                                // Adjust the radius as needed
+                                child: Image.network(
+                                  "https://firebasestorage.googleapis.com/v0/b/selfstorage-de099.appspot.com/o/employees%2F2024-03-08%2008%3A50%3A31.073Z.jpg?alt=media&token=94878012-122e-4218-a7fb-cd7c138c113a",
+                                  isAntiAlias: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "B12",
+                                style: staticVar.subtitleStyle1,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "24 mp Tip Garaj",
+                                style: staticVar.subtitleStyle2,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: Container(
+                          color: Color(0xFFCAD2E8),
+                          child: Center(
+                            child: Column(
+                              children: [
+                                SizedBox(width: 20,) ,
 
-              },
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.check),
+                                      SizedBox(width: 10,) ,
+                                      Text('AVAILABLE' , style: staticVar.subtitleStyle1,),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              ),
             ),
-            SizedBox(width: 8.0), // Adjust the spacing as needed
-            Text(
-              'Poligrafiei',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),),
-        body:FutureBuilder(
-          future: fetchUnits(),
-          builder: (ctx,snap){
-            if(snap.connectionState == ConnectionState.waiting){
-              return staticVar.loading();
-            }
-            return  Stack(
-                children: [
+            FutureBuilder(
+              future: fetchUnits(),
+              builder: (ctx, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return staticVar.loading();
+                }
+                return Stack(children: [
                   // alignment: Alignment.center,
                   Positioned(
                     right: 1,
                     child: Card(
                       child: Container(
-
                         child: Center(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
-                              LegendItem(color: Color(0xFFCAD2E8), label: 'Available'),
-                              LegendItem(color: Color(0xFF86E6D1), label: 'Reserved'),
-                              LegendItem(color: Color(0xFF45C48F), label: 'Occupied'),
-                              LegendItem(color: Color(0xFF6ECAF2), label: 'Moving Out'),
-                              LegendItem(color: Color(0xFF729AF8), label: 'Moved Out'),
-                              LegendItem(color: Color(0xFFE95362), label: 'Overlocked'),
                               LegendItem(
-                                  color: Color(0xFFC865B9), label: 'Repossessed'),
+                                  color: Color(0xFFCAD2E8), label: 'Available'),
                               LegendItem(
-                                  color: Color(0xFF000000), label: 'Unavailable'),
+                                  color: Color(0xFF86E6D1), label: 'Reserved'),
+                              LegendItem(
+                                  color: Color(0xFF45C48F), label: 'Occupied'),
+                              LegendItem(
+                                  color: Color(0xFF6ECAF2),
+                                  label: 'Moving Out'),
+                              LegendItem(
+                                  color: Color(0xFF729AF8), label: 'Moved Out'),
+                              LegendItem(
+                                  color: Color(0xFFE95362),
+                                  label: 'Overlocked'),
+                              LegendItem(
+                                  color: Color(0xFFC865B9),
+                                  label: 'Repossessed'),
+                              LegendItem(
+                                  color: Color(0xFF000000),
+                                  label: 'Unavailable'),
                             ],
                           ),
                         ),
@@ -261,342 +338,758 @@ class _mapPageState extends State<mapPage> {
                       child: Transform.scale(
                         scale: 0.5,
                         child: Row(
-                          //  crossAxisAlignment: CrossAxisAlignment.start,
-                          //  crossAxisAlignment: CrossAxisAlignment.start,
+                            //  crossAxisAlignment: CrossAxisAlignment.start,
+                            //  crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Column(
                                 children: [
                                   Row(
                                     children: [
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         children: [
-                                          SizedBox(height: 50,),
-                                          room(size: s14,
+                                          SizedBox(
+                                            height: 50,
+                                          ),
+                                          room(
+                                            size: s14,
                                             name: "F21",
-                                            data: this.unitsData,),
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F20", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F20",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F19", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F19",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F18", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F18",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F17", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F17",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F16", data: this.unitsData,),
-                                          room(size: s15,
+                                            size: s1,
+                                            name: "F16",
+                                            data: this.unitsData,
+                                          ),
+                                          room(
+                                            size: s15,
                                             name: "F15",
-                                            data: this.unitsData,),
-                                          room(size: s15,
+                                            data: this.unitsData,
+                                          ),
+                                          room(
+                                            size: s15,
                                             name: "F14",
-                                            data: this.unitsData,),
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "E04", data: this.unitsData,),
-                                          SizedBox(height: 50,),
+                                            size: s1,
+                                            name: "E04",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 50,
+                                          ),
                                           room(
-                                            size: s1, name: "E08", data: this.unitsData,),
+                                            size: s1,
+                                            name: "E08",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "E12", data: this.unitsData,),
-                                          SizedBox(height: 15,),
+                                            size: s1,
+                                            name: "E12",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
                                           room(
-                                            size: s1, name: "E13", data: this.unitsData,),
-
+                                            size: s1,
+                                            name: "E13",
+                                            data: this.unitsData,
+                                          ),
                                         ],
                                       ),
                                       Column(
                                         children: [
-                                          SizedBox(height: 60,),
+                                          SizedBox(
+                                            height: 60,
+                                          ),
                                           room(
-                                            size: s1, name: "F22", data: this.unitsData,),
-                                          SizedBox(height: 390,),
+                                            size: s1,
+                                            name: "F22",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 390,
+                                          ),
                                           room(
-                                            size: s1, name: "E03", data: this.unitsData,),
-                                          SizedBox(height: 50,),
+                                            size: s1,
+                                            name: "E03",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 50,
+                                          ),
                                           room(
-                                            size: s1, name: "E07", data: this.unitsData,),
+                                            size: s1,
+                                            name: "E07",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "E11", data: this.unitsData,),
-                                          SizedBox(height: 15,),
+                                            size: s1,
+                                            name: "E11",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
                                           room(
-                                            size: s1, name: "E14", data: this.unitsData,),
-
-
+                                            size: s1,
+                                            name: "E14",
+                                            data: this.unitsData,
+                                          ),
                                         ],
                                       ),
                                       Column(
                                         children: [
-                                          SizedBox(height: 60,),
+                                          SizedBox(
+                                            height: 60,
+                                          ),
                                           room(
-                                            size: s1, name: "F23", data: this.unitsData,),
-                                          SizedBox(height: 10,),
+                                            size: s1,
+                                            name: "F23",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
                                           room(
-                                            size: s1, name: "F07", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F07",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F08", data: this.unitsData,),
-                                          room(size: s13,
+                                            size: s1,
+                                            name: "F08",
+                                            data: this.unitsData,
+                                          ),
+                                          room(
+                                            size: s13,
                                             name: "F09",
-                                            data: this.unitsData,),
-                                          room(size: s13,
+                                            data: this.unitsData,
+                                          ),
+                                          room(
+                                            size: s13,
                                             name: "F10",
-                                            data: this.unitsData,),
-                                          SizedBox(height: 85,),
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 85,
+                                          ),
                                           room(
-                                            size: s1, name: "F11", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F11",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F12", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F12",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F13", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F13",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "E02", data: this.unitsData,),
-                                          SizedBox(height: 50,),
+                                            size: s1,
+                                            name: "E02",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 50,
+                                          ),
                                           room(
-                                            size: s1, name: "E06", data: this.unitsData,),
+                                            size: s1,
+                                            name: "E06",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "E10", data: this.unitsData,),
-                                          SizedBox(height: 15,),
+                                            size: s1,
+                                            name: "E10",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
                                           room(
-                                            size: s1, name: "E15", data: this.unitsData,),
-
-
+                                            size: s1,
+                                            name: "E15",
+                                            data: this.unitsData,
+                                          ),
                                         ],
                                       ),
                                       Column(
                                         children: [
-                                          SizedBox(height: 60,),
+                                          SizedBox(
+                                            height: 60,
+                                          ),
                                           room(
-                                            size: s1, name: "F24", data: this.unitsData,),
-                                          SizedBox(height: 10,),
+                                            size: s1,
+                                            name: "F24",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
                                           room(
-                                            size: s1, name: "F06", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F06",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F05", data: this.unitsData,),
-                                          room(size: s12,
+                                            size: s1,
+                                            name: "F05",
+                                            data: this.unitsData,
+                                          ),
+                                          room(
+                                            size: s12,
                                             name: "F04",
-                                            data: this.unitsData,),
-                                          SizedBox(height: 85,),
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 85,
+                                          ),
                                           room(
-                                            size: s1, name: "F03", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F03",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F02", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F02",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "F01", data: this.unitsData,),
+                                            size: s1,
+                                            name: "F01",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "E01", data: this.unitsData,),
-                                          SizedBox(height: 50,),
+                                            size: s1,
+                                            name: "E01",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 50,
+                                          ),
                                           room(
-                                            size: s1, name: "E05", data: this.unitsData,),
+                                            size: s1,
+                                            name: "E05",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "E09", data: this.unitsData,),
-                                          SizedBox(height: 15,),
+                                            size: s1,
+                                            name: "E09",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
                                           room(
-                                            size: s1, name: "E16", data: this.unitsData,),
-
-
+                                            size: s1,
+                                            name: "E16",
+                                            data: this.unitsData,
+                                          ),
                                         ],
                                       ),
                                     ],
                                   ),
-
-
                                   Row(
                                     children: [
-                                      room(size: s5, name: "E17", data: this.unitsData,),
-                                      room(size: s5, name: "E18", data: this.unitsData,),
+                                      room(
+                                        size: s5,
+                                        name: "E17",
+                                        data: this.unitsData,
+                                      ),
+                                      room(
+                                        size: s5,
+                                        name: "E18",
+                                        data: this.unitsData,
+                                      ),
                                     ],
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 50,),
+                              SizedBox(
+                                width: 50,
+                              ),
                               Column(
                                 children: [
-                                  SizedBox(height: 60,),
-                                  room(size: s11, name: "D07", data: this.unitsData,),
+                                  SizedBox(
+                                    height: 60,
+                                  ),
+                                  room(
+                                    size: s11,
+                                    name: "D07",
+                                    data: this.unitsData,
+                                  ),
                                   Row(
                                     children: [
-
                                       Column(
                                         children: [
-
-                                          room(size: s10,
+                                          room(
+                                            size: s10,
                                             name: "D06",
-                                            data: this.unitsData,),
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s6, name: "D5", data: this.unitsData,),
+                                            size: s6,
+                                            name: "D5",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s9, name: "D04", data: this.unitsData,),
-                                          SizedBox(height: 55,),
+                                            size: s9,
+                                            name: "D04",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 55,
+                                          ),
                                           room(
-                                            size: s1, name: "C16", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C16",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C15", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C15",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C14", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C14",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C13", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C13",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C12", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C12",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C11", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C11",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C10", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C10",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C09", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C09",
+                                            data: this.unitsData,
+                                          ),
                                         ],
                                       ),
                                       Column(
                                         children: [
-
-                                          room(size: s10,
+                                          room(
+                                            size: s10,
                                             name: "D03",
-                                            data: this.unitsData,),
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s6, name: "D2", data: this.unitsData,),
+                                            size: s6,
+                                            name: "D2",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s9, name: "D01", data: this.unitsData,),
-                                          SizedBox(height: 55,),
+                                            size: s9,
+                                            name: "D01",
+                                            data: this.unitsData,
+                                          ),
+                                          SizedBox(
+                                            height: 55,
+                                          ),
                                           room(
-                                            size: s1, name: "C01", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C01",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C02", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C02",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C03", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C03",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C04", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C04",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C5", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C5",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C06", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C06",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C07", data: this.unitsData,),
+                                            size: s1,
+                                            name: "C07",
+                                            data: this.unitsData,
+                                          ),
                                           room(
-                                            size: s1, name: "C08", data: this.unitsData,),
-
+                                            size: s1,
+                                            name: "C08",
+                                            data: this.unitsData,
+                                          ),
                                         ],
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 50,),
+                              SizedBox(
+                                width: 50,
+                              ),
                               Column(
                                 children: [
-                                  SizedBox(height: 60,),
-                                  room(size: s6, name: "B15", data: this.unitsData,),
-                                  room(size: s7, name: "B14", data: this.unitsData,),
-                                  room(size: s8, name: "B13", data: this.unitsData,),
-                                  SizedBox(height: 85,),
-                                  room(size: s8, name: "B16", data: this.unitsData,),
-                                  room(size: s6, name: "B17", data: this.unitsData,),
-                                  room(size: s9, name: "B18", data: this.unitsData,),
-
+                                  SizedBox(
+                                    height: 60,
+                                  ),
+                                  room(
+                                    size: s6,
+                                    name: "B15",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s7,
+                                    name: "B14",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s8,
+                                    name: "B13",
+                                    data: this.unitsData,
+                                  ),
+                                  SizedBox(
+                                    height: 85,
+                                  ),
+                                  room(
+                                    size: s8,
+                                    name: "B16",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s6,
+                                    name: "B17",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s9,
+                                    name: "B18",
+                                    data: this.unitsData,
+                                  ),
                                 ],
                               ),
                               Column(
                                 children: [
-                                  SizedBox(height: 60,),
-                                  room(size: s6, name: "B04", data: this.unitsData,),
-                                  room(size: s7, name: "B05", data: this.unitsData,),
-                                  room(size: s8, name: "B06", data: this.unitsData,),
-                                  SizedBox(height: 85,),
-                                  room(size: s8, name: "B12", data: this.unitsData,),
-                                  room(size: s6, name: "B11", data: this.unitsData,),
-                                  room(size: s9, name: "B10", data: this.unitsData,),
-
+                                  SizedBox(
+                                    height: 60,
+                                  ),
+                                  room(
+                                    size: s6,
+                                    name: "B04",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s7,
+                                    name: "B05",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s8,
+                                    name: "B06",
+                                    data: this.unitsData,
+                                  ),
+                                  SizedBox(
+                                    height: 85,
+                                  ),
+                                  room(
+                                    size: s8,
+                                    name: "B12",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s6,
+                                    name: "B11",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s9,
+                                    name: "B10",
+                                    data: this.unitsData,
+                                  ),
                                 ],
                               ),
-                              SizedBox(width: 50,),
+                              SizedBox(
+                                width: 50,
+                              ),
                               Column(
                                 children: [
-                                  SizedBox(height: 60,),
-                                  room(size: s4, name: "B03", data: this.unitsData,),
-                                  room(size: s4, name: "B2", data: this.unitsData,),
-                                  room(size: s4, name: "B01", data: this.unitsData,),
-                                  SizedBox(height: 85,),
-                                  room(size: s4, name: "B07", data: this.unitsData,),
-                                  room(size: s5, name: "B08", data: this.unitsData,),
-                                  room(size: s5, name: "B09", data: this.unitsData,),
-
+                                  SizedBox(
+                                    height: 60,
+                                  ),
+                                  room(
+                                    size: s4,
+                                    name: "B03",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s4,
+                                    name: "B2",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s4,
+                                    name: "B01",
+                                    data: this.unitsData,
+                                  ),
+                                  SizedBox(
+                                    height: 85,
+                                  ),
+                                  room(
+                                    size: s4,
+                                    name: "B07",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s5,
+                                    name: "B08",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s5,
+                                    name: "B09",
+                                    data: this.unitsData,
+                                  ),
                                 ],
                               ),
                               Column(
                                 children: [
-                                  room(size: s1, name: "A15", data: this.unitsData,),
-                                  room(size: s1, name: "A16", data: this.unitsData,),
-                                  room(size: s1, name: "A17", data: this.unitsData,),
-                                  room(size: s1, name: "A18", data: this.unitsData,),
-                                  room(size: s1, name: "A19", data: this.unitsData,),
-                                  room(size: s1, name: "A20", data: this.unitsData,),
-                                  room(size: s1, name: "A21", data: this.unitsData,),
-                                  room(size: s1, name: "A22", data: this.unitsData,),
-                                  room(size: s1, name: "A23", data: this.unitsData,),
-                                  SizedBox(height: 50,),
-                                  room(size: s3, name: "A1", data: this.unitsData,),
-                                  room(size: s3, name: "A2", data: this.unitsData,),
-                                  room(size: s3, name: "A3", data: this.unitsData,),
-                                  room(size: s3, name: "A04", data: this.unitsData,)
-
+                                  room(
+                                    size: s1,
+                                    name: "A15",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A16",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A17",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A18",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A19",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A20",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A21",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A22",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A23",
+                                    data: this.unitsData,
+                                  ),
+                                  SizedBox(
+                                    height: 50,
+                                  ),
+                                  room(
+                                    size: s3,
+                                    name: "A1",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s3,
+                                    name: "A2",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s3,
+                                    name: "A3",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s3,
+                                    name: "A04",
+                                    data: this.unitsData,
+                                  )
                                 ],
                               ),
-                              SizedBox(width: 20,),
+                              SizedBox(
+                                width: 20,
+                              ),
                               Column(
                                 children: [
-                                  room(size: s1, name: "A14", data: this.unitsData,),
-                                  room(size: s1, name: "A13", data: this.unitsData,),
-                                  room(size: s1, name: "A12", data: this.unitsData,),
-                                  room(size: s1, name: "A11", data: this.unitsData,),
-                                  room(size: s1, name: "A10", data: this.unitsData,),
-                                  room(size: s1, name: "A09", data: this.unitsData,),
-                                  room(size: s1, name: "A08", data: this.unitsData,),
-                                  room(size: s1, name: "A07", data: this.unitsData,),
-                                  room(size: s1, name: "A06", data: this.unitsData,),
-                                  SizedBox(height: 70,),
-                                  room(size: s2, name: "A05", data: this.unitsData,),
-
-
+                                  room(
+                                    size: s1,
+                                    name: "A14",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A13",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A12",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A11",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A10",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A09",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A08",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A07",
+                                    data: this.unitsData,
+                                  ),
+                                  room(
+                                    size: s1,
+                                    name: "A06",
+                                    data: this.unitsData,
+                                  ),
+                                  SizedBox(
+                                    height: 70,
+                                  ),
+                                  room(
+                                    size: s2,
+                                    name: "A05",
+                                    data: this.unitsData,
+                                  ),
                                 ],
                               ),
-                            ]
+                            ]),
+                      )),
+                ]);
+              },
+            ),
+          ],
+        ));
+  }
 
-                        ),
-
-                      )
-                  ) ,
-
-                ]
-            ) ;
-          },
-        )
-
+  Future<void> showSimplePopup(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Popup Title'),
+          content: Text('This is a simple popup dialog.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
     );
   }
 
   Future<List<Map<String, dynamic>>> fetchUnits() async {
     try {
-
       QuerySnapshot querySnapshot =
-      await FirebaseFirestore.instance.collection('units').get();
+          await FirebaseFirestore.instance.collection('units').get();
       List<Map<String, dynamic>> units = [];
       querySnapshot.docs.forEach((doc) {
         units.add(doc.data() as Map<String, dynamic>);
       });
-        this.unitsData = units;
-     //MyDialog.showAlert(context, "okk", unitsData[2].toString());
+      this.unitsData = units;
+      //MyDialog.showAlert(context, "okk", unitsData[2].toString());
       return units;
     } catch (e) {
       print("Error fetching units: $e");
-      return [{"error" : "error"}];
+      return [
+        {"error": "error"}
+      ];
     }
   }
 }
-
 
 class room extends StatefulWidget {
   final Size size;
   final String name;
   final List<Map<String, dynamic>> data;
+
   const room(
-      {super.key, required this.size, required this.name, required this.data });
+      {super.key, required this.size, required this.name, required this.data});
+
   @override
   State<room> createState() => _roomState();
 }
@@ -604,15 +1097,18 @@ class room extends StatefulWidget {
 class _roomState extends State<room> {
   Color containerColor = Colors.transparent;
   bool isHovered = false;
-  Map<String, dynamic> unitDataAsMap = {} ;
+  Map<String, dynamic> unitDataAsMap = {};
+
   String status = "";
 
   @override
   void initState() {
     // TODO: implement initState
-    status =fetchDataByUnitId(widget.data, widget.name)["status"] ?? "unavailable";
+    status =
+        fetchDataByUnitId(widget.data, widget.name)["status"] ?? "unavailable";
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
@@ -627,8 +1123,7 @@ class _roomState extends State<room> {
             width: widget.size.width,
             height: widget.size.height,
             decoration: BoxDecoration(
-              color: isHovered ? Colors.grey :
-              getColorFromString(status) ,
+              color: isHovered ? Colors.grey : getColorFromString(status),
               borderRadius: BorderRadius.circular(5),
             ),
             child: Center(
@@ -643,8 +1138,8 @@ class _roomState extends State<room> {
     );
   }
 
-  Map<String, dynamic> fetchDataByUnitId(List<Map<String, dynamic>> units, String unitId) {
-
+  Map<String, dynamic> fetchDataByUnitId(
+      List<Map<String, dynamic>> units, String unitId) {
     for (Map<String, dynamic> unit in units) {
       if (unit['unitIdByUserTxtField'] == unitId.trim()) {
         return unit;
@@ -666,9 +1161,6 @@ class _roomState extends State<room> {
   }
 }
 
-
-
-
 ////////////////////////////////////////////////////////////////
 class LegendItem extends StatelessWidget {
   final Color color;
@@ -684,10 +1176,11 @@ class LegendItem extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30), color: color,),
+              borderRadius: BorderRadius.circular(30),
+              color: color,
+            ),
             width: 20,
             height: 20,
-
           ),
           SizedBox(width: 8.0),
           Text(label),
@@ -714,10 +1207,8 @@ Color getColorFromString(String inputString) {
     case 'repossessed':
       return Color(0xFFC865B9); // Pink or purple
     case 'unavailable':
-      return Colors.red;// Color(0xFF000000); // Black
+      return Colors.red; // Color(0xFF000000); // Black
     default:
       return Colors.red; // Default color if string doesn't match any case
   }
 }
-
-

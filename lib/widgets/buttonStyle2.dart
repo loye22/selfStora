@@ -7,7 +7,7 @@ class Button2 extends StatefulWidget {
   Color color;
   final IconData ;
 
-  Button2({Key? key, required this.onTap, required this.text, this.color = Colors.orange, this.IconData = null })
+  Button2({Key? key, required this.onTap, required this.text, this.color = Colors.orange, this.IconData = null})
       : super(key: key);
 
   @override

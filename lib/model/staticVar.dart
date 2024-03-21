@@ -60,6 +60,11 @@ static TextStyle tableTitle = TextStyle(
       fontWeight: FontWeight.w600,
       fontSize: 13,
       color: Color.fromRGBO(114, 128, 150 , 1));
+static TextStyle subtitleStyle3 = TextStyle(
+      fontFamily: 'louie',
+      fontWeight: FontWeight.w600,
+      fontSize: 15,
+      color: Color.fromRGBO(114, 128, 150 , 1));
 
 
 

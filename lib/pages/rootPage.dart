@@ -119,9 +119,10 @@ class _rootPageState extends State<rootPage> {
               child: PageView(
             controller: _pageController,
             children: [
-              sitePage(),
-              homePage(),
               subscriptionPage(),
+              homePage(),
+
+              sitePage(),
               contactPage(),
               discountPage(),
 

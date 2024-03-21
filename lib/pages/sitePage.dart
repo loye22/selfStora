@@ -1,17 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/pages/mapScreen.dart';
-import 'package:selfstorage/widgets/button.dart';
-import 'package:selfstorage/widgets/buttonStyle2.dart';
-import 'package:selfstorage/widgets/decorator.dart';
-import 'package:selfstorage/widgets/dialog.dart';
 import 'package:selfstorage/widgets/genrateUnitsWidget.dart';
 import 'package:selfstorage/widgets/siteUnitButton.dart';
 import 'package:selfstorage/widgets/tableWidgetForUniteTypeMode.dart';
-import 'dart:js' as js;
-
 import '../widgets/info.dart';
 
 /*
@@ -37,6 +30,7 @@ class _sitePageState extends State<sitePage> {
   Widget build(BuildContext context) {
     // defult site screen (defalt mode)
     return Scaffold(
+
       body: Animate(
         effects: [FadeEffect(duration: Duration(milliseconds: 700))],
         child: this.unitMode
@@ -121,4 +115,7 @@ class _sitePageState extends State<sitePage> {
       ),
     );
   }
+
 }
+
+
