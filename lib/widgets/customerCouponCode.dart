@@ -305,7 +305,8 @@ class _customerCouponCodeState extends State<customerCouponCode> {
         "createdAt": DateTime.now(),
         "createdBy": userEmail,
         "expirationType" : {"type":expirationType , "expDate" : this.expDate},
-        "code" :  this.code
+        "code" :  this.code ,
+        "isItUsed" : false
 
 
       });

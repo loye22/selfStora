@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/buttonStyle2.dart';
 import 'package:selfstorage/widgets/dialog.dart';
+import 'package:selfstorage/widgets/priceSummaryCard.dart';
 
 
 
@@ -60,352 +61,402 @@ class _subscriptionPageState extends State<subscriptionPage> {
     return Scaffold(
       body: Center(
         child: true
-            ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
+            ? SingleChildScrollView(
+              child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       'Create a subscription',
                       style: staticVar.titleStyle,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0 , bottom: 8.0),
-                    child: Text(
-                      'Setup a customer subscription via card or manual payment method.',
-                      style: staticVar.subtitleStyle3,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0 , bottom: 8.0),
+                      child: Text(
+                        'Setup a customer subscription via card or manual payment method.',
+                        style: staticVar.subtitleStyle3,
+                      ),
                     ),
-                  ),
-                  Card(
-                    elevation: 5,
-                    child: Container(
-                        padding: const EdgeInsets.all(16.0),
-                        width: staticVar.golobalWidth(context),
-                        height: staticVar.golobalHigth(context),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Who is it for?",
-                                style: staticVar.subtitleStyle1,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                width: staticVar.golobalWidth(context) * .35,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      //background color of dropdown button
-                                      borderRadius: BorderRadius.circular(10),
-                                      //border raiuds of dropdown button
-                                      boxShadow: <BoxShadow>[
-                                        //apply shadow on Dropdown button
-                                        BoxShadow(
-                                            color:
-                                                Color.fromRGBO(0, 0, 0, 0.57),
-                                            //shadow for button
-                                            blurRadius:
-                                                5) //blur radius of shadow
-                                      ]),
-                                  child: Theme(
-                                    data: ThemeData(
-                                        fontFamily: 'louie',
-                                        focusColor: Colors.transparent),
-                                    child: DropdownButton<String>(
-                                      dropdownColor: Colors.white,
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      focusColor: Colors.transparent,
-                                      value: selectedValueFromFirstDropDown,
-                                      items: this.contactNameList.map((value) {
-                                        return DropdownMenuItem<String>(
-                                          value:  value["name"],
-                                          child: Center(
+                    Card(
+                      elevation: 5,
+                      child: Container(
+                          padding: const EdgeInsets.all(16.0),
+                          width: staticVar.golobalWidth(context),
+                          height: staticVar.golobalHigth(context),
+                          child: SingleChildScrollView(
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Who is it for?",
+                                      style: staticVar.subtitleStyle1,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      width: staticVar.golobalWidth(context) * .35,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            //background color of dropdown button
+                                            borderRadius: BorderRadius.circular(10),
+                                            //border raiuds of dropdown button
+                                            boxShadow: <BoxShadow>[
+                                              //apply shadow on Dropdown button
+                                              BoxShadow(
+                                                  color:
+                                                      Color.fromRGBO(0, 0, 0, 0.57),
+                                                  //shadow for button
+                                                  blurRadius:
+                                                      5) //blur radius of shadow
+                                            ]),
+                                        child: Theme(
+                                          data: ThemeData(
+                                              fontFamily: 'louie',
+                                              focusColor: Colors.transparent),
+                                          child: DropdownButton<String>(
+                                            dropdownColor: Colors.white,
+                                            isExpanded: true,
+                                            underline: Container(),
+                                            focusColor: Colors.transparent,
+                                            value: selectedValueFromFirstDropDown,
+                                            items: this.contactNameList.map((value) {
+                                              return DropdownMenuItem<String>(
+                                                value:  value["name"],
+                                                child: Center(
+                                                    child: Text(
+                                                  value["name"],
+                                                  style: staticVar.subtitleStyle2,
+                                                )),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              // MyDialog.showAlert(context, "ok", 'ssss');
+                                              selectedValueFromFirstDropDown = newValue;
+                                              print(selectedValueFromFirstDropDown);
+                                              setState(() {});
+                                            },
+                                            hint: Center(
+                                                child: Text(
+                                              'Select',
+                                              style: staticVar.subtitleStyle2,
+                                            )),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text('Want to add a new customer? Please navigate to contacts, add them, and come back here.' , style: staticVar.subtitleStyle2,)
+                                    ,SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      "Source of booking" ,
+                                      style: staticVar.subtitleStyle1,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      width: staticVar.golobalWidth(context) * .35,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            //background color of dropdown button
+                                            borderRadius: BorderRadius.circular(10),
+                                            //border raiuds of dropdown button
+                                            boxShadow: <BoxShadow>[
+                                              //apply shadow on Dropdown button
+                                              BoxShadow(
+                                                  color:
+                                                  Color.fromRGBO(0, 0, 0, 0.57),
+                                                  //shadow for button
+                                                  blurRadius:
+                                                  5) //blur radius of shadow
+                                            ]),
+                                        child: Theme(
+                                          data: ThemeData(
+                                            fontFamily: 'louie',
+                                            focusColor: Colors.transparent,
+                                          ),
+                                          child: DropdownButton<String>(
+                                            dropdownColor: Colors.white,
+                                            isExpanded: true,
+                                            underline: Container(),
+                                            focusColor: Colors.transparent,
+                                            value: selectedValueFromSecondDropDown, // Make sure this value matches one of the values in the items list
+                                            items: ["Not specified", "Over the phone", "Live chat", "Walk-in", "Others"].map((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Center(
+                                                  child: Text(
+                                                    value,
+                                                    style: staticVar.subtitleStyle2, // Assuming staticVar.subtitleStyle2 is defined
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              // Handle onChanged event here
+                                              this.selectedValueFromSecondDropDown = newValue ?? "Not specified";
+                                              setState(() {});
+                                            },
+                                            hint: Center(
                                               child: Text(
-                                            value["name"],
-                                            style: staticVar.subtitleStyle2,
-                                          )),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        // MyDialog.showAlert(context, "ok", 'ssss');
-                                        selectedValueFromFirstDropDown = newValue;
-                                        print(selectedValueFromFirstDropDown);
-                                        setState(() {});
-                                      },
-                                      hint: Center(
-                                          child: Text(
-                                        'Select',
-                                        style: staticVar.subtitleStyle2,
-                                      )),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text('Want to add a new customer? Please navigate to contacts, add them, and come back here.' , style: staticVar.subtitleStyle2,)
-                              ,SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "Source of booking" ,
-                                style: staticVar.subtitleStyle1,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                width: staticVar.golobalWidth(context) * .35,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      //background color of dropdown button
-                                      borderRadius: BorderRadius.circular(10),
-                                      //border raiuds of dropdown button
-                                      boxShadow: <BoxShadow>[
-                                        //apply shadow on Dropdown button
-                                        BoxShadow(
-                                            color:
-                                            Color.fromRGBO(0, 0, 0, 0.57),
-                                            //shadow for button
-                                            blurRadius:
-                                            5) //blur radius of shadow
-                                      ]),
-                                  child: Theme(
-                                    data: ThemeData(
-                                      fontFamily: 'louie',
-                                      focusColor: Colors.transparent,
-                                    ),
-                                    child: DropdownButton<String>(
-                                      dropdownColor: Colors.white,
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      focusColor: Colors.transparent,
-                                      value: selectedValueFromSecondDropDown, // Make sure this value matches one of the values in the items list
-                                      items: ["Not specified", "Over the phone", "Live chat", "Walk-in", "Others"].map((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Center(
-                                            child: Text(
-                                              value,
-                                              style: staticVar.subtitleStyle2, // Assuming staticVar.subtitleStyle2 is defined
+                                                'Select',
+                                                style: staticVar.subtitleStyle2, // Assuming staticVar.subtitleStyle2 is defined
+                                              ),
                                             ),
                                           ),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        // Handle onChanged event here
-                                        this.selectedValueFromSecondDropDown = newValue ?? "Not specified";
-                                        setState(() {});
-                                      },
-                                      hint: Center(
-                                        child: Text(
-                                          'Select',
-                                          style: staticVar.subtitleStyle2, // Assuming staticVar.subtitleStyle2 is defined
+                                        ),
+
+                                      ),
+                                    ),
+
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      "Subscription details" ,
+                                      style: staticVar.subtitleStyle1,
+                                    ),
+                                     Text(
+                                      "Unit type" ,
+                                      style: staticVar.subtitleStyle2,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      width: staticVar.golobalWidth(context) * .35,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            //background color of dropdown button
+                                            borderRadius: BorderRadius.circular(10),
+                                            //border raiuds of dropdown button
+                                            boxShadow: <BoxShadow>[
+                                              //apply shadow on Dropdown button
+                                              BoxShadow(
+                                                  color:
+                                                  Color.fromRGBO(0, 0, 0, 0.57),
+                                                  //shadow for button
+                                                  blurRadius:
+                                                  5) //blur radius of shadow
+                                            ]),
+                                        child: Theme(
+                                          data: ThemeData(
+                                              fontFamily: 'louie',
+                                              focusColor: Colors.transparent),
+                                          child: DropdownButton<String>(
+                                            dropdownColor: Colors.white,
+                                            isExpanded: true,
+                                            underline: Container(),
+                                            focusColor: Colors.transparent,
+                                            value: selectedValueFromThirdDropDown,
+                                            items: this.unitsType.map((value) {
+                                              return DropdownMenuItem<String>(
+                                                value:  value["id"],
+                                                child: Center(
+                                                    child: Text(
+                                                      value["unitName"],
+                                                      style: staticVar.subtitleStyle2,
+                                                    )),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              // MyDialog.showAlert(context, "ok", 'ssss');
+                                              selectedValueFromThirdDropDown = newValue;
+                                              this.price  =  getPriceHistoryById(selectedValueFromThirdDropDown ??"" , this.unitsType)  ?? "Error";
+                                              this.price += " RON";
+                                              setState(() {});
+                                            },
+                                            hint: Center(
+                                                child: Text(
+                                                  'Select',
+                                                  style: staticVar.subtitleStyle2,
+                                                )),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-
-                                ),
-                              ),
-
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Subscription details" ,
-                                style: staticVar.subtitleStyle1,
-                              ),
-                               Text(
-                                "Unit type" ,
-                                style: staticVar.subtitleStyle2,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                width: staticVar.golobalWidth(context) * .35,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      //background color of dropdown button
-                                      borderRadius: BorderRadius.circular(10),
-                                      //border raiuds of dropdown button
-                                      boxShadow: <BoxShadow>[
-                                        //apply shadow on Dropdown button
-                                        BoxShadow(
-                                            color:
-                                            Color.fromRGBO(0, 0, 0, 0.57),
-                                            //shadow for button
-                                            blurRadius:
-                                            5) //blur radius of shadow
-                                      ]),
-                                  child: Theme(
-                                    data: ThemeData(
-                                        fontFamily: 'louie',
-                                        focusColor: Colors.transparent),
-                                    child: DropdownButton<String>(
-                                      dropdownColor: Colors.white,
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      focusColor: Colors.transparent,
-                                      value: selectedValueFromThirdDropDown,
-                                      items: this.unitsType.map((value) {
-                                        return DropdownMenuItem<String>(
-                                          value:  value["id"],
-                                          child: Center(
-                                              child: Text(
-                                                value["unitName"],
-                                                style: staticVar.subtitleStyle2,
-                                              )),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        // MyDialog.showAlert(context, "ok", 'ssss');
-                                        selectedValueFromThirdDropDown = newValue;
-                                        this.price  =  getPriceHistoryById(selectedValueFromThirdDropDown ??"" , this.unitsType)  ?? "Error";
-                                        this.price += " RON";
-                                        setState(() {});
-                                      },
-                                      hint: Center(
-                                          child: Text(
-                                            'Select',
-                                            style: staticVar.subtitleStyle2,
-                                          )),
+                                    SizedBox(
+                                      height: 10,
                                     ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "Unit type price" ,
-                                style: staticVar.subtitleStyle2,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                this.price == "" ? "0 RON" : this.price ,
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 18, // adjust the font size as needed
-                                  fontWeight: FontWeight.bold, // adjust the font weight as needed
-                                ),
-                              ),
-                               SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "Move in/renewal date",
-                                style: staticVar.subtitleStyle2,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              GestureDetector(
-                                onTap:() async {
-                                 await _showDatePicker(context);
-                                 setState(() {});
-                                },
-                                child: Container(
-                                  width: staticVar.golobalWidth(context) * .35,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(4.0),
-                                  ),
-                                  padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                                          style: TextStyle(fontSize: 16.0),
+                                    Text(
+                                      "Unit type price" ,
+                                      style: staticVar.subtitleStyle2,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      this.price == "" ? "0 RON" : this.price ,
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 18, // adjust the font size as needed
+                                        fontWeight: FontWeight.bold, // adjust the font weight as needed
+                                      ),
+                                    ),
+                                     SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      "Move in/renewal date",
+                                      style: staticVar.subtitleStyle2,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    GestureDetector(
+                                      onTap:() async {
+                                       await _showDatePicker(context);
+                                       setState(() {});
+                                      },
+                                      child: Container(
+                                        width: staticVar.golobalWidth(context) * .35,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: BorderRadius.circular(4.0),
+                                        ),
+                                        padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+                                                style: TextStyle(fontSize: 16.0),
+                                              ),
+                                            ),
+                                            Icon(Icons.calendar_today),
+                                          ],
                                         ),
                                       ),
-                                      Icon(Icons.calendar_today),
-                                    ],
-                                  ),
-                                ),
-                              ) ,
-                               SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "Discount",
-                                style: staticVar.subtitleStyle2,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                width: staticVar.golobalWidth(context) * .35,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      //background color of dropdown button
-                                      borderRadius: BorderRadius.circular(10),
-                                      //border raiuds of dropdown button
-                                      boxShadow: <BoxShadow>[
-                                        //apply shadow on Dropdown button
-                                        BoxShadow(
-                                            color:
-                                            Color.fromRGBO(0, 0, 0, 0.57),
-                                            //shadow for button
-                                            blurRadius:
-                                            5) //blur radius of shadow
-                                      ]),
-                                  child: Theme(
-                                    data: ThemeData(
-                                        fontFamily: 'louie',
-                                        focusColor: Colors.transparent),
-                                    child: DropdownButton<String>(
-                                      dropdownColor: Colors.white,
-                                      isExpanded: true,
-                                      underline: Container(),
-                                      focusColor: Colors.transparent,
-                                      value: selectedValueFromForthDropDown,
-                                      items: this.discountsType.map((value) {
-                                        return DropdownMenuItem<String>(
-                                          value:  value["couponName"],
-                                          child: Center(
-                                              child: Text(
-                                                value["couponName"],
-                                                style: staticVar.subtitleStyle2,
-                                              )),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? newValue) {
-                                        // MyDialog.showAlert(context, "ok", 'ssss');
-                                        selectedValueFromForthDropDown = newValue;
-                                        setState(() {});
-                                      },
-                                      hint: Center(
-                                          child: Text(
-                                            'Select',
-                                            style: staticVar.subtitleStyle2,
-                                          )),
+                                    ) ,
+                                     SizedBox(
+                                      height: 10,
                                     ),
-                                  ),
+                                    Text(
+                                      "Discount",
+                                      style: staticVar.subtitleStyle2,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      width: staticVar.golobalWidth(context) * .35,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            //background color of dropdown button
+                                            borderRadius: BorderRadius.circular(10),
+                                            //border raiuds of dropdown button
+                                            boxShadow: <BoxShadow>[
+                                              //apply shadow on Dropdown button
+                                              BoxShadow(
+                                                  color:
+                                                  Color.fromRGBO(0, 0, 0, 0.57),
+                                                  //shadow for button
+                                                  blurRadius:
+                                                  5) //blur radius of shadow
+                                            ]),
+                                        child: Theme(
+                                          data: ThemeData(
+                                              fontFamily: 'louie',
+                                              focusColor: Colors.transparent),
+                                          child: DropdownButton<String>(
+                                            dropdownColor: Colors.white,
+                                            isExpanded: true,
+                                            underline: Container(),
+                                            focusColor: Colors.transparent,
+                                            value: selectedValueFromForthDropDown,
+                                            items: this.discountsType.map((value) {
+                                              return DropdownMenuItem<String>(
+                                                value:  value["couponName"],
+                                                child: Center(
+                                                    child: Text(
+                                                      value["couponName"],
+                                                      style: staticVar.subtitleStyle2,
+                                                    )),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              // MyDialog.showAlert(context, "ok", 'ssss');
+                                              selectedValueFromForthDropDown = newValue;
+                                             // MyDialog.showAlert(context, "Ok", newValue.toString());
+                                              setState(() {});
+                                            },
+                                            hint: Center(
+                                                child: Text(
+                                                  'Select',
+                                                  style: staticVar.subtitleStyle2,
+                                                )),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    CouponDisplay(coupon:fetchCouponByName(couponData: this.discountsType , couponName: this.selectedValueFromForthDropDown?? "") ,),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    this.isLoading ? staticVar.loading(size: MediaQuery.of(context).size.width * .05) :
+
+                                    priceSummaryCard(
+                                      amount: 52.0,
+                                      discount: 90.9,
+                                      // Define callback functions to retrieve data
+                                      onTotalChanged: (value) {},
+                                      onVatChanged: (value) {},
+                                      onTotalWithVatChanged: (value) {},
+                                      discountType: DiscountType.Percentage,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Button2(
+                                            onTap:(){},
+                                            text: "Create subscription",
+                                            color: Colors.orangeAccent),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Button2(
+                                            onTap: (){},
+                                            text: "Cancel",
+                                            color: Colors.red),
+                                        /*Button2(onTap: () {
+                                                    print(FieldValue.serverTimestamp);
+                                                    return;
+                                                    print("couponName : "+this.couponName);
+                                                    print("discountType : "+this.discountType);
+                                                    print("percentOff : "+this.percentOff);
+                                                    print("amountOff : "+this.amountOff);
+                                                    print("durationType :  "+this.durationType);
+                                                    print(" is it fiexed   "+this.isItFixed.toString());
+
+                                                  }, text: "test", color: Colors.red)*/
+                                      ],
+                                    ) ,
+
+
+
+                                  ],
                                 ),
                               ),
-
-
-                            ],
-                          ),
-                        )),
-                  ),
-                ],
-              )
+                            ),
+                          )),
+                    ),
+                  ],
+                ),
+            )
             : Animate(
                 effects: [FadeEffect(duration: Duration(milliseconds: 900))],
                 child: Column(
@@ -485,7 +536,14 @@ class _subscriptionPageState extends State<subscriptionPage> {
 
 
 
-
+  dynamic fetchCouponByName({required String couponName , required List<dynamic> couponData}) {
+    for (var couponJson in couponData) {
+      if (couponJson['couponName'] == couponName) {
+        return couponJson;
+      }
+    }
+    return null;
+  }
 
   Future<DateTime?> _showDatePicker(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -516,9 +574,6 @@ class _subscriptionPageState extends State<subscriptionPage> {
     return picked;
   }
 
-
-
-
   String? getPriceHistoryById(String id, List<dynamic> data) {
     try{
       // Find the unit with the given id
@@ -547,16 +602,13 @@ class _subscriptionPageState extends State<subscriptionPage> {
       this.discountsType = discounts ;
       print(this.discountsType);
       setState(() {});
+      print(discountsType  );
       return discounts;
     } catch (e) {
       print("Error fetching unit types: $e");
       return [];
     }
   }
-
-
-
-
 
   Future<List<Map<String, dynamic>>> fetchUnitTypes() async {
     List<Map<String, dynamic>> unitTypes = [];
@@ -579,7 +631,6 @@ class _subscriptionPageState extends State<subscriptionPage> {
       return [];
     }
   }
-
 
   Future<List<Map<String, dynamic>>> fetchContacts() async {
     List<Map<String, dynamic>> contactsList = [];
@@ -605,6 +656,83 @@ class _subscriptionPageState extends State<subscriptionPage> {
     } catch (error) {
       print("Error fetching contacts: $error");
       return [];
+    }
+  }
+}
+
+
+class CouponDisplay extends StatelessWidget {
+  final dynamic coupon;
+
+  CouponDisplay({Key? key, required this.coupon}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (coupon == null) {
+      return Text('Coupon not found' , style:staticVar.subtitleStyle2 ,);
+    }
+    try {
+      if(coupon['couponName'] == 'None' ){
+        return Text("No discount selected  " , style:staticVar.subtitleStyle2 );
+      }
+      // this will hanel if the coupon one time used
+      if(coupon['durationType'] == 'once' &&  coupon['isItUsed']){
+        return Text("This coupon has already been used and is valid for one-time use only.", style:staticVar.subtitleStyle4Warrining);
+      }
+
+      // this will handel the expierd coupon on dates
+      if(coupon['expirationType']["expDate"] != null  && isTimestampExpired(coupon['expirationType']["expDate"])  ){
+        return Text("This coupon is expired!" , style:staticVar.subtitleStyle4Warrining);
+      }
+
+      String discountType = coupon['isItFixed'] ? 'Fixed' : 'Percentage';
+      String amountOrPercent = coupon['isItFixed']
+          ? 'Amount: ${coupon['amountOff']} RON '
+          : 'Percent: ${coupon['percentOff']}%';
+      return Container(
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Coupon Name: ${coupon['couponName']}',
+              style:staticVar.subtitleStyle2,
+            ),
+            Text(
+              'Coupon duration : ${coupon['durationType']}',
+              style:staticVar.subtitleStyle2,
+            ),
+            Text('Discount Type: $discountType' ,  style:staticVar.subtitleStyle2),
+            Text(amountOrPercent ,  style:staticVar.subtitleStyle2),
+          ],
+        ),
+      );
+    }
+    catch(e){
+      return Text('We encountered an error  $e' , style:staticVar.subtitleStyle2 ,);
+    }
+
+
+  }
+
+  bool isTimestampExpired(Timestamp expiryTimestamp) {
+    // Get the current timestamp
+    Timestamp currentTimestamp = Timestamp.now();
+
+    // Convert the Firebase Timestamp to a DateTime object
+    DateTime expiryDateTime = expiryTimestamp.toDate();
+
+    // Compare the expiry date to the current date
+    if (currentTimestamp.seconds > expiryTimestamp.seconds) {
+      // Timestamp is expired
+      return true;
+    } else {
+      // Timestamp is not expired
+      return false;
     }
   }
 }

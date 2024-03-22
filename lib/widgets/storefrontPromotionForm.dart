@@ -199,6 +199,7 @@ class _storefrontPromotionFormState extends State<storefrontPromotionForm> {
         "storeFrontDiscount" : true ,
         "createdAt":DateTime.now() ,
         "createdBy": userEmail,
+        "isItUsed" : false
       });
 
       this.isLoading = false;
