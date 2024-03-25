@@ -72,6 +72,12 @@ static TextStyle subtitleStyle3 = TextStyle(
       fontSize: 13,
       color: Colors.red);
 
+  static TextStyle subtitleStyle4Warrining2 = TextStyle(
+      fontFamily: 'louie',
+      fontWeight: FontWeight.w600,
+      fontSize: 16,
+      color: Colors.red);
+
 
 
   static Color buttonColor = Color.fromRGBO(20, 53, 96, 1) ;
