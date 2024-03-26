@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,6 +49,10 @@ class _subscriptionPageState extends State<subscriptionPage> {
   DateTime? _selectedDate = null;
 
   bool isCouponValid = false ;
+
+  dynamic discountDataForPriceSummry = {} ;
+
+  Map<String,dynamic> priceSummaryData  = {} ;
 
   @override
   void initState() {
@@ -415,10 +418,10 @@ class _subscriptionPageState extends State<subscriptionPage> {
                                         );
                                       }).toList(),
                                       onChanged: (String? newValue) {
-                                        // MyDialog.showAlert(context, "ok", 'ssss');
-                                        selectedValueFromForthDropDown =
-                                            newValue;
-                                        // MyDialog.showAlert(context, "Ok", newValue.toString());
+                                        selectedValueFromForthDropDown = newValue;
+                                        discountDataForPriceSummry = fetchCouponByName(couponName: this.selectedValueFromForthDropDown ?? "", couponData: this.discountsType);
+
+
                                         setState(() {});
                                       },
                                       hint: Center(
@@ -435,19 +438,17 @@ class _subscriptionPageState extends State<subscriptionPage> {
                               ),
                               CouponDisplay(coupon: fetchCouponByName(
                                   couponData: this.discountsType,
-                                  couponName: this.selectedValueFromForthDropDown ?? ""), onCouponUsableChanged: (bool ) {this.isCouponValid = bool ;},),
+                                  couponName: this.selectedValueFromForthDropDown ?? ""), onCouponUsableChanged: (bool) {this.isCouponValid = bool ;},),
                               SizedBox(
                                 height: 10,
                               ),
 
                               priceSummaryCard(
-                                amount: double.tryParse(this.price ?? "0.0") ?? 0.0,
-                                discount: 10,
+                                amount: double.tryParse(this.price) ?? 0.0,
+                                discount:(discountDataForPriceSummry["isItFixed"] != null && discountDataForPriceSummry["isItFixed"])  ? double.tryParse(discountDataForPriceSummry["amountOff"] ?? "0.0") ?? 0.0 : double.tryParse(discountDataForPriceSummry["percentOff"]??"0.0") ?? 0.0  ,
                                 // Define callback functions to retrieve data
-                                onTotalChanged: (value) {},
-                                onVatChanged: (value) {},
-                                onTotalWithVatChanged: (value) {},
-                                discountType: DiscountType.Percentage,
+                                discountType: (discountDataForPriceSummry["isItFixed"] != null && discountDataForPriceSummry["isItFixed"]) ?  DiscountType.Fixed :  DiscountType.Percentage,
+                                dataSummry: (Map) {this.priceSummaryData = Map ;},
                               ),
                               this.isLoading ? staticVar.loading(
                                   size: MediaQuery
@@ -468,25 +469,25 @@ class _subscriptionPageState extends State<subscriptionPage> {
                                       text: "Cancel",
                                       color: Colors.red),
                                   Button2(onTap: () {
-                                    if (this.selectedValueFromThirdDropDown !=
-                                        null) {
+
+
+                                   final uniteDataById = getUnitById(id: selectedValueFromThirdDropDown ?? "5" , unitsList: unitsType);
+                                   final couponDataByName = fetchCouponByName(couponName: selectedValueFromForthDropDown ?? "" , couponData:  this.discountsType);
+
+                                    print("To Whome " + (this.selectedValueFromFirstDropDown ?? "404NotFound" ));
+                                    print("booking source " + (this.selectedValueFromSecondDropDown ?? "404NotFound" ));
+                                    print("subScritpion details " + uniteDataById.toString() );
+                                    print("unitName " + uniteDataById["unitName"]??"404NotFOUND" );
+                                    print("renuwal date  " + this._selectedDate.toString() );
+                                    print("discount detals "  + couponDataByName.toString());
+                                    print("price summry detals "  +  this.priceSummaryData.toString());
 
 
 
 
 
-                                      /*return
-                                      print("whom for?  " +
-                                          this.selectedValueFromFirstDropDown!);
-                                      print("Booking source  " + this
-                                          .selectedValueFromSecondDropDown!);
-                                      print("Subscription details   " +
-                                          this.selectedValueFromThirdDropDown!);
-                                      print("renewal data   " +
-                                          this._selectedDate.toString()!);
-                                      print("sicount type   " +
-                                          this.selectedValueFromForthDropDown!);*/
-                                    }
+
+
                                   }, text: "test", color: Colors.red)
                                 ],
                               ),
@@ -579,6 +580,43 @@ class _subscriptionPageState extends State<subscriptionPage> {
   }
 
 
+
+  Future<void> updateCouponStatus({required String couponName}) async {
+    // Reference to your Firebase collection named 'discount'
+    CollectionReference discountCollection =
+    FirebaseFirestore.instance.collection('discount');
+
+    try {
+      // Query for documents where 'couponName' equals the provided string
+      QuerySnapshot querySnapshot = await discountCollection
+          .where('couponName', isEqualTo: couponName)
+          .get();
+
+      // Iterate through the documents in the query snapshot
+      querySnapshot.docs.forEach((DocumentSnapshot document) async {
+        // Update the 'isItUsed' field to true
+        await discountCollection.doc(document.id).update({'isItUsed': true});
+      });
+    } catch (error) {
+      print('Error updating coupon status: $error');
+      MyDialog.showAlert(context, "Ok", 'Error updating coupon status: $error');
+    }
+  }
+
+
+  Map<String,dynamic> getUnitById({required String id,required List<dynamic> unitsList}) {
+    // this funtion will featch the unite name from the uniteType list by Id
+    for (var unit in unitsList) {
+      if (unit['id'] == id) {
+        return unit as Map<String,dynamic> ;
+      }
+    }
+    // If the unit with the given ID is not found, return null or handle it accordingly
+    return {};
+  }
+
+
+
   String? getUnitNameById(String id, List<dynamic> unitsList) {
     // this funtion will featch the unite name from the uniteType list by Id
     for (var unit in unitsList) {
@@ -632,18 +670,26 @@ class _subscriptionPageState extends State<subscriptionPage> {
 
       // The algorithm to create a subscription is as follows:
       // 1. Check if we have available units for the selected type. If there are any, continue; otherwise, display a proper message.
-      // 2. Check if the discounts are valid (not expired). If they are, continue; otherwise, display a proper message.
-      // 3.
+      // 2. flip the discount form Flase to True
+      // 3.flip the status for the first room avalabe to occupied
 
       // 1.
       String? uniteName = getUnitNameById(selectedValueFromThirdDropDown?? "" , this.unitsType );
+      //
       Map<String,dynamic> avalabeUnits = await getFirstAvailableUnitId(uniteName??"");
       if(avalabeUnits["status"] == false ){
         MyDialog.showAlert(context, "Ok", "Unfortunately, there are no available units of type '$uniteName' at the moment. All of them are reserved. Please select another type and try again.");
         return;
       }
+      print("******");
+      print(avalabeUnits);
 
       // 2.
+      await  updateCouponStatus(couponName: this.selectedValueFromForthDropDown ?? "");
+
+      // 3.
+      await updateUnitStatus(name: this.selectedValueFromFirstDropDown ?? "404NotFound" , docId:avalabeUnits['id']  );
+
 
 
 
@@ -659,6 +705,24 @@ class _subscriptionPageState extends State<subscriptionPage> {
   }
 
 
+  Future<void> updateUnitStatus({required String docId, required String name}) async {
+    // Reference to your Firestore collection named 'units'
+    CollectionReference unitsCollection =
+    FirebaseFirestore.instance.collection('units');
+
+    try {
+      // Update the document with the provided docId
+      await unitsCollection.doc(docId).update({
+        'status': 'occupied',
+        'occupant': name.trim(),
+      });
+      print('Unit status updated successfully for document ID: $docId');
+    } catch (error) {
+      print('Error updating unit status: $error');
+      MyDialog.showAlert(context,"Ok", 'Error updating unit status: $error');
+
+    }
+  }
   dynamic fetchCouponByName(
       {required String couponName, required List<dynamic> couponData}) {
     for (var couponJson in couponData) {
@@ -827,8 +891,9 @@ class CouponDisplay extends StatelessWidget {
         onCouponUsableChanged(true);
         return Text("No discount selected  ", style: staticVar.subtitleStyle2);
       }
+
       // this will hanel if the coupon one time used
-      if (coupon['durationType'] == 'once' && coupon['isItUsed']) {
+      if (coupon['durationType'] != null &&  coupon['durationType'] == 'once' && coupon['isItUsed']) {
         onCouponUsableChanged(false);
         return Text(
             "This coupon has already been used and is valid for one-time use only.",
@@ -836,7 +901,7 @@ class CouponDisplay extends StatelessWidget {
       }
 
       // this will handel the expierd coupon on dates
-      if (coupon['expirationType']["expDate"] != null &&
+      if (coupon['expirationType'] != null && coupon['expirationType']["expDate"] != null &&
           isTimestampExpired(coupon['expirationType']["expDate"])) {
         onCouponUsableChanged(false);
         return Text("This coupon is expired!",
@@ -863,7 +928,7 @@ class CouponDisplay extends StatelessWidget {
               style: staticVar.subtitleStyle2,
             ),
             Text(
-              'Coupon duration : ${coupon['durationType']}',
+              'Coupon duration : ${coupon['durationType'] ?? "40004"}',
               style: staticVar.subtitleStyle2,
             ),
             Text('Discount Type: $discountType',
