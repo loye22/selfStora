@@ -78,6 +78,11 @@ static TextStyle subtitleStyle3 = TextStyle(
       fontSize: 16,
       color: Colors.red);
 
+  static TextStyle subtitleStyle4 = TextStyle(
+      fontFamily: 'louie',
+      fontWeight: FontWeight.w600,
+      fontSize: 13,
+      color: Colors.black);
 
 
   static Color buttonColor = Color.fromRGBO(20, 53, 96, 1) ;
@@ -127,6 +132,14 @@ static void showOverlay({
 
   static Widget loading ({ double size = 100 , Color colors = Colors.orange })=> Center(child: LoadingAnimationWidget.staggeredDotsWave(color:colors , size: size,),);
 
+  static Future<void> showSubscriptionSnackbar({required BuildContext context , required String msg}) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.showSnackBar(
+      SnackBar(
+        content: Text(msg),
+      ),
+    );
+  }
 
 
 

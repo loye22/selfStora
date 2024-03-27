@@ -1068,10 +1068,14 @@ class _mapPageState extends State<mapPage> {
           await FirebaseFirestore.instance.collection('units').get();
       List<Map<String, dynamic>> units = [];
       querySnapshot.docs.forEach((doc) {
-        units.add(doc.data() as Map<String, dynamic>);
+        Map<String, dynamic> unitData = doc.data() as Map<String, dynamic>;
+        unitData['pureUnitId'] = doc.id; // Add document ID to the map
+        units.add(unitData);
+       // units.add(doc.data() as Map<String, dynamic>);
       });
       this.unitsData = units;
       //MyDialog.showAlert(context, "okk", unitsData[2].toString());
+      print(units[0]);
       return units;
     } catch (e) {
       print("Error fetching units: $e");
@@ -1104,8 +1108,7 @@ class _roomState extends State<room> {
   @override
   void initState() {
     // TODO: implement initState
-    status =
-        fetchDataByUnitId(widget.data, widget.name)["status"] ?? "unavailable";
+    status = fetchDataByUnitId(widget.data, widget.name)["status"] ?? "unavailable";
     super.initState();
   }
 

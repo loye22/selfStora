@@ -53,7 +53,7 @@ class priceSummaryCard extends StatelessWidget {
   //  onAfterDiscount(afterDiscount);
   //  onVatChanged(vat);
     // onTotalWithVatChanged(totalWithVat);
-    Map<String , dynamic > data = {"amount" : amount.toStringAsFixed(2) , "discountType" : discountType ,"discount" : discount.toStringAsFixed(2) , "afterDiscount" : afterDiscount.toStringAsFixed(2) ,  "vat" : vat.toStringAsFixed(2) , "totalWithVat" : totalWithVat.toStringAsFixed(2)  };
+    Map<String , dynamic > data = {"amount" : amount.toStringAsFixed(2) , "discountType" : discountType.toString() ,"discount" : discount.toStringAsFixed(2) , "afterDiscount" : afterDiscount.toStringAsFixed(2) ,  "vat" : vat.toStringAsFixed(2) , "totalWithVat" : totalWithVat.toStringAsFixed(2)  };
     dataSummry(data);
 
 
