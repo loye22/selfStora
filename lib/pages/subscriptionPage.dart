@@ -4,11 +4,15 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:intl/intl.dart';
 import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/buttonStyle2.dart';
+import 'package:selfstorage/widgets/confirmationDialog.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 import 'package:selfstorage/widgets/priceSummaryCard.dart';
+import 'package:selfstorage/widgets/showDetalisWidget.dart';
 import 'package:selfstorage/widgets/subscriptionItem.dart';
 
 class subscriptionPage extends StatefulWidget {
@@ -24,6 +28,7 @@ class _subscriptionPageState extends State<subscriptionPage> {
   bool createSubMode = false;
   bool displayInfo = false;
   bool isLoading = false;
+  bool showDetalis = !false ;
 
   // this will hold the selected value for all the dropdown menus ==> UnitsType by there NAME!!!!!
   String? selectedValueFromFirstDropDown = null;
@@ -60,7 +65,8 @@ class _subscriptionPageState extends State<subscriptionPage> {
     fetchContacts();
     fetchUnitTypes();
     fetchDiscounts();
-    if (!createSubMode) fetchSubscriptionData();
+    if (!createSubMode)
+      fetchSubscriptionData();
 
     super.initState();
   }
@@ -87,11 +93,15 @@ class _subscriptionPageState extends State<subscriptionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body:showDetalis ? SingleChildScrollView(child: Animate(
+        effects: [FadeEffect(duration: Duration(milliseconds: 900))],
+        child: showDetalisWidget(),
+      ),):
+      Center(
         child: this.createSubMode
             ? SingleChildScrollView(
                 child: Animate(
-                  effects: [FadeEffect(duration: Duration(milliseconds: 900))],
+                  effects: [FadeEffect(duration: Duration(milliseconds: 1500))],
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -558,12 +568,21 @@ class _subscriptionPageState extends State<subscriptionPage> {
                                                     },
                                                     text: "Cancel",
                                                     color: Colors.red)
-                                                /*,
-                                   Button2(onTap: ()async {
+                                                ,
+                                  /* Button2(onTap: ()async {
+                                     String? uniteName =
+                                     getUnitNameById(selectedValueFromThirdDropDown ?? "", this.unitsType);
+                                     //
+                                     Map<String, dynamic> avalabeUnits =
+                                     await getFirstAvailableUnitId(uniteName ?? "");
+                                     print(avalabeUnits);
+
+
+                                     return ;
                                       // 1.
-                                      String? uniteName = getUnitNameById(selectedValueFromThirdDropDown?? "" , this.unitsType );
+                                      String? uniteNamea = getUnitNameById(selectedValueFromThirdDropDown?? "" , this.unitsType );
                                       //
-                                      Map<String,dynamic> avalabeUnits = await getFirstAvailableUnitId(uniteName??"");
+                                      Map<String,dynamic> avalabeUanits = await getFirstAvailableUnitId(uniteName??"");
                                       print(avalabeUnits["id"]);
                                       return;
                                       final uniteDataById = getUnitById(id: selectedValueFromThirdDropDown ?? "5" , unitsList: unitsType);
@@ -664,27 +683,48 @@ class _subscriptionPageState extends State<subscriptionPage> {
                                     rows: this
                                         .subscriptionDataFetched
                                         .map((e) {
-
                                           String? client  = e["toWhome"]?.toString().split(" ").first ;
                                           String? booking = e["uniteDetails"]?["unitName"] ;
-                                          String? unitName = e["unitName"] ;
-                                          bool? isSubscribed = !e["isSubscribed"] ;
-              
-              
-              
+                                          String? unitName = e["exactUniteName"] ;
+                                          bool? isSubscribed = !e["isSubscribed"];
+                                          Timestamp? timestamp = e["createdAt"];
+                                          DateTime? createdAt = timestamp?.toDate();
+                                          String formattedDate = createdAt != null ? DateFormat('d MMM').format(createdAt) : "Unknown";
+                                          bool isSubscribedd = e["isSubscribed"] ?? false ; // false mean the used has canceled
+
+                                          Timestamp? timestamp2 = e["cancelationDate"];
+                                          DateTime? cancelationDate = timestamp2?.toDate();
+                                          String cancelationDateformattedDate = cancelationDate != null ? DateFormat('d MMM').format(cancelationDate) : "Unknown";
+                                          String period = !isSubscribedd ? "$formattedDate >> $cancelationDateformattedDate" : "$formattedDate >> Ongoing" ;
+
+                                          // these 2 var are gonna be used for cancelation
+                                          String unitID = e["uniteID"];
+                                          String subID = e["id"] ;
+
+
+
+
+
+
+
+
+
+
+
+
                                           return DataRow2(
                                               onTap: (){},
                                               cells: [
                                             DataCell(Center(child: Text(client ?? "404NotFound" ,style:  staticVar.subtitleStyle4,))),
                                             DataCell(Center(child: Text(booking  ?? "404NotFound",style:  staticVar.subtitleStyle4, ))),
-                                            DataCell(Center(child: subscriptionItem(
-                                              isCancelled: isSubscribed ?? false , // Pass the cancellation state
-                                              allocation: unitName ?? "404NotFound", // Pass the allocation text
-                                            )
-                                              ,)),
-                                            DataCell(Text('')),
-                                            DataCell(Text('')),
-                                            DataCell(Text(''))
+                                            DataCell(Center(child: subscriptionItem(isCancelled: isSubscribed ?? false , allocation: unitName ?? "404NotFound",),)),
+                                            DataCell(Center(child: Text(period ,style:  staticVar.subtitleStyle4,))),
+                                            DataCell(Center(child: Text(formattedDate ,style:  staticVar.subtitleStyle4,),)),
+                                            DataCell(Center(child:isSubscribed ? Text("") :
+                                            Button2(onTap:() async {
+
+                                              await cancelSubscription(subID: subID , unitID:  unitID ,ctx: context);
+                                              }, text: "Cancel this sub", color: Colors.red, IconData: Icons.cancel, ),))
                                           ]);
                                     })
                                         .toList(),
@@ -700,13 +740,47 @@ class _subscriptionPageState extends State<subscriptionPage> {
     );
   }
 
+
+
+  Future<void> cancelSubscription({required String unitID,required String subID , required BuildContext ctx }) async {
+    try {
+
+      confirmationDialog.showElegantPopup(context: ctx , message:'Are you sure you want to cancel this subscription?', onYes: () async {
+        // Update the document in the 'currentDocs' collection
+        await FirebaseFirestore.instance
+            .collection('units')
+            .doc(unitID)
+            .update({'status': 'available' , 'occupant' : ''});
+
+        // Update the document in the 'subscriptions' collection
+        await FirebaseFirestore.instance
+            .collection('subscriptions')
+            .doc(subID)
+            .update({
+          'isSubscribed': false,
+          'cancelationDate': Timestamp.now(),
+        });
+
+        await staticVar.showSubscriptionSnackbar(context: ctx, msg: 'Subscription canceled successfully.') ;
+        fetchSubscriptionData();
+      }, onNo: (){});
+
+    } catch (error) {
+      MyDialog.showAlert(context, "Ok", 'Error canceling subscription: $error');
+      print('Error canceling subscription: $error');
+      // Handle error appropriately, e.g., show error message to user
+    }
+  }
+
+
+
   Future<List<Map<String, dynamic>>> fetchSubscriptionData() async {
     List<Map<String, dynamic>> subscriptionData = [];
     try {
       this.isLoading = true;
       setState(() {});
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance.collection('subscriptions').get();
+          await FirebaseFirestore.instance.collection('subscriptions') .orderBy('createdAt', descending: true).get();
 
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
         Map<String, dynamic> discountDataLoader =
@@ -904,7 +978,7 @@ class _subscriptionPageState extends State<subscriptionPage> {
         "uniteID": avalabeUnits["id"],
         "isSubscribed" : true ,
         "cancelationDate" : DateTime.now() ,
-        "uniteName" : avalabeUnits["uniteName"]
+        "exactUniteName" : avalabeUnits["unitIdByUserTxtField"]
       });
 
       if (mounted) {
@@ -1046,7 +1120,8 @@ class _subscriptionPageState extends State<subscriptionPage> {
           "id": querySnapshot.docs.first.id,
           "all data": querySnapshot.docs.first["unitIdByUserTxtField"]
         });
-        return {"status": true, "id": querySnapshot.docs.first.id , "uniteName" : querySnapshot.docs.first["unitTypeName"]};
+        print(querySnapshot.docs.first.data());
+        return {"status": true, "id": querySnapshot.docs.first.id , "uniteName" : querySnapshot.docs.first["unitTypeName"] , "unitIdByUserTxtField" : querySnapshot.docs.first["unitIdByUserTxtField"] };
       } else {
         print({"status": false, "id": ""});
         return {"status": false, "id": ""};

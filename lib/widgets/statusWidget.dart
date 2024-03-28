@@ -32,29 +32,32 @@ class statusWidget extends StatelessWidget {
       default:
         icon = Icons.error;
         color = Colors.black;
-        text = 'Unknown Status';
+        text = 'Unknown';
     }
 
-    return Container(
-      width: staticVar.golobalWidth(context) * .09,
-      height: staticVar.golobalHigth(context) * .05,
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: color),
-        borderRadius: BorderRadius.circular(8.0),
-        color: color
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white),
-          SizedBox(width: 8.0),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(color: Colors.white),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        width: staticVar.golobalWidth(context) * .10,
+        height: staticVar.golobalHigth(context) * .06,
+
+        decoration: BoxDecoration(
+          border: Border.all(color: color),
+          borderRadius: BorderRadius.circular(8.0),
+          color: color
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white),
+            SizedBox(width: 8.0),
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

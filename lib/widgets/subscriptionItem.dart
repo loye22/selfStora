@@ -12,8 +12,7 @@ class subscriptionItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: Container(
-
-        width: 150,
+        width:110,
         height: 100,
         decoration: BoxDecoration(
           color: isCancelled ? Colors.red : Colors.green,
@@ -21,14 +20,15 @@ class subscriptionItem extends StatelessWidget {
         ),
         padding: EdgeInsets.all(8.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+          //  SizedBox(width: 40,),
             Icon(
               isCancelled ? Icons.cancel : Icons.check_circle,
               color: Colors.white,
               size: 20,
             ),
-            SizedBox(width: 1.0),
+
             isCancelled ?Expanded(
               child: Text(
                'Canceled',

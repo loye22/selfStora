@@ -128,6 +128,8 @@ static void showOverlay({
 
   static Color c1 = Color.fromRGBO(33, 103, 199, 1) ;
 
+  static Widget divider()=>  Container(decoration: BoxDecoration(border: Border.all(color: Colors.grey , width:  .5)),);
+
 
 
   static Widget loading ({ double size = 100 , Color colors = Colors.orange })=> Center(child: LoadingAnimationWidget.staggeredDotsWave(color:colors , size: size,),);
