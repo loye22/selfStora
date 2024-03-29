@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:selfstorage/model/staticVar.dart';
 
 class Button2 extends StatefulWidget {
   final VoidCallback onTap;
   final String text;
   Color color;
   final IconData ;
+  final height ;
+  final width ;
 
-  Button2({Key? key, required this.onTap, required this.text, this.color = Colors.orange, this.IconData = null})
+  Button2({Key? key, required this.onTap, required this.text, this.color = Colors.orange, this.IconData = null , this.height = 0 , this.width = 0 })
       : super(key: key);
 
   @override
@@ -18,6 +21,7 @@ class _Button2State extends State<Button2> {
   @override
   Widget build(BuildContext context) {
     return Padding(
+
       padding: const EdgeInsets.all(8.0),
       child:widget.IconData != null ?
       GestureDetector(
@@ -44,8 +48,8 @@ class _Button2State extends State<Button2> {
       GestureDetector(
         onTap: widget.onTap, // Fix the variable name here
         child: Container(
-          width: 150,
-          height: 50,
+          width: widget.width == 0 ?  150 : staticVar.golobalWidth(context) * .49,
+          height:50 ,
           decoration: BoxDecoration(
             color: widget.color,
             borderRadius: BorderRadius.circular(10),
