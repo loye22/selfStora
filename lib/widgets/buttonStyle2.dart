@@ -9,8 +9,9 @@ class Button2 extends StatefulWidget {
   final IconData ;
   final height ;
   final width ;
+  final bool disabled;
 
-  Button2({Key? key, required this.onTap, required this.text, this.color = Colors.orange, this.IconData = null , this.height = 0 , this.width = 0 })
+  Button2({Key? key, required this.onTap, required this.text, this.color = Colors.orange, this.IconData = null , this.height = 0 , this.width = 0, this.disabled = false  })
       : super(key: key);
 
   @override
@@ -25,12 +26,12 @@ class _Button2State extends State<Button2> {
       padding: const EdgeInsets.all(8.0),
       child:widget.IconData != null ?
       GestureDetector(
-        onTap: widget.onTap, // Fix the variable name here
+        onTap:widget.disabled ? null  : widget.onTap, // Fix the variable name here
         child: Container(
           width: 150,
           height: 50,
           decoration: BoxDecoration(
-            color: widget.color,
+            color:widget.disabled ? Colors.grey :  widget.color,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(child: Center(

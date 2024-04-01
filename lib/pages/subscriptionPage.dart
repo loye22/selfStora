@@ -28,7 +28,7 @@ class _subscriptionPageState extends State<subscriptionPage> {
   bool createSubMode = false;
   bool displayInfo = false;
   bool isLoading = false;
-  bool showDetalis = !false ;
+  bool showDetalis = false ;
 
   // this will hold the selected value for all the dropdown menus ==> UnitsType by there NAME!!!!!
   String? selectedValueFromFirstDropDown = null;
@@ -57,6 +57,8 @@ class _subscriptionPageState extends State<subscriptionPage> {
   Map<String, dynamic> priceSummaryData = {};
 
   List<Map<String, dynamic>> subscriptionDataFetched = [];
+
+  dynamic showDetailsData = {} ;
 
   @override
   void initState() {
@@ -95,7 +97,7 @@ class _subscriptionPageState extends State<subscriptionPage> {
     return Scaffold(
       body:showDetalis ? SingleChildScrollView(child: Animate(
         effects: [FadeEffect(duration: Duration(milliseconds: 900))],
-        child: showDetalisWidget(),
+        child: showDetalisWidget(onCancel: (){this.showDetalis = false ; setState(() {});}, data: this.showDetailsData,),
       ),):
       Center(
         child: this.createSubMode
@@ -701,19 +703,12 @@ class _subscriptionPageState extends State<subscriptionPage> {
                                           String unitID = e["uniteID"];
                                           String subID = e["id"] ;
 
-
-
-
-
-
-
-
-
-
-
-
                                           return DataRow2(
-                                              onTap: (){},
+                                              onTap: (){
+                                                this.showDetailsData = e ;
+                                                this.showDetalis = true ;
+                                                setState(() {});
+                                              },
                                               cells: [
                                             DataCell(Center(child: Text(client ?? "404NotFound" ,style:  staticVar.subtitleStyle4,))),
                                             DataCell(Center(child: Text(booking  ?? "404NotFound",style:  staticVar.subtitleStyle4, ))),
