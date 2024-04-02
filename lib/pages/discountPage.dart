@@ -23,7 +23,7 @@ class discountPage extends StatefulWidget {
 }
 
 class _discountPageState extends State<discountPage> {
-  bool createNewDiscounMode = false;
+  bool createNewDiscounMode = !false;
   bool storeFronPromotion = false;
   bool deleteLoading = false;
   bool isLoading = false ;
@@ -181,7 +181,7 @@ class _discountPageState extends State<discountPage> {
                             // print(e.toString());
                             bool isItFixed = e["isItFixed"] ?? null;
                             String discount = isItFixed
-                                ? e["amountOff"].toString() + " RON"
+                                ? e["amountOff"].toString() + " Euro"
                                 : e["percentOff"].toString() + " %";
             
                             bool? storeFrontDiscount =

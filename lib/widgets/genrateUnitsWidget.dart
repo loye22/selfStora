@@ -246,94 +246,97 @@ class _unitWidgetState extends State<unitWidget> {
       ),
     ) : Animate(
             effects: [FadeEffect(duration: Duration(milliseconds: 900))],
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back),
-                        onPressed: widget.onCancel,
-                      ),
-                      SizedBox(width: 16.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Units',
-                            style: staticVar.subtitleStyle1,
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      SizedBox(width: 10.0),
-                      Button2(
-                        onTap: () {
-                          this.addNewUnitsMode = true;
-                          setState(() {});
-                        },
-                        text: "Add unit",
-                        color: staticVar.c1,
-                      ),
-                    ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: widget.onCancel,
+                        ),
+                        SizedBox(width: 16.0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Units',
+                              style: staticVar.subtitleStyle1,
+                            ),
+                          ],
+                        ),
+                        Spacer(),
+                        SizedBox(width: 10.0),
+                        Button2(
+                          onTap: () {
+                            this.addNewUnitsMode = true;
+                            setState(() {});
+                          },
+                          text: "Add unit",
+                          color: staticVar.c1,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  width: staticVar.golobalWidth(context),
-                  height: staticVar.golobalHigth(context),
-                  decoration: BoxDecoration(
-                      //    border: Border.all(color: Colors.black.withOpacity(.33)),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white),
-                  child: this.isLoading
-                      ? Center(
-                          child: staticVar.loading(),
-                        )
-                      : Card(
-                          elevation: 1,
-                          child: Center(
-                            child: DataTable2(
-                              columnSpacing: 5,
-                              columns: [
-                                staticVar.Dc("UNIT"),
-                                staticVar.Dc("STATUS"),
-                                staticVar.Dc("OCCUPANT"),
-                                staticVar.Dc("Options"),
-                              ],
-                              rows: this.tableDataForUnitsTable.map((e) {
-                                String   id   = e["unitIdByUserTxtField"] ?? "404NOtFound";
-                                String  size  = e["unitTypeName"] ?? "404NOtFound";
-                                String status = e["status"] ?? "404NOtFound";
-                                String occupant = e["occupant"] ?? "404NOtFound";
+                  Container(
+                    width: staticVar.golobalWidth(context),
+                    height: staticVar.golobalHigth(context),
+                    decoration: BoxDecoration(
+                        //    border: Border.all(color: Colors.black.withOpacity(.33)),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: this.isLoading
+                        ? Center(
+                            child: staticVar.loading(),
+                          )
+                        : Card(
+                            elevation: 1,
+                            child: Center(
+                              child: DataTable2(
+                                columnSpacing: 50,
+                                columns: [
+                                  staticVar.Dc("UNIT"),
+                                  staticVar.Dc("STATUS"),
+                                  staticVar.Dc("OCCUPANT"),
+                                  staticVar.Dc("Options"),
+                                ],
+                                rows: this.tableDataForUnitsTable.map((e) {
+                                  String   id   = e["unitIdByUserTxtField"] ?? "404NOtFound";
+                                  String  size  = e["unitTypeName"] ?? "404NOtFound";
+                                  String status = e["status"] ?? "404NOtFound";
+                                  String occupant = e["occupant"] ?? "404NOtFound";
+              
+              
+                                  return DataRow2(
 
-
-                                return DataRow2(
-                                    onTap: (){},
-                                    cells: [
-                                  DataCell(Center(child: Column( children: [Text(id , style: staticVar.subtitleStyle1,) , Text(size, style: staticVar.subtitleStyle2 )],))),
-                                  DataCell(Center(child: statusWidget(status: status,))),
-                                  DataCell(Center(child: Text(occupant == "" ? "-" : occupant))),
-                                      DataCell(Center(
-                                        child: TextButton(
-                                          child: Icon(Icons.delete , color: Colors.red,),
-                                          onPressed: () {
-                                            confirmationDialog.showElegantPopupFutureVersion(context: context, message: "Are you sure you want to delete this unit?", onYes: () async {
-                                              await deleteContact(e["recordIdFordeletion"]);
-                                            }, onNo: (){
-
-
-                                            });
-                                          }
-                                        ),
-                                      )),
-                                ]);
-                              }).toList(),
+                                      onTap: (){},
+                                      cells: [
+                                    DataCell(Center(child: Column( children: [Text(id , style: staticVar.subtitleStyle1,) , Text(size, style: staticVar.subtitleStyle2 )],))),
+                                    DataCell(Center(child: statusWidget(status: status,))),
+                                    DataCell(Center(child: Text(occupant == "" ? "-" : occupant))),
+                                        DataCell(Center(
+                                          child: TextButton(
+                                            child: Icon(Icons.delete , color: Colors.red,),
+                                            onPressed: () {
+                                              confirmationDialog.showElegantPopupFutureVersion(context: context, message: "Are you sure you want to delete this unit?", onYes: () async {
+                                                await deleteContact(e["recordIdFordeletion"]);
+                                              }, onNo: (){
+              
+              
+                                              });
+                                            }
+                                          ),
+                                        )),
+                                  ]);
+                                }).toList(),
+                              ),
                             ),
                           ),
-                        ),
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           );
   }

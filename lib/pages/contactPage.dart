@@ -160,6 +160,14 @@ class _contactPageState extends State<contactPage> {
                                                   onYes: () async {
                                                     Navigator.of(context)
                                                         .pop();
+                                                    // if true this email has subscription so rise error msg
+                                                    bool hasSubscription =await checkIfEmailHasSubscription (email: e["email"] ?? "");
+                                                    if(hasSubscription){
+                                                      MyDialog.showAlert(context, "Ok", "We can't delete this contact because they have a subscription, and their data is essential.");
+                                                      return;
+                                                    }
+
+
                                                     await deleteContact(e["dID"]);
                                                   },
                                                   onNo: () =>
@@ -242,6 +250,39 @@ class _contactPageState extends State<contactPage> {
     this.isLoading = false ;
     setState(() {});
     return contactData;
+  }
+
+  // this function will retun true if the passed email is exsist in the subscription table
+  Future<bool> checkIfEmailHasSubscription({required String email}) async {
+    try {
+
+      // Reference to the Firestore collection
+      CollectionReference subscriptions =
+      FirebaseFirestore.instance.collection('subscriptions');
+
+      // Query to check if the email exists in the 'toWhome' field
+      QuerySnapshot querySnapshot = await subscriptions.get();
+
+      // Loop through documents to find the email
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        // Get the 'toWhome' field value
+        String toWhome = doc['toWhome'];
+
+        // Split the toWhome field value by space
+        List<String> parts = toWhome.split(' ');
+
+        // Check if the email is in the second part (after splitting)
+        if (parts.length > 1 && parts[1] == email) {
+          return true;
+        }
+      }
+      // If no matching email is found, return false
+      return false;
+    } catch (error) {
+      // If an error occurs during the process, return false
+      print("Error checking email existence: $error");
+      return false;
+    }
   }
 
 

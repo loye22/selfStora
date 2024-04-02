@@ -16,23 +16,63 @@ class statusWidget extends StatelessWidget {
     switch (status) {
       case 'occupied':
         icon = Icons.person;
-        color = Colors.green; // You can choose the appropriate color for occupied status
+        color = Colors
+            .green; // You can choose the appropriate color for occupied status
         text = 'Occupied';
         break;
       case 'unavailable':
         icon = Icons.do_not_disturb;
-        color = Colors.red; // You can choose the appropriate color for unavailable status
+        color = Colors
+            .red; // You can choose the appropriate color for unavailable status
         text = 'Unavailable';
         break;
       case 'available':
         icon = Icons.check;
-        color = Colors.grey; // You can choose the appropriate color for available status
+        color = Colors
+            .grey; // You can choose the appropriate color for available status
         text = 'Available';
         break;
+
+      case 'reserved':
+        icon = Icons.info;
+        color = Color(0xFF86E6D1);
+        text = 'reserved';
+        break;
+
+      case 'moving out':
+        icon = Icons.info;
+        color = Color(0xFF6ECAF2);
+        text = 'moving out';
+        break;
+      case 'moved in':
+        icon = Icons.info;
+        color = Color(0xFF729AF8);
+        text = 'moved in';
+        break;
+
+      case 'overlocked':
+        icon = Icons.info;
+        color = Color(0xFFE95362);
+        text = 'overlocked';
+        break;
+
+      case 'repossessed':
+        icon = Icons.info;
+        color = Color(0xFFC865B9);
+        text = 'repossessed';
+        break;
+
+      case 'available':
+        icon = Icons.check;
+        color = Colors
+            .grey; // You can choose the appropriate color for available status
+        text = 'Available';
+        break;
+
       default:
         icon = Icons.error;
         color = Colors.black;
-        text = 'Unknown';
+        text = '404Error';
     }
 
     return Padding(
@@ -40,12 +80,10 @@ class statusWidget extends StatelessWidget {
       child: Container(
         width: staticVar.golobalWidth(context) * .10,
         height: staticVar.golobalHigth(context) * .06,
-
         decoration: BoxDecoration(
-          border: Border.all(color: color),
-          borderRadius: BorderRadius.circular(8.0),
-          color: color
-        ),
+            border: Border.all(color: color),
+            borderRadius: BorderRadius.circular(8.0),
+            color: color),
         child: Row(
           children: [
             Icon(icon, color: Colors.white),

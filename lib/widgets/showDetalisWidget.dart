@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/buttonStyle2.dart';
+import 'package:selfstorage/widgets/confirmationDialog.dart';
 import 'package:selfstorage/widgets/copyableTextWidget2.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 import 'package:selfstorage/widgets/priceSummaryCard.dart';
@@ -25,12 +26,14 @@ class showDetalisWidget extends StatefulWidget {
 
 class _showDetalisWidgetState extends State<showDetalisWidget> {
   List<Map<String, dynamic>> contactsData = [] ;
+  String status = "" ;
 
 
 
   @override
   void initState() {
     // TODO: implement initState
+    fetchUniteStatusAsLowerCase(docId: widget.data["uniteID"] ?? "");
     fetchContacts();
     super.initState();
   }
@@ -39,7 +42,7 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
   Widget build(BuildContext context) {
     String contactEmail = widget.data["toWhome"].toString().split(" ").last ?? "";
     Map<String , dynamic>contactData = getContactByEmail(contacts: contactsData , email:  contactEmail) ?? {};
-    print(contactData);
+    //print(contactData);
 
 
     //MyDialog.showAlert(context, "Ok", contactEmail);
@@ -154,7 +157,7 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                                     ))),
                                     DataCell(Center(
                                         child: statusWidget(
-                                      status: 'OCCUPIED'.toLowerCase(),
+                                      status: this.status,
                                     )))
                                   ])
                                 ],
@@ -507,19 +510,19 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Customer business type  : ',
+                                                'Customer business type  : ${contactData["marketingData"]?["customer_business_type"] ?? "*********"}',
                                                 style: staticVar.subtitleStyle2,
                                               ),
                                               Text(
-                                                'Customer marketing source : ',
+                                                'Customer marketing source : ${contactData["marketingData"]?["customer_marketing_source"] ?? "*********"}',
                                                 style: staticVar.subtitleStyle2,
                                               ),
                                               Text(
-                                                'Customer source   : ',
+                                                'Customer source   : ${contactData["marketingData"]?["customer_source"] ?? "*********"}',
                                                 style: staticVar.subtitleStyle2,
                                               ),
                                               Text(
-                                                'Customer use case  : ',
+                                                'Customer use case  : ${contactData["marketingData"]?["customer_use_case"] ?? "*********"}',
                                                 style: staticVar.subtitleStyle2,
                                               ),
                                             ],
@@ -539,7 +542,17 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                   Button2(
                     height: 2,
                     width: 2,
-                    onTap: () {},
+                    onTap: ()  async {
+                      if((widget.data["isSubscribed"] ?? false) == false)
+                        return;
+                      // these 2 var are gonna be used for cancelation
+                      String unitID = widget.data["uniteID"];
+                      String subID = widget.data["id"] ;
+                      await cancelSubscription(subID: subID , unitID:  unitID ,ctx: context);
+
+
+
+                    },
                     text:
                         "Cancel ${(widget.data["toWhome"] ?? "404NotFound").toString().split(" ").first} subscriptions",
                     color: (widget.data["isSubscribed"] ?? false)
@@ -556,6 +569,69 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
       ],
     );
   }
+
+  Future<String> fetchUniteStatusAsLowerCase({required String docId}) async {
+    try {
+      // Access Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Access the 'units' collection and fetch the document with the specified docId
+      DocumentSnapshot docSnapshot = await firestore.collection('units').doc(docId).get();
+
+      // Check if the document exists
+      if (docSnapshot.exists) {
+        // Access the 'status' field of the document
+        Map<String , dynamic> fullRow = docSnapshot.data() as Map<String,dynamic>   ;
+        String status = fullRow["status"] ;
+       // print("this is stsatus \n " + status);
+        this.status = status ;
+       // print(status);
+
+
+        // Return the status
+        return status.toLowerCase();
+      } else {
+        // Document doesn't exist
+        throw Exception('Document does not exist');
+      }
+    } catch (e) {
+      // Error occurred
+      print('Error fetching status: $e');
+      throw Exception('Failed to fetch status');
+    }
+  }
+
+
+  Future<void> cancelSubscription({required String unitID,required String subID , required BuildContext ctx }) async {
+    try {
+
+      confirmationDialog.showElegantPopup(context: ctx , message:'Are you sure you want to cancel this subscription?', onYes: () async {
+        // Update the document in the 'currentDocs' collection
+        await FirebaseFirestore.instance
+            .collection('units')
+            .doc(unitID)
+            .update({'status': 'available' , 'occupant' : ''});
+
+        // Update the document in the 'subscriptions' collection
+        await FirebaseFirestore.instance
+            .collection('subscriptions')
+            .doc(subID)
+            .update({
+          'isSubscribed': false,
+          'cancelationDate': Timestamp.now(),
+        });
+
+        await staticVar.showSubscriptionSnackbar(context: ctx, msg: 'Subscription canceled successfully.') ;
+        widget.onCancel();
+      }, onNo: (){});
+
+    } catch (error) {
+      MyDialog.showAlert(context, "Ok", 'Error canceling subscription: $error');
+      print('Error canceling subscription: $error');
+      // Handle error appropriately, e.g., show error message to user
+    }
+  }
+
 
   Map<String, dynamic>? getContactByEmail({required List<Map<String, dynamic>> contacts,required String email}) {
     for (var contact in contacts) {
@@ -595,7 +671,7 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
 
     String discountTypeAsString = data["discountType"];
 
-    print(discountTypeAsString);
+   // print(discountTypeAsString);
 
     DiscountType discountType = parseDiscountType(discountTypeAsString);
 

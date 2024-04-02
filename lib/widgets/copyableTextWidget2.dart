@@ -35,13 +35,16 @@ class _copyableTextWidget2State extends State<copyableTextWidget2> {
             ),
           ),
         ),
-        IconButton(
-          icon: copied ? Icon(Icons.check, color: Colors.green) : Icon(Icons.copy),
-          onPressed: () {
-            if(widget.text == "" )
-              return;
-            _copyToClipboard(context);
-          },
+        Tooltip(
+          message: 'Copy',
+          child: IconButton(
+            icon: copied ? Icon(Icons.check, color: Colors.green) : Icon(Icons.copy),
+            onPressed: () {
+              if(widget.text == "" )
+                return;
+              _copyToClipboard(context);
+            },
+          ),
         ),
       ],
     );

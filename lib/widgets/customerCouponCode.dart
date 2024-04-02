@@ -137,8 +137,8 @@ class _customerCouponCodeState extends State<customerCouponCode> {
               ),
               // Fixed amount discount field
               buildTextField(
-                label: 'RON',
-                hintText: 'Enter amount',
+                label: 'Euro',
+                hintText: 'Enter amount €',
                 isHidden: discountType != 'amount',
                 onChanged: (value) {
                   setState(() {

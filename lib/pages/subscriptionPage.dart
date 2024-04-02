@@ -28,7 +28,7 @@ class _subscriptionPageState extends State<subscriptionPage> {
   bool createSubMode = false;
   bool displayInfo = false;
   bool isLoading = false;
-  bool showDetalis = false ;
+  bool showDetalis = false;
 
   // this will hold the selected value for all the dropdown menus ==> UnitsType by there NAME!!!!!
   String? selectedValueFromFirstDropDown = null;
@@ -58,7 +58,7 @@ class _subscriptionPageState extends State<subscriptionPage> {
 
   List<Map<String, dynamic>> subscriptionDataFetched = [];
 
-  dynamic showDetailsData = {} ;
+  dynamic showDetailsData = {};
 
   @override
   void initState() {
@@ -67,8 +67,7 @@ class _subscriptionPageState extends State<subscriptionPage> {
     fetchContacts();
     fetchUnitTypes();
     fetchDiscounts();
-    if (!createSubMode)
-      fetchSubscriptionData();
+    if (!createSubMode) fetchSubscriptionData();
 
     super.initState();
   }
@@ -95,483 +94,533 @@ class _subscriptionPageState extends State<subscriptionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:showDetalis ? SingleChildScrollView(child: Animate(
-        effects: [FadeEffect(duration: Duration(milliseconds: 900))],
-        child: showDetalisWidget(onCancel: (){this.showDetalis = false ; setState(() {});}, data: this.showDetailsData,),
-      ),):
-      Center(
-        child: this.createSubMode
-            ? SingleChildScrollView(
-                child: Animate(
-                  effects: [FadeEffect(duration: Duration(milliseconds: 1500))],
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Create a subscription',
-                        style: staticVar.titleStyle,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-                        child: Text(
-                          'Setup a customer subscription via card or manual payment method.',
-                          style: staticVar.subtitleStyle3,
-                        ),
-                      ),
-                      Card(
-                        elevation: 5,
-                        child: Container(
-                            padding: const EdgeInsets.all(16.0),
-                            width: staticVar.golobalWidth(context),
-                            height: staticVar.golobalHigth(context),
-                            child: SingleChildScrollView(
-                              child: SingleChildScrollView(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Who is it for?",
-                                        style: staticVar.subtitleStyle1,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        width: staticVar.golobalWidth(context) *
-                                            .35,
-                                        child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              //background color of dropdown button
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              //border raiuds of dropdown button
-                                              boxShadow: <BoxShadow>[
-                                                //apply shadow on Dropdown button
-                                                BoxShadow(
-                                                    color: Color.fromRGBO(
-                                                        0, 0, 0, 0.57),
-                                                    //shadow for button
-                                                    blurRadius: 5)
-                                                //blur radius of shadow
-                                              ]),
-                                          child: Theme(
-                                            data: ThemeData(
-                                                fontFamily: 'louie',
-                                                focusColor: Colors.transparent),
-                                            child: DropdownButton<String>(
-                                              dropdownColor: Colors.white,
-                                              isExpanded: true,
-                                              underline: Container(),
-                                              focusColor: Colors.transparent,
-                                              value:
-                                                  selectedValueFromFirstDropDown,
-                                              items: this
-                                                  .contactNameList
-                                                  .map((value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value["name"],
-                                                  child: Center(
-                                                      child: Text(
-                                                    value["name"],
-                                                    style: staticVar
-                                                        .subtitleStyle2,
-                                                  )),
-                                                );
-                                              }).toList(),
-                                              onChanged: (String? newValue) {
-                                                // MyDialog.showAlert(context, "ok", 'ssss');
-                                                selectedValueFromFirstDropDown =
-                                                    newValue;
-                                                //  print(selectedValueFromFirstDropDown);
-                                                setState(() {});
-                                              },
-                                              hint: Center(
-                                                  child: Text(
-                                                'Select',
-                                                style: staticVar.subtitleStyle2,
-                                              )),
+      body: showDetalis
+          ? SingleChildScrollView(
+              child: Animate(
+                effects: [FadeEffect(duration: Duration(milliseconds: 900))],
+                child: showDetalisWidget(
+                  onCancel: () {
+                    this.showDetalis = false;
+                    fetchSubscriptionData();
+                    setState(() {});
+                  },
+                  data: this.showDetailsData,
+                ),
+              ),
+            )
+          : Center(
+              child: this.createSubMode
+                  ? SingleChildScrollView(
+                      child: Animate(
+                        effects: [
+                          FadeEffect(duration: Duration(milliseconds: 1500))
+                        ],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Create a subscription',
+                              style: staticVar.titleStyle,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                              child: Text(
+                                'Setup a customer subscription via card or manual payment method.',
+                                style: staticVar.subtitleStyle3,
+                              ),
+                            ),
+                            Card(
+                              elevation: 5,
+                              child: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  width: staticVar.golobalWidth(context),
+                                  height: staticVar.golobalHigth(context),
+                                  child: SingleChildScrollView(
+                                    child: SingleChildScrollView(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Who is it for?",
+                                              style: staticVar.subtitleStyle1,
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        'Want to add a new customer? Please navigate to contacts, add them, and come back here.',
-                                        style: staticVar.subtitleStyle2,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        "Source of booking",
-                                        style: staticVar.subtitleStyle1,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        width: staticVar.golobalWidth(context) *
-                                            .35,
-                                        child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              //background color of dropdown button
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              //border raiuds of dropdown button
-                                              boxShadow: <BoxShadow>[
-                                                //apply shadow on Dropdown button
-                                                BoxShadow(
-                                                    color: Color.fromRGBO(
-                                                        0, 0, 0, 0.57),
-                                                    //shadow for button
-                                                    blurRadius: 5)
-                                                //blur radius of shadow
-                                              ]),
-                                          child: Theme(
-                                            data: ThemeData(
-                                              fontFamily: 'louie',
-                                              focusColor: Colors.transparent,
+                                            SizedBox(
+                                              height: 10,
                                             ),
-                                            child: DropdownButton<String>(
-                                              dropdownColor: Colors.white,
-                                              isExpanded: true,
-                                              underline: Container(),
-                                              focusColor: Colors.transparent,
-                                              value:
-                                                  selectedValueFromSecondDropDown,
-                                              // Make sure this value matches one of the values in the items list
-                                              items: [
-                                                "Not specified",
-                                                "Over the phone",
-                                                "Live chat",
-                                                "Walk-in",
-                                                "Others"
-                                              ].map((String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Center(
-                                                    child: Text(
-                                                      value,
-                                                      style: staticVar
-                                                          .subtitleStyle2, // Assuming staticVar.subtitleStyle2 is defined
-                                                    ),
-                                                  ),
-                                                );
-                                              }).toList(),
-                                              onChanged: (String? newValue) {
-                                                // Handle onChanged event here
-                                                this.selectedValueFromSecondDropDown =
-                                                    newValue ?? "Not specified";
-                                                setState(() {});
-                                              },
-                                              hint: Center(
-                                                child: Text(
-                                                  'Select',
-                                                  style: staticVar
-                                                      .subtitleStyle2, // Assuming staticVar.subtitleStyle2 is defined
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        "Subscription details",
-                                        style: staticVar.subtitleStyle1,
-                                      ),
-                                      Text(
-                                        "Unit type",
-                                        style: staticVar.subtitleStyle2,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        width: staticVar.golobalWidth(context) *
-                                            .35,
-                                        child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              //background color of dropdown button
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              //border raiuds of dropdown button
-                                              boxShadow: <BoxShadow>[
-                                                //apply shadow on Dropdown button
-                                                BoxShadow(
-                                                    color: Color.fromRGBO(
-                                                        0, 0, 0, 0.57),
-                                                    //shadow for button
-                                                    blurRadius: 5)
-                                                //blur radius of shadow
-                                              ]),
-                                          child: Theme(
-                                            data: ThemeData(
-                                                fontFamily: 'louie',
-                                                focusColor: Colors.transparent),
-                                            child: DropdownButton<String>(
-                                              dropdownColor: Colors.white,
-                                              isExpanded: true,
-                                              underline: Container(),
-                                              focusColor: Colors.transparent,
-                                              value:
-                                                  selectedValueFromThirdDropDown,
-                                              items:
-                                                  this.unitsType.map((value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value["id"],
-                                                  child: Center(
-                                                      child: Text(
-                                                    value["unitName"],
-                                                    style: staticVar
-                                                        .subtitleStyle2,
-                                                  )),
-                                                );
-                                              }).toList(),
-                                              onChanged: (String? newValue) {
-                                                // MyDialog.showAlert(context, "ok", 'ssss');
-                                                selectedValueFromThirdDropDown =
-                                                    newValue;
-                                                this.price = getPriceHistoryById(
-                                                        selectedValueFromThirdDropDown ??
-                                                            "",
-                                                        this.unitsType) ??
-                                                    "Error";
-
-                                                setState(() {});
-                                              },
-                                              hint: Center(
-                                                  child: Text(
-                                                'Select',
-                                                style: staticVar.subtitleStyle2,
-                                              )),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        "Unit type price",
-                                        style: staticVar.subtitleStyle2,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        this.price == ""
-                                            ? "€0"
-                                            : "€" + this.price,
-                                        style: TextStyle(
-                                          color: Colors.green,
-                                          fontSize: 18,
-                                          // adjust the font size as needed
-                                          fontWeight: FontWeight
-                                              .bold, // adjust the font weight as needed
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        "Move in/renewal date",
-                                        style: staticVar.subtitleStyle2,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () async {
-                                          await _showDatePicker(context);
-                                          setState(() {});
-                                        },
-                                        child: Container(
-                                          width:
-                                              staticVar.golobalWidth(context) *
+                                            Container(
+                                              width: staticVar
+                                                      .golobalWidth(context) *
                                                   .35,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            border:
-                                                Border.all(color: Colors.grey),
-                                            borderRadius:
-                                                BorderRadius.circular(4.0),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 12.0, vertical: 8.0),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  this._selectedDate != null
-                                                      ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                                                      : "DD/MM/YYYY",
-                                                  style:
-                                                      TextStyle(fontSize: 16.0),
-                                                ),
-                                              ),
-                                              Icon(Icons.calendar_today),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        "Discount",
-                                        style: staticVar.subtitleStyle2,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        width: staticVar.golobalWidth(context) *
-                                            .35,
-                                        child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              //background color of dropdown button
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              //border raiuds of dropdown button
-                                              boxShadow: <BoxShadow>[
-                                                //apply shadow on Dropdown button
-                                                BoxShadow(
-                                                    color: Color.fromRGBO(
-                                                        0, 0, 0, 0.57),
-                                                    //shadow for button
-                                                    blurRadius: 5)
-                                                //blur radius of shadow
-                                              ]),
-                                          child: Theme(
-                                            data: ThemeData(
-                                                fontFamily: 'louie',
-                                                focusColor: Colors.transparent),
-                                            child: DropdownButton<String>(
-                                              dropdownColor: Colors.white,
-                                              isExpanded: true,
-                                              underline: Container(),
-                                              focusColor: Colors.transparent,
-                                              value:
-                                                  selectedValueFromForthDropDown,
-                                              items: this
-                                                  .discountsType
-                                                  .map((value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value["couponName"],
-                                                  child: Center(
-                                                      child: Text(
-                                                    value["couponName"],
-                                                    style: staticVar
-                                                        .subtitleStyle2,
-                                                  )),
-                                                );
-                                              }).toList(),
-                                              onChanged: (String? newValue) {
-                                                selectedValueFromForthDropDown =
-                                                    newValue;
-                                                discountDataForPriceSummry =
-                                                    fetchCouponByName(
-                                                        couponName:
-                                                            this.selectedValueFromForthDropDown ??
-                                                                "",
-                                                        couponData:
-                                                            this.discountsType);
-
-                                                setState(() {});
-                                              },
-                                              hint: Center(
-                                                  child: Text(
-                                                'Select',
-                                                style: staticVar.subtitleStyle2,
-                                              )),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      CouponDisplay(
-                                        coupon: fetchCouponByName(
-                                            couponData: this.discountsType,
-                                            couponName:
-                                                this.selectedValueFromForthDropDown ??
-                                                    ""),
-                                        onCouponUsableChanged: (bool) {
-                                          this.isCouponValid = bool;
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      priceSummaryCard(
-                                        amount:
-                                            double.tryParse(this.price) ?? 0.0,
-                                        discount: (discountDataForPriceSummry[
-                                                        "isItFixed"] !=
-                                                    null &&
-                                                discountDataForPriceSummry[
-                                                    "isItFixed"])
-                                            ? double.tryParse(
-                                                    discountDataForPriceSummry[
-                                                            "amountOff"] ??
-                                                        "0.0") ??
-                                                0.0
-                                            : double.tryParse(
-                                                    discountDataForPriceSummry[
-                                                            "percentOff"] ??
-                                                        "0.0") ??
-                                                0.0,
-                                        // Define callback functions to retrieve data
-                                        discountType:
-                                            (discountDataForPriceSummry[
-                                                            "isItFixed"] !=
-                                                        null &&
-                                                    discountDataForPriceSummry[
-                                                        "isItFixed"])
-                                                ? DiscountType.Fixed
-                                                : DiscountType.Percentage,
-                                        dataSummry: (Map) {
-                                          this.priceSummaryData = Map;
-                                        },
-                                      ),
-                                      this.isLoading
-                                          ? staticVar.loading(
-                                              size: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .05)
-                                          : Row(
-                                              children: [
-                                                Button2(
-                                                    onTap: createSubscription,
-                                                    text: "Create subscription",
-                                                    color: Colors.orangeAccent),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Button2(
-                                                    onTap: () {
-                                                      this.createSubMode =
-                                                          false;
+                                              child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    //background color of dropdown button
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    //border raiuds of dropdown button
+                                                    boxShadow: <BoxShadow>[
+                                                      //apply shadow on Dropdown button
+                                                      BoxShadow(
+                                                          color: Color.fromRGBO(
+                                                              0, 0, 0, 0.57),
+                                                          //shadow for button
+                                                          blurRadius: 5)
+                                                      //blur radius of shadow
+                                                    ]),
+                                                child: Theme(
+                                                  data: ThemeData(
+                                                      fontFamily: 'louie',
+                                                      focusColor:
+                                                          Colors.transparent),
+                                                  child: DropdownButton<String>(
+                                                    dropdownColor: Colors.white,
+                                                    isExpanded: true,
+                                                    underline: Container(),
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    value:
+                                                        selectedValueFromFirstDropDown,
+                                                    items: this
+                                                        .contactNameList
+                                                        .map((value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: value["name"],
+                                                        child: Center(
+                                                            child: Text(
+                                                          value["name"],
+                                                          style: staticVar
+                                                              .subtitleStyle2,
+                                                        )),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged:
+                                                        (String? newValue) {
+                                                      // MyDialog.showAlert(context, "ok", 'ssss');
+                                                      selectedValueFromFirstDropDown =
+                                                          newValue;
+                                                      //  print(selectedValueFromFirstDropDown);
                                                       setState(() {});
                                                     },
-                                                    text: "Cancel",
-                                                    color: Colors.red)
-                                                ,
-                                  /* Button2(onTap: ()async {
+                                                    hint: Center(
+                                                        child: Text(
+                                                      'Select',
+                                                      style: staticVar
+                                                          .subtitleStyle2,
+                                                    )),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              'Want to add a new customer? Please navigate to contacts, add them, and come back here.',
+                                              style: staticVar.subtitleStyle2,
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              "Source of booking",
+                                              style: staticVar.subtitleStyle1,
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              width: staticVar
+                                                      .golobalWidth(context) *
+                                                  .35,
+                                              child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    //background color of dropdown button
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    //border raiuds of dropdown button
+                                                    boxShadow: <BoxShadow>[
+                                                      //apply shadow on Dropdown button
+                                                      BoxShadow(
+                                                          color: Color.fromRGBO(
+                                                              0, 0, 0, 0.57),
+                                                          //shadow for button
+                                                          blurRadius: 5)
+                                                      //blur radius of shadow
+                                                    ]),
+                                                child: Theme(
+                                                  data: ThemeData(
+                                                    fontFamily: 'louie',
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                  ),
+                                                  child: DropdownButton<String>(
+                                                    dropdownColor: Colors.white,
+                                                    isExpanded: true,
+                                                    underline: Container(),
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    value:
+                                                        selectedValueFromSecondDropDown,
+                                                    // Make sure this value matches one of the values in the items list
+                                                    items: [
+                                                      "Not specified",
+                                                      "Over the phone",
+                                                      "Live chat",
+                                                      "Walk-in",
+                                                      "Others"
+                                                    ].map((String value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: value,
+                                                        child: Center(
+                                                          child: Text(
+                                                            value,
+                                                            style: staticVar
+                                                                .subtitleStyle2, // Assuming staticVar.subtitleStyle2 is defined
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged:
+                                                        (String? newValue) {
+                                                      // Handle onChanged event here
+                                                      this.selectedValueFromSecondDropDown =
+                                                          newValue ??
+                                                              "Not specified";
+                                                      setState(() {});
+                                                    },
+                                                    hint: Center(
+                                                      child: Text(
+                                                        'Select',
+                                                        style: staticVar
+                                                            .subtitleStyle2, // Assuming staticVar.subtitleStyle2 is defined
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            Text(
+                                              "Subscription details",
+                                              style: staticVar.subtitleStyle1,
+                                            ),
+                                            Text(
+                                              "Unit type",
+                                              style: staticVar.subtitleStyle2,
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              width: staticVar
+                                                      .golobalWidth(context) *
+                                                  .35,
+                                              child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    //background color of dropdown button
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    //border raiuds of dropdown button
+                                                    boxShadow: <BoxShadow>[
+                                                      //apply shadow on Dropdown button
+                                                      BoxShadow(
+                                                          color: Color.fromRGBO(
+                                                              0, 0, 0, 0.57),
+                                                          //shadow for button
+                                                          blurRadius: 5)
+                                                      //blur radius of shadow
+                                                    ]),
+                                                child: Theme(
+                                                  data: ThemeData(
+                                                      fontFamily: 'louie',
+                                                      focusColor:
+                                                          Colors.transparent),
+                                                  child: DropdownButton<String>(
+                                                    dropdownColor: Colors.white,
+                                                    isExpanded: true,
+                                                    underline: Container(),
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    value:
+                                                        selectedValueFromThirdDropDown,
+                                                    items: this
+                                                        .unitsType
+                                                        .map((value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: value["id"],
+                                                        child: Center(
+                                                            child: Text(
+                                                          value["unitName"],
+                                                          style: staticVar
+                                                              .subtitleStyle2,
+                                                        )),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged:
+                                                        (String? newValue) {
+                                                      // MyDialog.showAlert(context, "ok", 'ssss');
+                                                      selectedValueFromThirdDropDown =
+                                                          newValue;
+                                                      this.price = getPriceHistoryById(
+                                                              selectedValueFromThirdDropDown ??
+                                                                  "",
+                                                              this.unitsType) ??
+                                                          "Error";
+
+                                                      setState(() {});
+                                                    },
+                                                    hint: Center(
+                                                        child: Text(
+                                                      'Select',
+                                                      style: staticVar
+                                                          .subtitleStyle2,
+                                                    )),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              "Unit type price",
+                                              style: staticVar.subtitleStyle2,
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              this.price == ""
+                                                  ? "€0"
+                                                  : "€" + this.price,
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 18,
+                                                // adjust the font size as needed
+                                                fontWeight: FontWeight
+                                                    .bold, // adjust the font weight as needed
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              "Move in/renewal date",
+                                              style: staticVar.subtitleStyle2,
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () async {
+                                                await _showDatePicker(context);
+                                                setState(() {});
+                                              },
+                                              child: Container(
+                                                width: staticVar
+                                                        .golobalWidth(context) *
+                                                    .35,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  border: Border.all(
+                                                      color: Colors.grey),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          4.0),
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 12.0,
+                                                    vertical: 8.0),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        this._selectedDate !=
+                                                                null
+                                                            ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
+                                                            : "DD/MM/YYYY",
+                                                        style: TextStyle(
+                                                            fontSize: 16.0),
+                                                      ),
+                                                    ),
+                                                    Icon(Icons.calendar_today),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              "Discount",
+                                              style: staticVar.subtitleStyle2,
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              width: staticVar
+                                                      .golobalWidth(context) *
+                                                  .35,
+                                              child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    //background color of dropdown button
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    //border raiuds of dropdown button
+                                                    boxShadow: <BoxShadow>[
+                                                      //apply shadow on Dropdown button
+                                                      BoxShadow(
+                                                          color: Color.fromRGBO(
+                                                              0, 0, 0, 0.57),
+                                                          //shadow for button
+                                                          blurRadius: 5)
+                                                      //blur radius of shadow
+                                                    ]),
+                                                child: Theme(
+                                                  data: ThemeData(
+                                                      fontFamily: 'louie',
+                                                      focusColor:
+                                                          Colors.transparent),
+                                                  child: DropdownButton<String>(
+                                                    dropdownColor: Colors.white,
+                                                    isExpanded: true,
+                                                    underline: Container(),
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    value:
+                                                        selectedValueFromForthDropDown,
+                                                    items: this
+                                                        .discountsType
+                                                        .map((value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value:
+                                                            value["couponName"],
+                                                        child: Center(
+                                                            child: Text(
+                                                          value["couponName"],
+                                                          style: staticVar
+                                                              .subtitleStyle2,
+                                                        )),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged:
+                                                        (String? newValue) {
+                                                      selectedValueFromForthDropDown =
+                                                          newValue;
+                                                      discountDataForPriceSummry =
+                                                          fetchCouponByName(
+                                                              couponName:
+                                                                  this.selectedValueFromForthDropDown ??
+                                                                      "",
+                                                              couponData: this
+                                                                  .discountsType);
+
+                                                      setState(() {});
+                                                    },
+                                                    hint: Center(
+                                                        child: Text(
+                                                      'Select',
+                                                      style: staticVar
+                                                          .subtitleStyle2,
+                                                    )),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            CouponDisplay(
+                                              coupon: fetchCouponByName(
+                                                  couponData:
+                                                      this.discountsType,
+                                                  couponName:
+                                                      this.selectedValueFromForthDropDown ??
+                                                          ""),
+                                              onCouponUsableChanged: (bool) {
+                                                this.isCouponValid = bool;
+                                              },
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            priceSummaryCard(
+                                              amount:
+                                                  double.tryParse(this.price) ??
+                                                      0.0,
+                                              discount: (discountDataForPriceSummry[
+                                                              "isItFixed"] !=
+                                                          null &&
+                                                      discountDataForPriceSummry[
+                                                          "isItFixed"])
+                                                  ? double.tryParse(
+                                                          discountDataForPriceSummry[
+                                                                  "amountOff"] ??
+                                                              "0.0") ??
+                                                      0.0
+                                                  : double.tryParse(
+                                                          discountDataForPriceSummry[
+                                                                  "percentOff"] ??
+                                                              "0.0") ??
+                                                      0.0,
+                                              // Define callback functions to retrieve data
+                                              discountType:
+                                                  (discountDataForPriceSummry[
+                                                                  "isItFixed"] !=
+                                                              null &&
+                                                          discountDataForPriceSummry[
+                                                              "isItFixed"])
+                                                      ? DiscountType.Fixed
+                                                      : DiscountType.Percentage,
+                                              dataSummry: (Map) {
+                                                this.priceSummaryData = Map;
+                                              },
+                                            ),
+                                            this.isLoading
+                                                ? staticVar.loading(
+                                                    size: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        .05)
+                                                : Row(
+                                                    children: [
+                                                      Button2(
+                                                          onTap:
+                                                              createSubscription,
+                                                          text:
+                                                              "Create subscription",
+                                                          color: Colors
+                                                              .orangeAccent),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Button2(
+                                                          onTap: () {
+                                                            this.createSubMode =
+                                                                false;
+                                                            setState(() {});
+                                                          },
+                                                          text: "Cancel",
+                                                          color: Colors.red),
+                                                      /* Button2(onTap: ()async {
                                      String? uniteName =
                                      getUnitNameById(selectedValueFromThirdDropDown ?? "", this.unitsType);
                                      //
@@ -604,162 +653,233 @@ class _subscriptionPageState extends State<subscriptionPage> {
 
 
                                     }, text: "test", color: Colors.red)*/
-                                              ],
-                                            ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : SingleChildScrollView(
-              child: Animate(
-                  effects: [FadeEffect(duration: Duration(milliseconds: 900))],
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text(
-                                        "Subscription",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 24),
+                                                    ],
+                                                  ),
+                                          ],
+                                        ),
                                       ),
-                                      Text(
-                                        "Recurring billing plans",
-                                        style: staticVar.subtitleStyle2,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                    ),
+                                  )),
                             ),
-                          ),
-                          Button2(
-                            onTap: () {
-                              this.createSubMode = true;
-                              setState(() {});
-                            },
-                            text: "Create a subscription",
-                            color: Color.fromRGBO(33, 103, 199, 1),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
-                      Container(
-                        width: staticVar.golobalWidth(context),
-                        height: staticVar.golobalHigth(context),
-                        decoration: BoxDecoration(
-                            //    border: Border.all(color: Colors.black.withOpacity(.33)),
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white),
-                        child: this.isLoading
-                            ? Center(
-                                child: staticVar.loading(),
-                              )
-                            : Card(
-                                elevation: 1,
-                                child: Center(
-                                  child: DataTable2(
-                                    columnSpacing: 5,
-                                    columns: [
-                                      staticVar.Dc("CUSTOMER"),
-                                      staticVar.Dc("BOOKING"),
-                                      staticVar.Dc("ALLOCATION"),
-                                      staticVar.Dc("TENANCY"),
-                                      staticVar.Dc("CREATED"),
-                                      staticVar.Dc("OPTIONS"),
-                                    ],
-                                    rows: this
-                                        .subscriptionDataFetched
-                                        .map((e) {
-                                          String? client  = e["toWhome"]?.toString().split(" ").first ;
-                                          String? booking = e["uniteDetails"]?["unitName"] ;
-                                          String? unitName = e["exactUniteName"] ;
-                                          bool? isSubscribed = !e["isSubscribed"];
-                                          Timestamp? timestamp = e["createdAt"];
-                                          DateTime? createdAt = timestamp?.toDate();
-                                          String formattedDate = createdAt != null ? DateFormat('d MMM').format(createdAt) : "Unknown";
-                                          bool isSubscribedd = e["isSubscribed"] ?? false ; // false mean the used has canceled
-
-                                          Timestamp? timestamp2 = e["cancelationDate"];
-                                          DateTime? cancelationDate = timestamp2?.toDate();
-                                          String cancelationDateformattedDate = cancelationDate != null ? DateFormat('d MMM').format(cancelationDate) : "Unknown";
-                                          String period = !isSubscribedd ? "$formattedDate >> $cancelationDateformattedDate" : "$formattedDate >> Ongoing" ;
-
-                                          // these 2 var are gonna be used for cancelation
-                                          String unitID = e["uniteID"];
-                                          String subID = e["id"] ;
-
-                                          return DataRow2(
-                                              onTap: (){
-                                                this.showDetailsData = e ;
-                                                this.showDetalis = true ;
-                                                setState(() {});
-                                              },
-                                              cells: [
-                                            DataCell(Center(child: Text(client ?? "404NotFound" ,style:  staticVar.subtitleStyle4,))),
-                                            DataCell(Center(child: Text(booking  ?? "404NotFound",style:  staticVar.subtitleStyle4, ))),
-                                            DataCell(Center(child: subscriptionItem(isCancelled: isSubscribed ?? false , allocation: unitName ?? "404NotFound",),)),
-                                            DataCell(Center(child: Text(period ,style:  staticVar.subtitleStyle4,))),
-                                            DataCell(Center(child: Text(formattedDate ,style:  staticVar.subtitleStyle4,),)),
-                                            DataCell(Center(child:isSubscribed ? Text("") :
-                                            Button2(onTap:() async {
-
-                                              await cancelSubscription(subID: subID , unitID:  unitID ,ctx: context);
-                                              }, text: "Cancel this sub", color: Colors.red, IconData: Icons.cancel, ),))
-                                          ]);
-                                    })
-                                        .toList(),
+                    )
+                  : SingleChildScrollView(
+                      child: Animate(
+                        effects: [
+                          FadeEffect(duration: Duration(milliseconds: 900))
+                        ],
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.all(8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Text(
+                                              "Subscription",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 24),
+                                            ),
+                                            Text(
+                                              "Recurring billing plans",
+                                              style: staticVar.subtitleStyle2,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
+                                Button2(
+                                  onTap: () {
+                                    this.createSubMode = true;
+                                    setState(() {});
+                                  },
+                                  text: "Create a subscription",
+                                  color: Color.fromRGBO(33, 103, 199, 1),
+                                )
+                              ],
+                            ),
+                            Container(
+                              width: staticVar.golobalWidth(context),
+                              height: staticVar.golobalHigth(context),
+                              decoration: BoxDecoration(
+                                  //    border: Border.all(color: Colors.black.withOpacity(.33)),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white),
+                              child: this.isLoading
+                                  ? Center(
+                                      child: staticVar.loading(),
+                                    )
+                                  : Card(
+                                      elevation: 1,
+                                      child: Center(
+                                        child: DataTable2(
+                                          columnSpacing: 5,
+                                          columns: [
+                                            staticVar.Dc("CUSTOMER"),
+                                            staticVar.Dc("BOOKING"),
+                                            staticVar.Dc("ALLOCATION"),
+                                            staticVar.Dc("TENANCY"),
+                                            staticVar.Dc("CREATED"),
+                                            staticVar.Dc("OPTIONS"),
+                                          ],
+                                          rows: this
+                                              .subscriptionDataFetched
+                                              .map((e) {
+                                            String? client = e["toWhome"]
+                                                ?.toString()
+                                                .split(" ")
+                                                .first;
+                                            String? booking =
+                                                e["uniteDetails"]?["unitName"];
+                                            String? unitName =
+                                                e["exactUniteName"];
+                                            bool? isSubscribed =
+                                                !e["isSubscribed"];
+                                            Timestamp? timestamp =
+                                                e["createdAt"];
+                                            DateTime? createdAt =
+                                                timestamp?.toDate();
+                                            String formattedDate =
+                                                createdAt != null
+                                                    ? DateFormat('d MMM')
+                                                        .format(createdAt)
+                                                    : "Unknown";
+                                            bool isSubscribedd = e[
+                                                    "isSubscribed"] ??
+                                                false; // false mean the used has canceled
+
+                                            Timestamp? timestamp2 =
+                                                e["cancelationDate"];
+                                            DateTime? cancelationDate =
+                                                timestamp2?.toDate();
+                                            String
+                                                cancelationDateformattedDate =
+                                                cancelationDate != null
+                                                    ? DateFormat('d MMM')
+                                                        .format(cancelationDate)
+                                                    : "Unknown";
+                                            String period = !isSubscribedd
+                                                ? "$formattedDate >> $cancelationDateformattedDate"
+                                                : "$formattedDate >> Ongoing";
+
+                                            // these 2 var are gonna be used for cancelation
+                                            String unitID = e["uniteID"];
+                                            String subID = e["id"];
+
+                                            return DataRow2(
+                                                onTap: () {
+                                                  print("this is e from datatable2 $e") ;
+                                                  this.showDetailsData = e;
+                                                  this.showDetalis = true;
+                                                  setState(() {});
+                                                },
+                                                cells: [
+                                                  DataCell(Center(
+                                                      child: Text(
+                                                    client ?? "404NotFound",
+                                                    style: staticVar
+                                                        .subtitleStyle4,
+                                                  ))),
+                                                  DataCell(Center(
+                                                      child: Text(
+                                                    booking ?? "404NotFound",
+                                                    style: staticVar
+                                                        .subtitleStyle4,
+                                                  ))),
+                                                  DataCell(Center(
+                                                    child: subscriptionItem(
+                                                      isCancelled:
+                                                          isSubscribed ?? false,
+                                                      allocation: unitName ??
+                                                          "404NotFound",
+                                                    ),
+                                                  )),
+                                                  DataCell(Center(
+                                                      child: Text(
+                                                    period,
+                                                    style: staticVar
+                                                        .subtitleStyle4,
+                                                  ))),
+                                                  DataCell(Center(
+                                                    child: Text(
+                                                      formattedDate,
+                                                      style: staticVar
+                                                          .subtitleStyle4,
+                                                    ),
+                                                  )),
+                                                  DataCell(Center(
+                                                    child: isSubscribed
+                                                        ? Text("")
+                                                        : Button2(
+                                                            onTap: () async {
+                                                              await cancelSubscription(
+                                                                  subID: subID,
+                                                                  unitID:
+                                                                      unitID,
+                                                                  ctx: context);
+                                                            },
+                                                            text:
+                                                                "Cancel this sub",
+                                                            color: Colors.red,
+                                                            IconData:
+                                                                Icons.cancel,
+                                                          ),
+                                                  ))
+                                                ]);
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
             ),
-      ),
     );
   }
 
-
-
-  Future<void> cancelSubscription({required String unitID,required String subID , required BuildContext ctx }) async {
+  Future<void> cancelSubscription(
+      {required String unitID,
+      required String subID,
+      required BuildContext ctx}) async {
     try {
+      confirmationDialog.showElegantPopup(
+          context: ctx,
+          message: 'Are you sure you want to cancel this subscription?',
+          onYes: () async {
+            // Update the document in the 'currentDocs' collection
+            await FirebaseFirestore.instance
+                .collection('units')
+                .doc(unitID)
+                .update({'status': 'available', 'occupant': ''});
 
-      confirmationDialog.showElegantPopup(context: ctx , message:'Are you sure you want to cancel this subscription?', onYes: () async {
-        // Update the document in the 'currentDocs' collection
-        await FirebaseFirestore.instance
-            .collection('units')
-            .doc(unitID)
-            .update({'status': 'available' , 'occupant' : ''});
+            // Update the document in the 'subscriptions' collection
+            await FirebaseFirestore.instance
+                .collection('subscriptions')
+                .doc(subID)
+                .update({
+              'isSubscribed': false,
+              'cancelationDate': Timestamp.now(),
+            });
 
-        // Update the document in the 'subscriptions' collection
-        await FirebaseFirestore.instance
-            .collection('subscriptions')
-            .doc(subID)
-            .update({
-          'isSubscribed': false,
-          'cancelationDate': Timestamp.now(),
-        });
-
-        await staticVar.showSubscriptionSnackbar(context: ctx, msg: 'Subscription canceled successfully.') ;
-        fetchSubscriptionData();
-      }, onNo: (){});
-
+            await staticVar.showSubscriptionSnackbar(
+                context: ctx, msg: 'Subscription canceled successfully.');
+            fetchSubscriptionData();
+          },
+          onNo: () {});
     } catch (error) {
       MyDialog.showAlert(context, "Ok", 'Error canceling subscription: $error');
       print('Error canceling subscription: $error');
@@ -767,15 +887,16 @@ class _subscriptionPageState extends State<subscriptionPage> {
     }
   }
 
-
-
   Future<List<Map<String, dynamic>>> fetchSubscriptionData() async {
     List<Map<String, dynamic>> subscriptionData = [];
     try {
       this.isLoading = true;
       setState(() {});
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance.collection('subscriptions') .orderBy('createdAt', descending: true).get();
+          await FirebaseFirestore.instance
+              .collection('subscriptions')
+              .orderBy('createdAt', descending: true)
+              .get();
 
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
         Map<String, dynamic> discountDataLoader =
@@ -971,9 +1092,9 @@ class _subscriptionPageState extends State<subscriptionPage> {
         "createdAt": DateTime.now(),
         "createdBy": userEmail,
         "uniteID": avalabeUnits["id"],
-        "isSubscribed" : true ,
-        "cancelationDate" : DateTime.now() ,
-        "exactUniteName" : avalabeUnits["unitIdByUserTxtField"]
+        "isSubscribed": true,
+        "cancelationDate": DateTime.now(),
+        "exactUniteName": avalabeUnits["unitIdByUserTxtField"]
       });
 
       if (mounted) {
@@ -1116,7 +1237,13 @@ class _subscriptionPageState extends State<subscriptionPage> {
           "all data": querySnapshot.docs.first["unitIdByUserTxtField"]
         });
         print(querySnapshot.docs.first.data());
-        return {"status": true, "id": querySnapshot.docs.first.id , "uniteName" : querySnapshot.docs.first["unitTypeName"] , "unitIdByUserTxtField" : querySnapshot.docs.first["unitIdByUserTxtField"] };
+        return {
+          "status": true,
+          "id": querySnapshot.docs.first.id,
+          "uniteName": querySnapshot.docs.first["unitTypeName"],
+          "unitIdByUserTxtField":
+              querySnapshot.docs.first["unitIdByUserTxtField"]
+        };
       } else {
         print({"status": false, "id": ""});
         return {"status": false, "id": ""};
