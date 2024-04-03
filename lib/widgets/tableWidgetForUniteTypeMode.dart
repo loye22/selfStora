@@ -67,6 +67,7 @@ class _tableWidgetForUniteTypeModeState
   String storeFrontStatus = "bookable"; // hidden / bookable / collection leads
   Map<String,dynamic> inilDataForEditUniteType = {} ;
   bool tableLoadin = false ;
+  dynamic displayUnitModeData = "" ;
 
 
   @override
@@ -84,6 +85,7 @@ class _tableWidgetForUniteTypeModeState
             ? Container(
                 child: Center(
                 child: uniteTypeDisplayWIdget(
+                  data: this.displayUnitModeData,
                   unitTypeTitle: "2 metri pătrați",
                   occupancyPercentage: "50%",
                   occupancyAvailableText: "1/2 units available",
@@ -419,6 +421,7 @@ class _tableWidgetForUniteTypeModeState
                                           return DataRow2(
                                             onTap: (){
                                               this.displayNewUnitTypeMode = true ;
+                                              this.displayUnitModeData = e ;
                                               setState(() {});
                                             },
 
@@ -794,7 +797,7 @@ class _tableWidgetForUniteTypeModeState
       print('Error retrieving data: $e');
     }
     this.dataListInit = dataList;
-    print(this.dataListInit);
+    //print(this.dataListInit);
     await Future.delayed(Duration(seconds: 1));
     this.tableLoadin = false;
     setState(() {});

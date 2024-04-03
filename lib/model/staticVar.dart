@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 
@@ -84,6 +86,11 @@ static TextStyle subtitleStyle3 = TextStyle(
       fontSize: 13,
       color: Colors.black);
 
+  static TextStyle subtitleStyle5 = TextStyle(
+      fontFamily: 'louie',
+      fontWeight: FontWeight.w600,
+      fontSize: 24,
+      color: Color.fromRGBO(20, 53, 96, 1));
 
   static Color buttonColor = Color.fromRGBO(20, 53, 96, 1) ;
 
@@ -144,6 +151,31 @@ static void showOverlay({
   }
 
 
+  static String formatDateFromTimestamp(dynamic input) {
+    try {
+      DateTime dateTime;
+
+      if (input is Timestamp) {
+        // Convert Timestamp to DateTime
+        dateTime = DateTime.fromMillisecondsSinceEpoch(input.seconds * 1000);
+      } else if (input is DateTime) {
+        // Input is already DateTime
+        dateTime = input;
+      } else {
+        // Handle other cases
+        throw Exception('Invalid input type');
+      }
+
+      // Format the DateTime
+      String formattedDate = DateFormat('dd MMM yyyy').format(dateTime);
+
+      return formattedDate;
+    }
+    catch(e){
+      print("Error $e");
+      return "Error $e";
+    }
+  }
 
 
 }
