@@ -23,7 +23,7 @@ class sitePage extends StatefulWidget {
 }
 
 class _sitePageState extends State<sitePage> {
-  bool unitTypeMode = !false;
+  bool unitTypeMode = false;
   bool unitMode = false;
 
   @override

@@ -86,11 +86,8 @@ class _tableWidgetForUniteTypeModeState
                 child: Center(
                 child: uniteTypeDisplayWIdget(
                   data: this.displayUnitModeData,
-                  unitTypeTitle: "2 metri pătrați",
-                  occupancyPercentage: "50%",
-                  occupancyAvailableText: "1/2 units available",
-                  storefrontPrice: "€61,88",
-                  pricePeriodText: "Every month",
+                  goBack: (){this.displayNewUnitTypeMode = false ; setState(() {});},
+
                 )
               ))
         // handel the unit edit featcher

@@ -120,9 +120,10 @@ class _rootPageState extends State<rootPage> {
             controller: _pageController,
             children: [
 
-              sitePage(),
               homePage(),
               subscriptionPage(),
+              sitePage(),
+
 
               contactPage(),
               discountPage(),
