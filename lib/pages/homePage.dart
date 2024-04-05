@@ -42,6 +42,7 @@ class _homePageState extends State<homePage> {
             width: 500,
             height: 500,
             child: SfPdfViewer.network(
+
               'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
               key: _pdfViewerKey,
             ),

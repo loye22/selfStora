@@ -189,6 +189,10 @@ class _mapPageState extends State<mapPage> {
   Size s14 = Size(50, 110);
   Size s15 = Size(90, 61);
   List<Map<String, dynamic>> unitsData = [];
+  bool clicked = false ;
+  Map<String, dynamic> clickedDagta = {} ;
+
+
 
   @override
   void initState() {
@@ -199,6 +203,7 @@ class _mapPageState extends State<mapPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
           title: Row(
@@ -213,85 +218,87 @@ class _mapPageState extends State<mapPage> {
         ),
         body: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                color: Colors.white,
-                elevation: 2,
-                child: Container(
-                  height: staticVar.golobalHigth(context) * .5,
-                  width: staticVar.golobalWidth(context) * .2,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: 90,
-                              height: 90,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20.0),
-                                // Adjust the radius as needed
-                                child: Image.network(
-                                  "https://firebasestorage.googleapis.com/v0/b/selfstorage-de099.appspot.com/o/employees%2F2024-03-08%2008%3A50%3A31.073Z.jpg?alt=media&token=94878012-122e-4218-a7fb-cd7c138c113a",
-                                  isAntiAlias: true,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "B12",
-                                style: staticVar.subtitleStyle1,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "24 mp Tip Garaj",
-                                style: staticVar.subtitleStyle2,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: Container(
-                          color: Color(0xFFCAD2E8),
-                          child: Center(
-                            child: Column(
-                              children: [
-                                SizedBox(width: 20,) ,
 
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.check),
-                                      SizedBox(width: 10,) ,
-                                      Text('AVAILABLE' , style: staticVar.subtitleStyle1,),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
 
-              ),
-            ),
+
+             Padding(
+             padding: const EdgeInsets.all(8.0),
+             child: Card(
+               color: Colors.white,
+               elevation: 2,
+               child: Container(
+                 width: staticVar.golobalWidth(context) * 0.2,
+                 height: staticVar.golobalWidth(context) * 0.3,
+                 child: Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     Row(
+                       children: [
+                         Padding(
+                           padding: const EdgeInsets.all(8.0),
+                           child: Container(
+                             width: 90,
+                             height: 90,
+                             decoration: BoxDecoration(
+                               borderRadius: BorderRadius.circular(30),
+                             ),
+                             child: ClipRRect(
+                               borderRadius: BorderRadius.circular(20.0),
+                               child: Image.network(
+                                 "https://firebasestorage.googleapis.com/v0/b/selfstorage-de099.appspot.com/o/employees%2F2024-03-08%2008%3A50%3A31.073Z.jpg?alt=media&token=94878012-122e-4218-a7fb-cd7c138c113a",
+                                 isAntiAlias: true,
+                               ),
+                             ),
+                           ),
+                         ),
+                         Expanded(
+                           child: Column(
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                             children: [
+                               Text(
+                                 this.clickedDagta["unitIdByUserTxtField"] ?? "",
+                                 style: staticVar.subtitleStyle1,
+                               ),
+                               SizedBox(
+                                 height: 10,
+                               ),
+                               Text(
+                                 this.clickedDagta["unitTypeName"] ?? "",
+                                 style: staticVar.subtitleStyle2,
+                                 overflow: TextOverflow.ellipsis, // Handle overflow
+                               )
+                             ],
+                           ),
+                         ),
+                       ],
+                     ),
+                     Container(
+                       height: staticVar.golobalHigth(context) * 0.3,
+                       color:getColorFromString( this.clickedDagta["status"] ?? ""),
+                       child: Center(
+                         child: Padding(
+                           padding: const EdgeInsets.all(8.0),
+                           child: Column(
+                             mainAxisAlignment: MainAxisAlignment.center,
+                             children: [
+                               getStatusIcon(this.clickedDagta["status"] ?? ""),
+                               SizedBox(height: 10),
+                               Text(
+                                 this.clickedDagta["status"] ?? "",
+                                 style: staticVar.subtitleStyle1,
+                               ),
+                             ],
+                           ),
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               ),
+             ),
+                        ) ,
             FutureBuilder(
-              future: fetchUnits(),
+              future:this.unitsData.isNotEmpty ? null :  fetchUnits(),
               builder: (ctx, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return staticVar.loading();
@@ -356,11 +363,25 @@ class _mapPageState extends State<mapPage> {
                                             size: s14,
                                             name: "F21",
                                             data: this.unitsData,
+                                            callback: (data){
+                                              this.clicked = true ;
+                                              this.clickedDagta = data ;
+                                              setState(() {});
+                                            },
                                           ),
                                           room(
                                             size: s1,
                                             name: "F20",
                                             data: this.unitsData,
+                                              callback: (data){
+                                                this.clicked = true ;
+                                                this.clickedDagta = data ;
+                                                setState(() {});
+
+
+
+                                              }
+
                                           ),
                                           room(
                                             size: s1,
@@ -1042,6 +1063,45 @@ class _mapPageState extends State<mapPage> {
         ));
   }
 
+  final Map<String, Color> statusColorMap = {
+    'available': Color(0xFFCAD2E8),
+    'reserved': Color(0xFF86E6D1),
+    'occupied': Color(0xFF45C48F),
+    'movingOut': Color(0xFF6ECAF2),
+    'movedIn': Color(0xFF729AF8),
+    'overlocked': Color(0xFFE95362),
+    'repossessed': Color(0xFFC865B9),
+    'unavailable': Color(0xFF000000),
+  };
+
+  Icon getStatusIcon(String status) {
+    switch (status.toLowerCase()) {
+      case "available":
+        return Icon(Icons.check); // Icon for available status
+      case "reserved":
+        return Icon(Icons.lock); // Icon for reserved status
+      case "occupied":
+        return Icon(Icons.person); // Icon for occupied status
+      case "movingOut":
+        return Icon(Icons.directions_walk); // Icon for moving out status
+      case "movedIn":
+        return Icon(Icons.exit_to_app); // Icon for moved in status
+      case "overlocked":
+        return Icon(Icons.warning); // Icon for overlocked status
+      case "repossessed":
+        return Icon(Icons.money_off); // Icon for repossessed status
+      case "unavailable":
+        return Icon(Icons.block); // Icon for unavailable status
+      default:
+        return Icon(Icons.help_outline); // Default icon
+    }
+  }
+
+  Color getStatusColor(String status) {
+    return statusColorMap[status.toLowerCase()] ?? Colors.grey; // Default color is grey if status is not found
+  }
+
+
   Future<void> showSimplePopup(BuildContext context) async {
     return showDialog<void>(
       context: context,
@@ -1064,6 +1124,7 @@ class _mapPageState extends State<mapPage> {
 
   Future<List<Map<String, dynamic>>> fetchUnits() async {
     try {
+
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('units').get();
       List<Map<String, dynamic>> units = [];
@@ -1090,9 +1151,11 @@ class room extends StatefulWidget {
   final Size size;
   final String name;
   final List<Map<String, dynamic>> data;
+   void Function(Map<String, dynamic> data)? callback;
 
-  const room(
-      {super.key, required this.size, required this.name, required this.data});
+
+   room(
+      {super.key, required this.size, required this.name, required this.data,  this.callback });
 
   @override
   State<room> createState() => _roomState();
@@ -1111,6 +1174,7 @@ class _roomState extends State<room> {
     status = fetchDataByUnitId(widget.data, widget.name)["status"] ?? "unavailable";
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -1158,9 +1222,15 @@ class _roomState extends State<room> {
   }
 
   void _handleClick() {
-    Map<String, dynamic>? s = fetchDataByUnitId(widget.data, widget.name);
-    MyDialog.showAlert(context, "ok", s.toString());
-    print(s.toString());
+    Map<String, dynamic>? widgetData = fetchDataByUnitId(widget.data, widget.name);
+    if(widget.callback != null )
+    widget.callback!(widgetData);
+    //MyDialog.showAlert(context, "ok",widgetData.toString());
+   // print(widgetData.toString());
+
+
+
+
   }
 }
 
@@ -1212,6 +1282,6 @@ Color getColorFromString(String inputString) {
     case 'unavailable':
       return Colors.red; // Color(0xFF000000); // Black
     default:
-      return Colors.red; // Default color if string doesn't match any case
+      return Colors.white; // Default color if string doesn't match any case
   }
 }
