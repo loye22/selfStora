@@ -189,10 +189,11 @@ class _mapPageState extends State<mapPage> {
   Size s14 = Size(50, 110);
   Size s15 = Size(90, 61);
   List<Map<String, dynamic>> unitsData = [];
-  bool clicked = false ;
-  Map<String, dynamic> clickedDagta = {} ;
+  bool clicked = false;
+  bool _isProcessing = false;
 
 
+  Map<String, dynamic> clickedDagta = {};
 
   @override
   void initState() {
@@ -203,7 +204,6 @@ class _mapPageState extends State<mapPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           title: Row(
@@ -218,849 +218,1454 @@ class _mapPageState extends State<mapPage> {
         ),
         body: Stack(
           children: [
-
-
-
-             Padding(
-             padding: const EdgeInsets.all(8.0),
-             child: Card(
-               color: Colors.white,
-               elevation: 2,
-               child: Container(
-                 width: staticVar.golobalWidth(context) * 0.2,
-                 height: staticVar.golobalWidth(context) * 0.3,
-                 child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     Row(
-                       children: [
-                         Padding(
-                           padding: const EdgeInsets.all(8.0),
-                           child: Container(
-                             width: 90,
-                             height: 90,
-                             decoration: BoxDecoration(
-                               borderRadius: BorderRadius.circular(30),
-                             ),
-                             child: ClipRRect(
-                               borderRadius: BorderRadius.circular(20.0),
-                               child: Image.network(
-                                 "https://firebasestorage.googleapis.com/v0/b/selfstorage-de099.appspot.com/o/employees%2F2024-03-08%2008%3A50%3A31.073Z.jpg?alt=media&token=94878012-122e-4218-a7fb-cd7c138c113a",
-                                 isAntiAlias: true,
-                               ),
-                             ),
-                           ),
-                         ),
-                         Expanded(
-                           child: Column(
-                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: [
-                               Text(
-                                 this.clickedDagta["unitIdByUserTxtField"] ?? "",
-                                 style: staticVar.subtitleStyle1,
-                               ),
-                               SizedBox(
-                                 height: 10,
-                               ),
-                               Text(
-                                 this.clickedDagta["unitTypeName"] ?? "",
-                                 style: staticVar.subtitleStyle2,
-                                 overflow: TextOverflow.ellipsis, // Handle overflow
-                               )
-                             ],
-                           ),
-                         ),
-                       ],
-                     ),
-                     Container(
-                       height: staticVar.golobalHigth(context) * 0.3,
-                       color:getColorFromString( this.clickedDagta["status"] ?? ""),
-                       child: Center(
-                         child: Padding(
-                           padding: const EdgeInsets.all(8.0),
-                           child: Column(
-                             mainAxisAlignment: MainAxisAlignment.center,
-                             children: [
-                               getStatusIcon(this.clickedDagta["status"] ?? ""),
-                               SizedBox(height: 10),
-                               Text(
-                                 this.clickedDagta["status"] ?? "",
-                                 style: staticVar.subtitleStyle1,
-                               ),
-                             ],
-                           ),
-                         ),
-                       ),
-                     ),
-                   ],
-                 ),
-               ),
-             ),
-                        ) ,
             FutureBuilder(
-              future:this.unitsData.isNotEmpty ? null :  fetchUnits(),
+              future: this.unitsData.isNotEmpty ? null : fetchUnits(),
               builder: (ctx, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return staticVar.loading();
                 }
-                return Stack(children: [
-                  // alignment: Alignment.center,
-                  Positioned(
-                    right: 1,
-                    child: Card(
-                      child: Container(
-                        child: Center(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              LegendItem(
-                                  color: Color(0xFFCAD2E8), label: 'Available'),
-                              LegendItem(
-                                  color: Color(0xFF86E6D1), label: 'Reserved'),
-                              LegendItem(
-                                  color: Color(0xFF45C48F), label: 'Occupied'),
-                              LegendItem(
-                                  color: Color(0xFF6ECAF2),
-                                  label: 'Moving Out'),
-                              LegendItem(
-                                  color: Color(0xFF729AF8), label: 'Moved Out'),
-                              LegendItem(
-                                  color: Color(0xFFE95362),
-                                  label: 'Overlocked'),
-                              LegendItem(
-                                  color: Color(0xFFC865B9),
-                                  label: 'Repossessed'),
-                              LegendItem(
-                                  color: Color(0xFF000000),
-                                  label: 'Unavailable'),
-                            ],
+                return Container(
+                  //  color: Colors.black,
+                  child: Stack(children: [
+                    // alignment: Alignment.center,
+                    Positioned(
+                      right: 1,
+                      child: Card(
+                        child: Container(
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                LegendItem(
+                                    color: Color(0xFFCAD2E8),
+                                    label: 'Available'),
+                                LegendItem(
+                                    color: Color(0xFF86E6D1),
+                                    label: 'Reserved'),
+                                LegendItem(
+                                    color: Color(0xFF45C48F),
+                                    label: 'Occupied'),
+                                LegendItem(
+                                    color: Color(0xFF6ECAF2),
+                                    label: 'Moving Out'),
+                                LegendItem(
+                                    color: Color(0xFF729AF8),
+                                    label: 'Moved Out'),
+                                LegendItem(
+                                    color: Color(0xFFE95362),
+                                    label: 'Overlocked'),
+                                LegendItem(
+                                    color: Color(0xFFC865B9),
+                                    label: 'Repossessed'),
+                                LegendItem(
+                                    color: Color(0xFF000000),
+                                    label: 'Unavailable'),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  InteractiveViewer(
-                      minScale: 0.1,
-                      maxScale: 20,
-                      child: Transform.scale(
-                        scale: 0.5,
-                        child: Row(
-                            //  crossAxisAlignment: CrossAxisAlignment.start,
-                            //  crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          SizedBox(
-                                            height: 50,
-                                          ),
-                                          room(
-                                            size: s14,
-                                            name: "F21",
-                                            data: this.unitsData,
-                                            callback: (data){
-                                              this.clicked = true ;
-                                              this.clickedDagta = data ;
-                                              setState(() {});
-                                            },
-                                          ),
-                                          room(
+                    InteractiveViewer(
+                        minScale: 0.1,
+                        maxScale: 20,
+                        child: Transform.scale(
+                          scale: 0.5,
+                          child: Row(children: [
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        SizedBox(
+                                          height: 50,
+                                        ),
+                                        room(
+                                          size: s14,
+                                          name: "F21",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
                                             size: s1,
                                             name: "F20",
                                             data: this.unitsData,
-                                              callback: (data){
-                                                this.clicked = true ;
-                                                this.clickedDagta = data ;
-                                                setState(() {});
-
-
-
-                                              }
-
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F19",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F18",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F17",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F16",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s15,
-                                            name: "F15",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s15,
-                                            name: "F14",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E04",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 50,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E08",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E12",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E13",
-                                            data: this.unitsData,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 60,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F22",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 390,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E03",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 50,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E07",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E11",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E14",
-                                            data: this.unitsData,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 60,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F23",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F07",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F08",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s13,
-                                            name: "F09",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s13,
-                                            name: "F10",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 85,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F11",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F12",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F13",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E02",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 50,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E06",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E10",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E15",
-                                            data: this.unitsData,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          SizedBox(
-                                            height: 60,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F24",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F06",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F05",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s12,
-                                            name: "F04",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 85,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F03",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F02",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "F01",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E01",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 50,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E05",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E09",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "E16",
-                                            data: this.unitsData,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      room(
-                                        size: s5,
-                                        name: "E17",
-                                        data: this.unitsData,
-                                      ),
-                                      room(
-                                        size: s5,
-                                        name: "E18",
-                                        data: this.unitsData,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 50,
-                              ),
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                  ),
-                                  room(
-                                    size: s11,
-                                    name: "D07",
-                                    data: this.unitsData,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Column(
-                                        children: [
-                                          room(
-                                            size: s10,
-                                            name: "D06",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s6,
-                                            name: "D5",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s9,
-                                            name: "D04",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 55,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C16",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C15",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C14",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C13",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C12",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C11",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C10",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C09",
-                                            data: this.unitsData,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          room(
-                                            size: s10,
-                                            name: "D03",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s6,
-                                            name: "D2",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s9,
-                                            name: "D01",
-                                            data: this.unitsData,
-                                          ),
-                                          SizedBox(
-                                            height: 55,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C01",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C02",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C03",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C04",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C5",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C06",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C07",
-                                            data: this.unitsData,
-                                          ),
-                                          room(
-                                            size: s1,
-                                            name: "C08",
-                                            data: this.unitsData,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 50,
-                              ),
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                  ),
-                                  room(
-                                    size: s6,
-                                    name: "B15",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s7,
-                                    name: "B14",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s8,
-                                    name: "B13",
-                                    data: this.unitsData,
-                                  ),
-                                  SizedBox(
-                                    height: 85,
-                                  ),
-                                  room(
-                                    size: s8,
-                                    name: "B16",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s6,
-                                    name: "B17",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s9,
-                                    name: "B18",
-                                    data: this.unitsData,
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                  ),
-                                  room(
-                                    size: s6,
-                                    name: "B04",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s7,
-                                    name: "B05",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s8,
-                                    name: "B06",
-                                    data: this.unitsData,
-                                  ),
-                                  SizedBox(
-                                    height: 85,
-                                  ),
-                                  room(
-                                    size: s8,
-                                    name: "B12",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s6,
-                                    name: "B11",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s9,
-                                    name: "B10",
-                                    data: this.unitsData,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 50,
-                              ),
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    height: 60,
-                                  ),
-                                  room(
-                                    size: s4,
-                                    name: "B03",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s4,
-                                    name: "B2",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s4,
-                                    name: "B01",
-                                    data: this.unitsData,
-                                  ),
-                                  SizedBox(
-                                    height: 85,
-                                  ),
-                                  room(
-                                    size: s4,
-                                    name: "B07",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s5,
-                                    name: "B08",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s5,
-                                    name: "B09",
-                                    data: this.unitsData,
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  room(
-                                    size: s1,
-                                    name: "A15",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A16",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A17",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A18",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A19",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A20",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A21",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A22",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A23",
-                                    data: this.unitsData,
-                                  ),
-                                  SizedBox(
-                                    height: 50,
-                                  ),
-                                  room(
-                                    size: s3,
-                                    name: "A1",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s3,
-                                    name: "A2",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s3,
-                                    name: "A3",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s3,
-                                    name: "A04",
-                                    data: this.unitsData,
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Column(
-                                children: [
-                                  room(
-                                    size: s1,
-                                    name: "A14",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A13",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A12",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A11",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A10",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A09",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A08",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A07",
-                                    data: this.unitsData,
-                                  ),
-                                  room(
-                                    size: s1,
-                                    name: "A06",
-                                    data: this.unitsData,
-                                  ),
-                                  SizedBox(
-                                    height: 70,
-                                  ),
-                                  room(
-                                    size: s2,
-                                    name: "A05",
-                                    data: this.unitsData,
-                                  ),
-                                ],
-                              ),
-                            ]),
-                      )),
-                ]);
+                                            callback: (data) {
+                                              this.clicked = true;
+                                              this.clickedDagta = data;
+                                              setState(() {});
+                                            }),
+                                        room(
+                                          size: s1,
+                                          name: "F19",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F18",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F17",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F16",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s15,
+                                          name: "F15",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s15,
+                                          name: "F14",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E04",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 50,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E08",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E12",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E13",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 60,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F22",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 390,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E03",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 50,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E07",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E11",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E14",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 60,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F23",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F07",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F08",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s13,
+                                          name: "F09",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s13,
+                                          name: "F10",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 85,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F11",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F12",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F13",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E02",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 50,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E06",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E10",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E15",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 60,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F24",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F06",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F05",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s12,
+                                          name: "F04",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 85,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F03",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F02",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "F01",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E01",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 50,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E05",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E09",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 15,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "E16",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    room(
+                                      size: s5,
+                                      name: "E17",
+                                      data: this.unitsData,
+                                      callback: (data) {
+                                        this.clicked = true;
+                                        this.clickedDagta = data;
+                                        setState(() {});
+                                      },
+                                    ),
+                                    room(
+                                      size: s5,
+                                      name: "E18",
+                                      data: this.unitsData,
+                                      callback: (data) {
+                                        this.clicked = true;
+                                        this.clickedDagta = data;
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 50,
+                            ),
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 60,
+                                ),
+                                room(
+                                  size: s11,
+                                  name: "D07",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                Row(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        room(
+                                          size: s10,
+                                          name: "D06",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s6,
+                                          name: "D5",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s9,
+                                          name: "D04",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 55,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C16",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C15",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C14",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C13",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C12",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C11",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C10",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C09",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        room(
+                                          size: s10,
+                                          name: "D03",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s6,
+                                          name: "D2",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s9,
+                                          name: "D01",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: 55,
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C01",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C02",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C03",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C04",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C5",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C06",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C07",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            MyDialog.showAlert(
+                                                context, "Ok", data.toString());
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                        room(
+                                          size: s1,
+                                          name: "C08",
+                                          data: this.unitsData,
+                                          callback: (data) {
+                                            this.clicked = true;
+                                            this.clickedDagta = data;
+                                            setState(() {});
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 50,
+                            ),
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 60,
+                                ),
+                                room(
+                                  size: s6,
+                                  name: "B15",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s7,
+                                  name: "B14",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s8,
+                                  name: "B13",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 85,
+                                ),
+                                room(
+                                  size: s8,
+                                  name: "B16",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s6,
+                                  name: "B17",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s9,
+                                  name: "B18",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 60,
+                                ),
+                                room(
+                                  size: s6,
+                                  name: "B04",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s7,
+                                  name: "B05",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s8,
+                                  name: "B06",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 85,
+                                ),
+                                room(
+                                  size: s8,
+                                  name: "B12",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s6,
+                                  name: "B11",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s9,
+                                  name: "B10",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 50,
+                            ),
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 60,
+                                ),
+                                room(
+                                  size: s4,
+                                  name: "B03",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s4,
+                                  name: "B2",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s4,
+                                  name: "B01",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 85,
+                                ),
+                                room(
+                                  size: s4,
+                                  name: "B07",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s5,
+                                  name: "B08",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s5,
+                                  name: "B09",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                room(
+                                  size: s1,
+                                  name: "A15",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A16",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A17",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A18",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A19",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A20",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A21",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A22",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A23",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 50,
+                                ),
+                                room(
+                                  size: s3,
+                                  name: "A1",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s3,
+                                  name: "A2",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s3,
+                                  name: "A3",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s3,
+                                  name: "A04",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Column(
+                              children: [
+                                room(
+                                  size: s1,
+                                  name: "A14",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A13",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A12",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A11",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A10",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A09",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A08",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A07",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                room(
+                                  size: s1,
+                                  name: "A06",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 70,
+                                ),
+                                room(
+                                  size: s2,
+                                  name: "A05",
+                                  data: this.unitsData,
+                                  callback: (data) {
+                                    this.clicked = true;
+                                    this.clickedDagta = data;
+                                    setState(() {});
+                                  },
+                                ),
+                              ],
+                            ),
+                          ]),
+                        )),
+                  ]),
+                );
               },
             ),
+            this.clickedDagta.isEmpty
+                ? SizedBox.shrink()
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 2,
+                      child: Container(
+                        width: staticVar.golobalWidth(context) * 0.2,
+                        height: staticVar.golobalWidth(context) * 0.3,
+                        // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    width: 90,
+                                    height: 90,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      child: Image.network(
+                                        "https://firebasestorage.googleapis.com/v0/b/selfstorage-de099.appspot.com/o/employees%2F2024-03-08%2008%3A50%3A31.073Z.jpg?alt=media&token=94878012-122e-4218-a7fb-cd7c138c113a",
+                                        isAntiAlias: true,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        this.clickedDagta[
+                                                "unitIdByUserTxtField"] ??
+                                            "",
+                                        style: staticVar.subtitleStyle1,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        this.clickedDagta["unitTypeName"] ?? "",
+                                        style: staticVar.subtitleStyle2,
+                                        overflow: TextOverflow
+                                            .ellipsis, // Handle overflow
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              height: staticVar.golobalHigth(context) * 0.3,
+                              color: getColorFromString(
+                                  this.clickedDagta["status"] ?? ""),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      getStatusIcon(
+                                          this.clickedDagta["status"] ?? ""),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        this.clickedDagta["status"] ?? "",
+                                        style: staticVar.subtitleStyle1,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            mapPopButtonOption(
+                              data: this.clickedDagta,
+                              status: this.clickedDagta["status"] ?? "",
+                              onBook: () {
+                                MyDialog.showAlert(context, "Ok", "OKKKk");
+                              },
+                              onMarkAsUnAvalable: markAsUnavailableCaller,
+                              onDeallocated: () {
+                                MyDialog.showAlert(
+                                    context, "Ok", " onDeallocated() ");
+                              },
+                              onUnAvalable: makeItAvalableCaller
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
           ],
         ));
+  }
+
+
+  // these 2 fucntion is to handel the the event that switch the unavalable  units to avalable
+  Future<void> makeItAvalableCaller() async {
+    if (_isProcessing) {
+      return;
+    }
+    // Set processing flag to true
+    _isProcessing = true;
+    await makeItAvalable(this.clickedDagta["pureUnitId"] ?? "");
+    this.unitsData = [];
+    this.clickedDagta = {};
+    _isProcessing = false;
+    setState(() {});
+  }
+  Future<void> makeItAvalable(String docId) async {
+    try {
+      // Reference to Firestore collection 'units'
+      CollectionReference units =
+          FirebaseFirestore.instance.collection('units');
+
+      // Update the status of the document with given docId to 'available'
+      await units.doc(docId).update({
+        'status': 'available',
+      });
+      staticVar.showSubscriptionSnackbar(
+          context: context, msg: "Status updated successfully");
+      print('Status updated successfully for document ID: $docId');
+    } catch (e) {
+      print('Error updating status: $e');
+    }
+  }
+
+
+// These 2 functions handle the event when the 'mark as unavailable' button is clicked
+  Future<void> markAsUnavailableCaller() async {
+    if (_isProcessing) {
+      return;
+    }
+    // Set processing flag to true
+    _isProcessing = true;
+    await markAsUnavailable(this.clickedDagta["pureUnitId"] ?? "");
+    this.unitsData = [];
+    this.clickedDagta = {};
+    _isProcessing = false;
+    setState(() {});
+  }
+  Future<void>  markAsUnavailable(String docId) async {
+    try {
+      // Reference to Firestore collection 'units'
+      CollectionReference units =
+          FirebaseFirestore.instance.collection('units');
+
+      // Update the status of the document with given docId to 'available'
+      await units.doc(docId).update({
+        'status': 'unavailable',
+      });
+      staticVar.showSubscriptionSnackbar(
+          context: context, msg: "Status updated successfully");
+      print('Status updated successfully for document ID: $docId');
+    } catch (e) {
+      print('Error updating status: $e');
+    }
   }
 
   final Map<String, Color> statusColorMap = {
@@ -1098,9 +1703,9 @@ class _mapPageState extends State<mapPage> {
   }
 
   Color getStatusColor(String status) {
-    return statusColorMap[status.toLowerCase()] ?? Colors.grey; // Default color is grey if status is not found
+    return statusColorMap[status.toLowerCase()] ??
+        Colors.grey; // Default color is grey if status is not found
   }
-
 
   Future<void> showSimplePopup(BuildContext context) async {
     return showDialog<void>(
@@ -1124,7 +1729,6 @@ class _mapPageState extends State<mapPage> {
 
   Future<List<Map<String, dynamic>>> fetchUnits() async {
     try {
-
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('units').get();
       List<Map<String, dynamic>> units = [];
@@ -1132,11 +1736,12 @@ class _mapPageState extends State<mapPage> {
         Map<String, dynamic> unitData = doc.data() as Map<String, dynamic>;
         unitData['pureUnitId'] = doc.id; // Add document ID to the map
         units.add(unitData);
-       // units.add(doc.data() as Map<String, dynamic>);
+        // units.add(doc.data() as Map<String, dynamic>);
       });
       this.unitsData = units;
       //MyDialog.showAlert(context, "okk", unitsData[2].toString());
-      print(units[0]);
+      print(units[3]);
+      setState(() {});
       return units;
     } catch (e) {
       print("Error fetching units: $e");
@@ -1147,15 +1752,170 @@ class _mapPageState extends State<mapPage> {
   }
 }
 
+class mapPopButtonOption extends StatelessWidget {
+  final String status;
+  final Map<String, dynamic> data;
+
+  final Function onBook;
+  final Function onMarkAsUnAvalable;
+  final Function onDeallocated;
+
+  final Function onUnAvalable;
+
+  const mapPopButtonOption({
+    super.key,
+    required this.status,
+    required this.onBook,
+    required this.onMarkAsUnAvalable,
+    required this.onDeallocated,
+    required this.onUnAvalable,
+    required this.data,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.status == "available")
+      return Expanded(
+        child: Container(
+          child: Row(
+            //   mainAxisAlignment: MainAxisAlignment., // Align buttons to the right
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Button 1 (Red)
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    onBook();
+                  },
+                  child: Container(
+                    height: staticVar.golobalHigth(context) * .11,
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius:
+                            BorderRadius.only(bottomLeft: Radius.circular(10))),
+                    child: Center(
+                        child: Text(
+                      "Book",
+                      style: staticVar.subtitleStyle6,
+                      textAlign: TextAlign.center,
+                    )),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Tooltip(
+                  message:
+                      "This option will mark the current unit as unavailable and \nit will not be bookable until you change it back to available!",
+                  child: GestureDetector(
+                    onTap: () {
+                      onMarkAsUnAvalable();
+                    },
+                    child: Container(
+                      height: staticVar.golobalHigth(context) * .11,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(10))),
+                      child: Center(
+                          child: Text(
+                        "Mark as Unavailable",
+                        style: staticVar.subtitleStyle6,
+                        textAlign: TextAlign.center,
+                      )),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+    if (this.status == "occupied")
+      return Expanded(
+        child: Container(
+          child: Row(
+            //   mainAxisAlignment: MainAxisAlignment., // Align buttons to the right
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Button 1 (Red)
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    onDeallocated();
+                  },
+                  child: Container(
+                    height: staticVar.golobalHigth(context) * .11,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10))),
+                    child: Center(
+                        child: Text(
+                      "Deallocated",
+                      style: staticVar.subtitleStyle6,
+                      textAlign: TextAlign.center,
+                    )),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+    if (this.status == "unavailable")
+      return Expanded(
+        child: Container(
+          child: Row(
+            //   mainAxisAlignment: MainAxisAlignment., // Align buttons to the right
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Button 1 (Red)
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    onUnAvalable();
+                  },
+                  child: Container(
+                    height: staticVar.golobalHigth(context) * .11,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10))),
+                    child: Center(
+                        child: Text(
+                      "Make it avalable",
+                      style: staticVar.subtitleStyle6,
+                      textAlign: TextAlign.center,
+                    )),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    else {
+      return SizedBox.shrink();
+    }
+  }
+}
+
 class room extends StatefulWidget {
   final Size size;
   final String name;
   final List<Map<String, dynamic>> data;
-   void Function(Map<String, dynamic> data)? callback;
+  void Function(Map<String, dynamic> data)? callback;
 
-
-   room(
-      {super.key, required this.size, required this.name, required this.data,  this.callback });
+  room(
+      {super.key,
+      required this.size,
+      required this.name,
+      required this.data,
+      this.callback});
 
   @override
   State<room> createState() => _roomState();
@@ -1171,10 +1931,10 @@ class _roomState extends State<room> {
   @override
   void initState() {
     // TODO: implement initState
-    status = fetchDataByUnitId(widget.data, widget.name)["status"] ?? "unavailable";
+    status =
+        fetchDataByUnitId(widget.data, widget.name)["status"] ?? "unavailable";
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -1222,15 +1982,11 @@ class _roomState extends State<room> {
   }
 
   void _handleClick() {
-    Map<String, dynamic>? widgetData = fetchDataByUnitId(widget.data, widget.name);
-    if(widget.callback != null )
-    widget.callback!(widgetData);
+    Map<String, dynamic>? widgetData =
+        fetchDataByUnitId(widget.data, widget.name);
+    if (widget.callback != null) widget.callback!(widgetData);
     //MyDialog.showAlert(context, "ok",widgetData.toString());
-   // print(widgetData.toString());
-
-
-
-
+    // print(widgetData.toString());
   }
 }
 

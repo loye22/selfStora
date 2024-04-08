@@ -92,6 +92,12 @@ static TextStyle subtitleStyle3 = TextStyle(
       fontSize: 24,
       color: Color.fromRGBO(20, 53, 96, 1));
 
+  static TextStyle subtitleStyle6 = TextStyle(
+      fontFamily: 'louie',
+      fontWeight: FontWeight.w600,
+      fontSize: 15,
+      color: Colors.black);
+
   static Color buttonColor = Color.fromRGBO(20, 53, 96, 1) ;
 
 static void showOverlay({

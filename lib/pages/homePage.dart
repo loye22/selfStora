@@ -38,7 +38,7 @@ class _homePageState extends State<homePage> {
       body: Center(child: Column(
         children: [
           Text("homePagexxxx"),
-          Container(
+          /*Container(
             width: 500,
             height: 500,
             child: SfPdfViewer.network(
@@ -46,7 +46,7 @@ class _homePageState extends State<homePage> {
               'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
               key: _pdfViewerKey,
             ),
-          ),
+          ),*/
         ],
       ),),
     );
