@@ -11,7 +11,7 @@ class confirmationDialog{
   static void showElegantPopup({
     required BuildContext context,
     required String message,
-    required VoidCallback onYes,
+    required VoidCallback  onYes,
     required VoidCallback onNo,
   }) {
     showDialog(
@@ -31,6 +31,40 @@ class confirmationDialog{
             TextButton(
               onPressed: () {
                 onYes();
+                Navigator.of(context).pop();
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  static void showElegantPopup2({
+    required BuildContext context,
+    required String message,
+    required Future<void>  onYes(),
+    required Future<void> onNo(),
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmation'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () async {
+               await onNo();
+                Navigator.of(context).pop();
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              onPressed: ()async {
+               await onYes();
                 Navigator.of(context).pop();
               },
               child: Text('Yes'),

@@ -6,6 +6,7 @@ import 'package:selfstorage/model/staticVar.dart';
 import 'package:selfstorage/widgets/dialog.dart';
 
 import '../widgets/button.dart';
+import '../widgets/confirmationDialog.dart';
 
 /*
   class mapPage extends StatefulWidget {
@@ -195,12 +196,15 @@ class _mapPageState extends State<mapPage> {
 
   Map<String, dynamic> clickedDagta = {};
 
+ bool yes = false ;
+
   @override
   void initState() {
     // TODO: implement initState
     fetchUnits();
     super.initState();
   }
+  final GlobalKey buttonKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -1541,8 +1545,7 @@ class _mapPageState extends State<mapPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        this.clickedDagta[
-                                                "unitIdByUserTxtField"] ??
+                                        this.clickedDagta["unitIdByUserTxtField"] ??
                                             "",
                                         style: staticVar.subtitleStyle1,
                                       ),
@@ -1562,8 +1565,7 @@ class _mapPageState extends State<mapPage> {
                             ),
                             Container(
                               height: staticVar.golobalHigth(context) * 0.3,
-                              color: getColorFromString(
-                                  this.clickedDagta["status"] ?? ""),
+                              color: getColorFromString(this.clickedDagta["status"] ?? ""),
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -1577,6 +1579,8 @@ class _mapPageState extends State<mapPage> {
                                         this.clickedDagta["status"] ?? "",
                                         style: staticVar.subtitleStyle1,
                                       ),
+                                      SizedBox(height: 10,) ,
+                                      Text (this.clickedDagta["occupant"]?.toString()?.split(" ")?.first ?? "" ,style: staticVar.subtitleStyle1,)
                                     ],
                                   ),
                                 ),
@@ -1589,21 +1593,136 @@ class _mapPageState extends State<mapPage> {
                                 MyDialog.showAlert(context, "Ok", "OKKKk");
                               },
                               onMarkAsUnAvalable: markAsUnavailableCaller,
-                              onDeallocated: () {
-                                MyDialog.showAlert(
-                                    context, "Ok", " onDeallocated() ");
-                              },
-                              onUnAvalable: makeItAvalableCaller
+                              onDeallocated:deallocatedCaller,
+                              onUnAvalable: makeItAvalableCaller ,
                             )
                           ],
                         ),
                       ),
                     ),
                   ),
+
+            Button(
+
+              onTap: (){
+              this.unitsData = [];
+              this.clickedDagta = {};
+              setState(() {});
+
+            }, text: "ss",)
           ],
         ));
+
+    void help(){
+      if(this.yes){
+        this.unitsData = [];
+        this.clickedDagta = {};
+        setState(() {});
+
+      }
+    }
   }
 
+
+  Future<String?> getSubscriptionDocId(String unitID) async {
+    try {
+      // Access Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Query 'subscriptions' collection for documents where 'isSubscribed' is true and 'unitID' matches
+      QuerySnapshot querySnapshot = await firestore
+          .collection('subscriptions')
+          .where('isSubscribed', isEqualTo: true)
+          .where('uniteID', isEqualTo: unitID)
+          .get();
+
+      // Check if there are any matching documents
+      if (querySnapshot.docs.isNotEmpty) {
+        // Return the document ID of the first matching document
+        return querySnapshot.docs.first.id;
+      } else {
+        // If no matching document is found, return null
+        return null;
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<void> cancelSubscription(
+      {required String unitID,
+        required String subID,
+        required BuildContext ctx}) async {
+    try {
+      confirmationDialog.showElegantPopup(
+          context: ctx,
+          message: 'Are you sure you want to cancel this subscription?',
+          onYes: () async {
+            // Update the document in the 'currentDocs' collection
+            await FirebaseFirestore.instance
+                .collection('units')
+                .doc(unitID)
+                .update({'status': 'available', 'occupant': ''});
+
+            // Update the document in the 'subscriptions' collection
+            await FirebaseFirestore.instance
+                .collection('subscriptions')
+                .doc(subID)
+                .update({
+              'isSubscribed': false,
+              'cancelationDate': Timestamp.now(),
+            });
+
+            this.yes = true ;
+            await staticVar.showSubscriptionSnackbar(
+                context: ctx, msg: 'Subscription canceled successfully.');
+          },
+          onNo: () {});
+    } catch (error) {
+      MyDialog.showAlert(context, "Ok", 'Error canceling subscription: $error');
+      print('Error canceling subscription: $error');
+      // Handle error appropriately, e.g., show error message to user
+    }
+  }
+
+
+
+  // these 2 fucntion is to handel the deallocated
+  Future<void> deallocatedCaller() async {
+    if (_isProcessing) {
+      return;
+    }
+
+    // Set processing flag to true
+    _isProcessing = true;
+    await deallocated(this.clickedDagta["pureUnitId"] ?? "");
+    if(this.yes){
+      this.unitsData = [];
+      this.clickedDagta = {};
+      setState(() {});
+
+    }
+
+    _isProcessing = false;
+
+  }
+  Future<void> deallocated(String docId) async {
+    try {
+      String subScriptionID = await getSubscriptionDocId(docId) ?? "";
+      if(subScriptionID == ""){
+        MyDialog.showAlert(context, "Ok", "Error while processing the deallocated fucntion");
+        throw Exception("Error while processing the deallocated fucntion");
+      }
+
+      await cancelSubscription(ctx: context , unitID: docId , subID: subScriptionID );
+
+
+    } catch (e) {
+      print('Error updating status: $e');
+    }
+  }
 
   // these 2 fucntion is to handel the the event that switch the unavalable  units to avalable
   Future<void> makeItAvalableCaller() async {
@@ -1759,6 +1878,7 @@ class mapPopButtonOption extends StatelessWidget {
   final Function onBook;
   final Function onMarkAsUnAvalable;
   final Function onDeallocated;
+
 
   final Function onUnAvalable;
 
