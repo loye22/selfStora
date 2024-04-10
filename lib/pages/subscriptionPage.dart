@@ -375,11 +375,7 @@ class _subscriptionPageState extends State<subscriptionPage> {
                                                       // MyDialog.showAlert(context, "ok", 'ssss');
                                                       selectedValueFromThirdDropDown =
                                                           newValue;
-                                                      this.price = getPriceHistoryById(
-                                                              selectedValueFromThirdDropDown ??
-                                                                  "",
-                                                              this.unitsType) ??
-                                                          "Error";
+                                                      this.price = getPriceHistoryById(selectedValueFromThirdDropDown ?? "", this.unitsType) ?? "Error";
 
                                                       setState(() {});
                                                     },

@@ -139,6 +139,12 @@ static void showOverlay({
 
 
 
+
+
+
+
+
+
   static double golobalWidth(BuildContext context ) => MediaQuery.of(context).size.width * 0.85 ;
   static double golobalHigth(BuildContext context ) => MediaQuery.of(context).size.height * 0.81 ;
 
