@@ -25,10 +25,9 @@ class showDetalisWidget extends StatefulWidget {
 }
 
 class _showDetalisWidgetState extends State<showDetalisWidget> {
-  List<Map<String, dynamic>> contactsData = [] ;
-  String status = "" ;
+  List<Map<String, dynamic>> contactsData = [];
 
-
+  String status = "";
 
   @override
   void initState() {
@@ -40,10 +39,11 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String contactEmail = widget.data["toWhome"].toString().split(" ").last ?? "";
-    Map<String , dynamic>contactData = getContactByEmail(contacts: contactsData , email:  contactEmail) ?? {};
+    String contactEmail =
+        widget.data["toWhome"].toString().split(" ").last ?? "";
+    Map<String, dynamic> contactData =
+        getContactByEmail(contacts: contactsData, email: contactEmail) ?? {};
     //print(contactData);
-
 
     //MyDialog.showAlert(context, "Ok", contactEmail);
     return Column(
@@ -111,7 +111,7 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     width: staticVar.golobalWidth(context) * .7,
-                    height: 200,
+                    height: 300,
                     child: Card(
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -126,7 +126,7 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Allocation',
+                                'Payment Details',
                                 style: staticVar.subtitleStyle1,
                               ),
                             ),
@@ -138,27 +138,27 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                               height: 100,
                               child: DataTable2(
                                 columns: [
-                                  staticVar.Dc("UNIT"),
-                                  staticVar.Dc("UNIT STATUS	"),
+                                  staticVar.Dc("Initial Bill"),
+                                  staticVar.Dc("Payment Bill "),
+                                  staticVar.Dc("Expected Pay Date"),staticVar.Dc("Actual Received Date"),
                                 ],
                                 rows: [
                                   DataRow2(cells: [
-                                    DataCell(Center(
-                                        child: Text(
-                                      textAlign: TextAlign.center,
-                                      (widget.data["exactUniteName"] ??
-                                                  "404NotFOund")
-                                              .toString() +
-                                          "\n" +
-                                          (widget.data["unitName"] ??
-                                                  "404NotFOund")
-                                              .toString(),
-                                      style: staticVar.subtitleStyle4,
+                                    DataCell(Center( child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.upload ,color: Colors.green ,), Icon(Icons.remove_red_eye ,color: Colors.green ,),
+                                      ],
                                     ))),
-                                    DataCell(Center(
-                                        child: statusWidget(
-                                      status: this.status,
-                                    )))
+                                    DataCell(Center( child: Row(                                      mainAxisAlignment: MainAxisAlignment.center,
+
+                                      children: [
+                                        Icon(Icons.upload ,color: Colors.green ,), Icon(Icons.remove_red_eye ,color: Colors.green ,),
+                                      ],
+                                    ))),
+                                    DataCell(Center(child: Text('14 Jan 2024'),)),
+                                    DataCell(Center(child: Text('16 Jan 2024'),))
+
                                   ])
                                 ],
                               ),
@@ -353,6 +353,11 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                                           ),
                                           SizedBox(height: 5),
                                           Text(
+                                            'Unite type :  ${widget.data["unitName"] ?? "404NotFOund"} ',
+                                            style: staticVar.subtitleStyle4,
+                                          ),
+                                          SizedBox(height: 5),
+                                          Text(
                                             'Created by  :  ${widget.data["uniteDetails"]?["createdBy"] ?? "404NotFound"} ',
                                             style: staticVar.subtitleStyle4,
                                           ),
@@ -427,8 +432,7 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                           child: SingleChildScrollView(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly  ,
-
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -443,30 +447,40 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                                 Padding(
                                   padding: const EdgeInsets.all(16),
                                   child: Container(
-                                    height:staticVar.golobalHigth(context) * .75 ,
+                                    height:
+                                        staticVar.golobalHigth(context) * .75,
                                     width: 300,
-                               //     decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+                                    //     decoration: BoxDecoration(border: Border.all(color: Colors.black)),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                               
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
                                       children: [
                                         copyableTextWidget2(
                                             prefex: 'Name',
-                                            text: '${contactData["name"]?? "404NotFound"}',
-                                            textStyle: staticVar.subtitleStyle4),
+                                            text:
+                                                '${contactData["name"] ?? "404NotFound"}',
+                                            textStyle:
+                                                staticVar.subtitleStyle4),
                                         copyableTextWidget2(
                                             prefex: 'Email',
-                                            text: '${contactData["email"]?? "404NotFound"}',
-                                            textStyle: staticVar.subtitleStyle4),
+                                            text:
+                                                '${contactData["email"] ?? "404NotFound"}',
+                                            textStyle:
+                                                staticVar.subtitleStyle4),
                                         copyableTextWidget2(
                                             prefex: 'Phone nr',
-                                            text: '${contactData["phoneNr"]?? "404NotFound"}',
-                                            textStyle: staticVar.subtitleStyle4),
+                                            text:
+                                                '${contactData["phoneNr"] ?? "404NotFound"}',
+                                            textStyle:
+                                                staticVar.subtitleStyle4),
                                         copyableTextWidget2(
                                             prefex: 'VAT number',
-                                            text: '${contactData["vat"]?? "404NotFound"}',
-                                            textStyle: staticVar.subtitleStyle4),
+                                            text:
+                                                '${contactData["vat"] ?? "404NotFound"}',
+                                            textStyle:
+                                                staticVar.subtitleStyle4),
                                         Text(
                                           'Address',
                                           style: staticVar.subtitleStyle4,
@@ -497,7 +511,6 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                                             ],
                                           ),
                                         ),
-                                    
                                         Text(
                                           'Markting source',
                                           style: staticVar.subtitleStyle4,
@@ -542,16 +555,14 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                   Button2(
                     height: 2,
                     width: 2,
-                    onTap: ()  async {
-                      if((widget.data["isSubscribed"] ?? false) == false)
+                    onTap: () async {
+                      if ((widget.data["isSubscribed"] ?? false) == false)
                         return;
                       // these 2 var are gonna be used for cancelation
                       String unitID = widget.data["uniteID"];
-                      String subID = widget.data["id"] ;
-                      await cancelSubscription(subID: subID , unitID:  unitID ,ctx: context);
-
-
-
+                      String subID = widget.data["id"];
+                      await cancelSubscription(
+                          subID: subID, unitID: unitID, ctx: context);
                     },
                     text:
                         "Cancel ${(widget.data["toWhome"] ?? "404NotFound").toString().split(" ").first} subscriptions",
@@ -576,17 +587,18 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       // Access the 'units' collection and fetch the document with the specified docId
-      DocumentSnapshot docSnapshot = await firestore.collection('units').doc(docId).get();
+      DocumentSnapshot docSnapshot =
+          await firestore.collection('units').doc(docId).get();
 
       // Check if the document exists
       if (docSnapshot.exists) {
         // Access the 'status' field of the document
-        Map<String , dynamic> fullRow = docSnapshot.data() as Map<String,dynamic>   ;
-        String status = fullRow["status"] ;
-       // print("this is stsatus \n " + status);
-        this.status = status ;
-       // print(status);
-
+        Map<String, dynamic> fullRow =
+            docSnapshot.data() as Map<String, dynamic>;
+        String status = fullRow["status"];
+        // print("this is stsatus \n " + status);
+        this.status = status;
+        // print(status);
 
         // Return the status
         return status.toLowerCase();
@@ -601,30 +613,35 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
     }
   }
 
-
-  Future<void> cancelSubscription({required String unitID,required String subID , required BuildContext ctx }) async {
+  Future<void> cancelSubscription(
+      {required String unitID,
+      required String subID,
+      required BuildContext ctx}) async {
     try {
+      confirmationDialog.showElegantPopup(
+          context: ctx,
+          message: 'Are you sure you want to cancel this subscription?',
+          onYes: () async {
+            // Update the document in the 'currentDocs' collection
+            await FirebaseFirestore.instance
+                .collection('units')
+                .doc(unitID)
+                .update({'status': 'available', 'occupant': ''});
 
-      confirmationDialog.showElegantPopup(context: ctx , message:'Are you sure you want to cancel this subscription?', onYes: () async {
-        // Update the document in the 'currentDocs' collection
-        await FirebaseFirestore.instance
-            .collection('units')
-            .doc(unitID)
-            .update({'status': 'available' , 'occupant' : ''});
+            // Update the document in the 'subscriptions' collection
+            await FirebaseFirestore.instance
+                .collection('subscriptions')
+                .doc(subID)
+                .update({
+              'isSubscribed': false,
+              'cancelationDate': Timestamp.now(),
+            });
 
-        // Update the document in the 'subscriptions' collection
-        await FirebaseFirestore.instance
-            .collection('subscriptions')
-            .doc(subID)
-            .update({
-          'isSubscribed': false,
-          'cancelationDate': Timestamp.now(),
-        });
-
-        await staticVar.showSubscriptionSnackbar(context: ctx, msg: 'Subscription canceled successfully.') ;
-        widget.onCancel();
-      }, onNo: (){});
-
+            await staticVar.showSubscriptionSnackbar(
+                context: ctx, msg: 'Subscription canceled successfully.');
+            widget.onCancel();
+          },
+          onNo: () {});
     } catch (error) {
       MyDialog.showAlert(context, "Ok", 'Error canceling subscription: $error');
       print('Error canceling subscription: $error');
@@ -632,8 +649,8 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
     }
   }
 
-
-  Map<String, dynamic>? getContactByEmail({required List<Map<String, dynamic>> contacts,required String email}) {
+  Map<String, dynamic>? getContactByEmail(
+      {required List<Map<String, dynamic>> contacts, required String email}) {
     for (var contact in contacts) {
       if (contact['email'] == email) {
         return contact;
@@ -642,19 +659,17 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
     return null; // Return null if no contact found with the provided email
   }
 
-
   Future<List<Map<String, dynamic>>> fetchContacts() async {
     List<Map<String, dynamic>> contacts = [];
 
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('contacts').get();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('contacts').get();
       querySnapshot.docs.forEach((doc) {
         contacts.add(doc.data() as Map<String, dynamic>);
       });
-      this.contactsData = contacts ;
-      setState(() {
-
-      });
+      this.contactsData = contacts;
+      setState(() {});
       //print(this.contactsData);
     } catch (e) {
       print('Error fetching contacts: $e');
@@ -665,13 +680,12 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
     return contacts;
   }
 
-
   dynamic calculateDiscount(dynamic data) {
     if (data == "" || data["discountType"] == null) return "404NotFoundz";
 
     String discountTypeAsString = data["discountType"];
 
-   // print(discountTypeAsString);
+    // print(discountTypeAsString);
 
     DiscountType discountType = parseDiscountType(discountTypeAsString);
 

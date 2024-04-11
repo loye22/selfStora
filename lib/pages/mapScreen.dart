@@ -1628,10 +1628,7 @@ class _mapPageState extends State<mapPage> {
                     ),
                   ),
 
-            Button(
-                text: "sss",
-                onTap: (){}
-           )
+
           ],
         ));
 
@@ -1931,6 +1928,7 @@ class _mapPageState extends State<mapPage> {
   }
 
   Future<void> createSubscription() async {
+    this.isLoading = true ; setState((){});
 
     try {
       // The folowing block is to check that all the dropdown menus and field are not empty.
@@ -1966,8 +1964,7 @@ class _mapPageState extends State<mapPage> {
       }
       ///////////////////////////////////////////////////////////////////////////////////////////////// end of the block
 
-      this.isLoading = true;
-      setState(() {});
+
 
       // The algorithm to create a subscription is as follows:
       // 1. Check if we have available units for the selected type. If there are any, continue; otherwise, display a proper message.
@@ -2092,7 +2089,8 @@ class _mapPageState extends State<mapPage> {
             context: context, msg: 'Subscription created successfully');
       }
       rest();
-
+      await Future.delayed(Duration(seconds: 5));
+      Navigator.of(context).pop();
       setState(() {});
     } catch (e) {
       MyDialog.showAlert(context, "Ok", "Something went wrong! $e");
@@ -2626,6 +2624,7 @@ class _mapPageState extends State<mapPage> {
                                               },
                                               text: "Cancel",
                                               color: Colors.red),
+                                        //   IconButton(onPressed: (){}, icon: Icon(Icons.add))
                                            /*Button2(onTap: ()async {
 
                                       final uniteDataById = getUnitById(id: this.clickedDagta["unitTypeID"] ?? "5" , unitsList: unitsType);
