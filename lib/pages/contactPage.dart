@@ -162,6 +162,9 @@ class _contactPageState extends State<contactPage> {
                                                         .pop();
                                                     // if true this email has subscription so rise error msg
                                                     bool hasSubscription =await checkIfEmailHasSubscription (email: e["email"] ?? "");
+                                                    //MyDialog.showAlert(context, "Ok", "Has sub : $hasSubscription") ;
+                                                    //return;
+
                                                     if(hasSubscription){
                                                       MyDialog.showAlert(context, "Ok", "We can't delete this contact because they have a subscription, and their data is essential.");
                                                       return;
@@ -204,7 +207,6 @@ class _contactPageState extends State<contactPage> {
 
   Future<List<Map<String, dynamic>>> fetchContactData() async {
     List<Map<String, dynamic>> contactData = [];
-
     try {
       this.isLoading = true ;
       setState(() {});

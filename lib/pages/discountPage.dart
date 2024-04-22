@@ -23,7 +23,7 @@ class discountPage extends StatefulWidget {
 }
 
 class _discountPageState extends State<discountPage> {
-  bool createNewDiscounMode = !false;
+  bool createNewDiscounMode = false;
   bool storeFronPromotion = false;
   bool deleteLoading = false;
   bool isLoading = false ;
