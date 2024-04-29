@@ -52,6 +52,7 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   flutter_animated_icons: ^1.0.1
   syncfusion_flutter_pdfviewer: ^24.2.8
+  fl_chart: ^0.67.0
 
 
 dev_dependencies:

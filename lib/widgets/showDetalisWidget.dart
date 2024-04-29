@@ -104,10 +104,73 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: staticVar.golobalWidth(context) * .7,
+                    height: 200,
+                    child: Card(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Allocation',
+                                style: staticVar.subtitleStyle1,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: 100,
+                              child: DataTable2(
+                                columns: [
+                                  staticVar.Dc("UNIT"),
+                                  staticVar.Dc("UNIT STATUS	"),
+                                ],
+                                rows: [
+                                  DataRow2(cells: [
+                                    DataCell(Center(
+                                        child: Text(
+                                          textAlign: TextAlign.center,
+                                          (widget.data["exactUniteName"] ??
+                                              "404NotFOund")
+                                              .toString() +
+                                              "\n" +
+                                              (widget.data["unitName"] ??
+                                                  "404NotFOund")
+                                                  .toString(),
+                                          style: staticVar.subtitleStyle4,
+                                        ))),
+                                    DataCell(Center(
+                                        child: statusWidget(
+                                          status: this.status,
+                                        )))
+                                  ])
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+               /* Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     width: staticVar.golobalWidth(context) * .7,
@@ -133,7 +196,7 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                             SizedBox(
                               height: 10,
                             ),
-                            Container(
+                            /*Container(
                               width: double.infinity,
                               height: 100,
                               child: DataTable2(
@@ -162,13 +225,13 @@ class _showDetalisWidgetState extends State<showDetalisWidget> {
                                   ])
                                 ],
                               ),
-                            ),
+                            ),*/
                           ],
                         ),
                       ),
                     ),
                   ),
-                ),
+                ),*/
                 Row(
                   children: [
                     Container(
