@@ -53,6 +53,8 @@ dependencies:
   flutter_animated_icons: ^1.0.1
   syncfusion_flutter_pdfviewer: ^24.2.8
   fl_chart: ^0.67.0
+  flutter_charts: ^0.5.2
+  deep_collection: ^1.0.2
 
 
 dev_dependencies:

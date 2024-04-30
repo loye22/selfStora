@@ -2,6 +2,7 @@ import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:selfstorage/pages/EyeIcon.dart';
 import 'package:selfstorage/pages/contactPage.dart';
 import 'package:selfstorage/pages/discountPage.dart';
 import 'package:selfstorage/pages/homePage.dart';
@@ -36,6 +37,7 @@ class _rootPageState extends State<rootPage> {
   List<SideMenuItem> _buildMenuItems() {
     return [
       SideMenuItem(
+        trailing:EyeIcon(),
         title: 'Home page',
         onTap: (index, _) {
           _sideMenuController.changePage(index);
