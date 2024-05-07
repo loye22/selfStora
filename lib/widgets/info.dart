@@ -28,7 +28,7 @@ class InformationCard extends StatelessWidget {
     return Expanded(
       child: Card(
         child: Container(
-          width: MediaQuery.of(context).size.width  * .2,
+          width: MediaQuery.of(context).size.width  * .5,
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: Column(

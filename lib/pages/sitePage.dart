@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:selfstorage/pages/mapScreen.dart';
+import 'package:selfstorage/widgets/customSwitch.dart';
 import 'package:selfstorage/widgets/genrateUnitsWidget.dart';
 import 'package:selfstorage/widgets/siteUnitButton.dart';
 import 'package:selfstorage/widgets/tableWidgetForUniteTypeMode.dart';
@@ -25,6 +27,7 @@ class sitePage extends StatefulWidget {
 class _sitePageState extends State<sitePage> {
   bool unitTypeMode = false;
   bool unitMode = false;
+  bool dummyBool = false ;
 
   @override
   Widget build(BuildContext context) {
@@ -98,14 +101,40 @@ class _sitePageState extends State<sitePage> {
                                 ),
                               ],
                             ),
-                            InformationCard(
-                              accessType: 'Padlock',
-                              visibility: 'Live',
-                              paymentMethods: 'Credit / Debit Card',
-                              billingPeriod: 'Every month',
-                              priceDisplay: 'Monthly',
-                              unitTypes: 'VAT (19.0%)',
-                              insurance: 'None',
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  InformationCard(
+                                    accessType: 'Padlock',
+                                    visibility: 'Live',
+                                    paymentMethods: 'Credit / Debit Card',
+                                    billingPeriod: 'Every month',
+                                    priceDisplay: 'Monthly',
+                                    unitTypes: 'VAT (19.0%)',
+                                    insurance: 'None',
+                                  ),
+                                   Expanded(child:
+                                   Container(
+                                     width: 1000,
+                                       child: Card(
+                                         child: Column(
+                                           children: [
+                                             Expanded(
+                                               child: customSwitch(
+                                                 label: 'Hide Prices',
+                                                 subLabel: 'Turn this switch on to hide prices until the customer enter there email',
+                                                 value: dummyBool,
+                                                 onChanged: (s){dummyBool = s ; setState(() {
+
+                                                 });},
+                                                 switchColor: Colors.green,
+                                               ),
+                                             )
+                                           ],
+                                         ),
+                                       )))
+                                ],
+                              ),
                             ),
                           ],
                         ),

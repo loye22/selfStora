@@ -40,6 +40,8 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return MaterialApp(
+      title: "Self Storage",
+
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'louie' , focusColor: Color.fromRGBO(20, 53, 96,1  )),
       home: StreamBuilder(

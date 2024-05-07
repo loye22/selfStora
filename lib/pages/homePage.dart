@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:selfstorage/model/staticVar.dart';
+import 'package:selfstorage/pages/mapScreen.dart';
 import 'package:selfstorage/widgets/PieChartSample2.dart';
 import 'package:selfstorage/widgets/SubscriptionLineChart.dart';
 import 'package:selfstorage/widgets/dialog.dart';
+import 'package:selfstorage/widgets/hoverWrapper.dart';
 import 'package:selfstorage/widgets/profitChart.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -53,7 +55,7 @@ class _homePageState extends State<homePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      PieChartSample2(data: allUnits,lable: "Overall status",subLable: "Here, you can check the overall status of all units in your warehouse.",),
+                      PieChartSample2(data: allUnits,lable: "Overall status",subLable: "Here, you can check the overall status of all units in your warehouse.",hidePercentage: true,),
                       PieChartSample2(data: this.unitsCountList ,lable: "Available Units", hidePercentage: true,subLable: "Here, you can see the numbers of available units in your warehouse.",),
                       PieChartSample2(data: this.allSubs ,lable: "Subscription Status", hidePercentage: true,subLable: "Here you can check all the subscriptions status in your warehouse.",),
                     ],
@@ -61,37 +63,42 @@ class _homePageState extends State<homePage> {
                   Row(
                     children: [
                       ProfitChart(data: this.fullSubWidgetData,),
-                      Container(
-                          padding: EdgeInsets.all(16.0),
-                          width: staticVar.golobalWidth(context) * .4 ,
-                          height: staticVar.golobalHigth(context) * .7,
-                          child: Card(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 18.0, left: 20),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                       "Map",
-                                        style: GoogleFonts.roboto(
-                                            fontSize: 20, fontWeight: FontWeight.w600),
-                                      ),
-                                      Text(
-                                        "Review the current status of your warehouse units by accessing the map here.",
-                                        style:
-                                        GoogleFonts.roboto(fontSize: 14, color: Colors.grey),
-                                      ),
-
-                                    ],
-                                  ),
+                      hoverWrapper(
+                        onClick: (){
+                          Navigator.of(context).pushNamed(mapPage.routeName);
+                        },
+                        child: Container(
+                            padding: EdgeInsets.all(16.0),
+                            width: staticVar.golobalWidth(context) * .4 ,
+                            height: staticVar.golobalHigth(context) * .7,
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 18.0, left: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                     "Map",
+                                      style: GoogleFonts.roboto(
+                                          fontSize: 20, fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                      "Review the current status of your warehouse units by accessing the map here.",
+                                      style:
+                                      GoogleFonts.roboto(fontSize: 14, color: Colors.grey),
+                                    ),
+                                    SizedBox(height: staticVar.golobalWidth(context) * .1,),
+                        
+                                    Center(child: Icon(Icons.map),)
+                        
+                        
+                        
+                                  ],
                                 ),
-
-                              ],
-                            ),
-                          ))
+                              ),
+                            )),
+                      )
                     ],
                   )
 

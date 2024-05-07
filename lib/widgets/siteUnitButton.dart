@@ -20,7 +20,8 @@ class _sitePageButtonState extends State<sitePageButton> {
 
   @override
   Widget build(BuildContext context) {
-    return this.widget.isExpanded ? Expanded(child:  MouseRegion(
+    return this.widget.isExpanded ? Expanded(child:
+    MouseRegion(
       onExit: (s){
         this.isHover = false ;
         setState(() {});
