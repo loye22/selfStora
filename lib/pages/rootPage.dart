@@ -79,59 +79,61 @@ class _rootPageState extends State<rootPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        actions: [
-          Animate(
-              effects: [FadeEffect(duration: Duration(milliseconds: 700))],
-              child: customAccountWidget())
-        ],
-        leading: Animate(
-          effects: [FadeEffect(duration: Duration(milliseconds: 700))],
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset('assets/logo.png'),
-          ),
-        ),
-        leadingWidth: 200,
-      ),
-      backgroundColor: Color.fromRGBO(242, 247, 252, 1),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Animate(
+    return SelectionArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          actions: [
+            Animate(
+                effects: [FadeEffect(duration: Duration(milliseconds: 700))],
+                child: customAccountWidget())
+          ],
+          leading: Animate(
             effects: [FadeEffect(duration: Duration(milliseconds: 700))],
-            child: SideMenu(
-              style: SideMenuStyle(
-                selectedTitleTextStyle: TextStyle(color: Colors.orange , fontWeight: FontWeight.w600),
-                selectedIconColor: Colors.orange,
-                hoverColor: Colors.blue[100],
-                unselectedIconColor: Color.fromRGBO(20, 53, 96, 1),
-                openSideMenuWidth: 200
-                //hoverColor: Colors.orange,
-               //   selectedColor: Colors.orange  ,
-                  ),
-              controller: _sideMenuController,
-              // title: Image.asset('assets/logo.png'),
-              items: _buildMenuItems(),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset('assets/logo.png'),
             ),
           ),
-          Expanded(
-              child: PageView(
-            controller: _pageController,
-            children: [
-
-              homePage(),
-              subscriptionPage(),
-              sitePage(),
-              contactPage(),
-              discountPage(),
-
-
-            ],
-          ))
-        ],
+          leadingWidth: 200,
+        ),
+        backgroundColor: Color.fromRGBO(242, 247, 252, 1),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Animate(
+              effects: [FadeEffect(duration: Duration(milliseconds: 700))],
+              child: SideMenu(
+                style: SideMenuStyle(
+                  selectedTitleTextStyle: TextStyle(color: Colors.orange , fontWeight: FontWeight.w600),
+                  selectedIconColor: Colors.orange,
+                  hoverColor: Colors.blue[100],
+                  unselectedIconColor: Color.fromRGBO(20, 53, 96, 1),
+                  openSideMenuWidth: 200
+                  //hoverColor: Colors.orange,
+                 //   selectedColor: Colors.orange  ,
+                    ),
+                controller: _sideMenuController,
+                // title: Image.asset('assets/logo.png'),
+                items: _buildMenuItems(),
+              ),
+            ),
+            Expanded(
+                child: PageView(
+              controller: _pageController,
+              children: [
+      
+                homePage(),
+                subscriptionPage(),
+                sitePage(),
+                contactPage(),
+                discountPage(),
+      
+      
+              ],
+            ))
+          ],
+        ),
       ),
     );
   }
